@@ -1,0 +1,5 @@
+./venv
+/venv
+/__MACOSX
+/__pycache__
+
