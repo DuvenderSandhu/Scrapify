@@ -408,7 +408,7 @@ def extract_data(html_content, fields, method="regex"):
         field_lower = field.lower()
         
         # Determine extraction method by field type
-        if method == "regex":
+        if method.lower() == "regex":
             if field_lower in REGEX_PATTERNS:
                 pattern = REGEX_PATTERNS[field_lower]
                 matches = re.findall(pattern, html_content)
@@ -432,12 +432,12 @@ def extract_data(html_content, fields, method="regex"):
                 # For unknown fields, try some heuristics
                 log_warning(f"No predefined pattern for {field}, attempting generic extraction")
                 results[field] = extract_unknown_field(html_content, field)
-        elif method == "css":
+        elif method.lower() == "css":
             # In a real implementation, we would use BeautifulSoup selectors
             # Here we'll simulate CSS-based extraction
             results[field] = find_elements_by_selector(html_content,field)
             # simulate_css_extraction(html_content, field)
-        elif method == "ai":
+        elif method.lower() == "ai":
             # Simulate AI-based extraction
             print("st.session_state.ai_provider",st.session_state.ai_provider)
             ai_response = extract_data_with_ai(html_content,field,st.session_state.ai_provider,st.session_state.ai_api)
@@ -562,180 +562,119 @@ with tab1:
         )
         
         # Field Configuration
-        st.subheader("Data Extraction")
-        
-        field_col1, field_col2 = st.columns(2)
-        with field_col1:
-            field_input = st.text_input("Enter field to extract:", placeholder="e.g., Email, Phone, Price")
-        with field_col2:
-            if st.button("Add Field", use_container_width=True):
-                if field_input and field_input not in st.session_state.fields:
-                    st.session_state.fields.append(field_input)
-                    log_info(f"Added field: {field_input}")
-        
+        st.subheader("🔍 Data Extraction")
+
+        # Initialize session state for fields if not already set
+        if "fields" not in st.session_state:
+            st.session_state.fields = []
+
+        # Function to add field and clear input
+        def add_field():
+            if st.session_state.field_input.strip():  
+                field = st.session_state.field_input.strip()
+                if field not in st.session_state.fields:
+                    st.session_state.fields.append(field)
+                    st.success(f"Added: {field}")
+                st.session_state.field_input = ""  # Clear input box
+                st.rerun()
+
+        # Input field with enter-to-add functionality
+        field_input = st.text_input("Enter field to extract:", 
+                                    key="field_input", 
+                                    placeholder="e.g., Email, Phone, #agent_name, .agent_email", 
+                                    on_change=add_field)
+
+        # Add button
+        if st.button("➕ Add Field", use_container_width=True):
+            add_field()
+
         # Display added fields with remove option
         if st.session_state.fields:
-            st.write("Fields to extract:")
-            for i, field in enumerate(st.session_state.fields):
-                st.markdown(
-                    f"""
-                    <div class="field-card" style="background:rgba(0,0,0,0.5)" >
-                        <span style="color:white">{field}</span>
-                        # <button kind="secondary" class="remove-btn" id="remove_{i}">Remove</button>
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
-                remove_btn = st.button(f"❌ Remove {field}", key=f"remove_{i}", help=f"Remove {field} from extraction list")
-                if remove_btn:
+            st.write("**Fields to extract:**")
+            for field in st.session_state.fields:
+                colu1, colu2 = st.columns([4, 1])
+                colu1.write(f"**{field}**")
+                if colu2.button("Delete", key=f"remove_{field}", help=f"Remove {field}"):
                     st.session_state.fields.remove(field)
-                    log_info(f"Removed field: {field}")
+                    st.warning(f"Removed: {field}")
                     st.rerun()
         else:
-            st.info("No fields added yet. Add fields to extract data.")
-        
+            st.info("No fields added yet. Add fields to extract data.")    
         # Advanced Crawling Options
         st.subheader("Crawling Options")
         
-        with st.expander("Configure Crawling Behavior", expanded=True):
-            crawl_col1, crawl_col2 = st.columns(2)
-            
-            with crawl_col1:
-                follow_links = st.checkbox("Follow links", value=False, 
-                                         help="Crawl links found on the page")
-                
-                max_depth = st.slider("Maximum crawl depth", 0, 5, 1,
-                                     help="0 = only starting URLs, 1 = follow one level of links, etc.")
-                
-                max_pages = st.number_input("Maximum pages to crawl", 1, 100, 10,
-                                          help="Limit the total number of pages crawled")
-            
-            with crawl_col2:
-                stay_on_domain = st.checkbox("Stay on same domain", value=True,
-                                           help="Only follow links on the same domain")
-                
-                handle_pagination = st.checkbox("Handle pagination", value=True,
-                                              help="Try to find and follow 'Next Page' links")
-                
-                handle_lazy_loading = st.checkbox("Handle lazy loading", value=False,
-                                                help="Attempt to trigger lazy loading content")
-        
+        with st.expander("Configure Crawling", expanded=False):
+            follow_links = st.checkbox("Follow Links", help="Crawl links found on the page")
+            stay_on_domain = st.checkbox("Stay on Same Domain", value=True, help="Only crawl pages from the same domain")
+            handle_pagination = st.checkbox("Handle Pagination", value=True, help="Follow 'Next Page' links")
+            handle_lazy_loading = st.checkbox("Handle Lazy Loading", help="Load content that appears dynamically")
+
+            max_depth = st.slider("Max Depth", 0, 5, 1, help="0 = Only start URLs, 1 = Follow links one level deep, etc.")
+            max_pages = st.number_input("Max Pages", 1, 100, 10, help="Limit total pages to crawl")
         # Enhanced pagination options
-        if handle_pagination:
+        # import streamlit as st
+
+        if "handle_pagination" not in st.session_state:
+            st.session_state.handle_pagination = True  # Default to enabled
+
+        if st.session_state.handle_pagination:
             st.subheader("Pagination Control")
-            
+
             pagination_method = st.selectbox(
-                "Next Button Detection Method:",
+                "Select Pagination Detection Method",
                 ["Auto-detect", "CSS Selector", "XPath", "Button Text", "AI-powered"],
-                help="Choose how to identify the 'Next' button or link on the page"
+                help="Choose how to identify the 'Next' button or link."
             )
-            
-            # Additional options based on selected method
+
             if pagination_method == "CSS Selector":
-                pagination_selector = st.text_input(
-                    "CSS Selector for next button/link:",
-                    value=".pagination .next, a.next-page, [rel='next']",
-                    help="Enter CSS selector that identifies the next page button or link"
+                st.text_input(
+                    "Enter CSS Selector:",
+                    placeholder=".pagination .next, a.next-page",
+                    help="Example: `.pagination .next`, `#next-page`, `a[rel='next']`"
                 )
-                
-                st.markdown("""
-                <div class="helper-card">
-                    <strong>Example CSS Selectors:</strong>
-                    <ul style="margin-bottom: 0;">
-                        <li><code>.pagination .next</code> - Targets an element with class "next" inside an element with class "pagination"</li>
-                        <li><code>#next-page</code> - Targets an element with ID "next-page"</li>
-                        <li><code>a[rel="next"]</code> - Targets an anchor tag with attribute rel="next"</li>
-                    </ul>
-                </div>
-                """, unsafe_allow_html=True)
-                
+
             elif pagination_method == "XPath":
-                pagination_xpath = st.text_input(
-                    "XPath for next button/link:",
-                    value="//a[contains(@class, 'next') or contains(text(), 'Next')]",
-                    help="Enter XPath expression that identifies the next page button or link"
+                st.text_input(
+                    "Enter XPath:",
+                    placeholder="//a[contains(text(), 'Next')]",
+                    help="Example: `//a[contains(text(), 'Next')]`, `//div[@class='pagination']/a[last()]`"
                 )
-                
-                st.markdown("""
-                <div class="helper-card">
-                    <strong>Example XPath Expressions:</strong>
-                    <ul style="margin-bottom: 0;">
-                        <li><code>//a[contains(text(), 'Next')]</code> - Find anchor tags containing the text "Next"</li>
-                        <li><code>//div[@class='pagination']/a[last()]</code> - Find the last anchor tag inside a div with class "pagination"</li>
-                    </ul>
-                </div>
-                """, unsafe_allow_html=True)
-                
+
             elif pagination_method == "Button Text":
-                
-                
-                # with col1:
-                pagination_text = st.text_input(
-                    "Text on next button/link:",
-                    value="Next",
-                    help="Enter the text that appears on the next page button or link"
+                pagination_text= st.text_input(
+                    "Enter Button Text:",
+                    placeholder="Next",
+                    help="Example: 'Next', 'Load More'"
                 )
-                
-                # with col2:
-                pagination_text_match=""
-                # pagination_text_match = st.selectbox(
-                #     "Text matching method:",
-                #     ["Contains", "Exact match", "Starts with", "Ends with"],
-                #     help="How to match the button text"
-                # )
-                
-            elif pagination_method == "AI-powered":
-                st.info("The AI will analyze the page structure to identify pagination patterns, looking for common indicators like numbered links, 'Next' buttons, or pagination controls.")
-                
-                pagination_confidence = st.slider(
-                    "AI confidence threshold (%):",
-                    min_value=50,
-                    max_value=95,
-                    value=70,
-                    help="Only follow pagination links when AI confidence exceeds this threshold"
-                )
+
             
-            # Visual pagination helper
-            # with st.expander("Pagination Pattern Examples", expanded=False):
-            #     st.markdown("""
-            #     <div class="pagination-example">
-            #         <span class="pagination-page">1</span>
-            #         <span class="pagination-page pagination-current">2</span>
-            #         <span class="pagination-page">3</span>
-            #         <span class="pagination-page">4</span>
-            #         <span class="pagination-page pagination-next">Next →</span>
-            #     </div>
-                
-            #     <div class="pagination-example">
-            #         <span class="pagination-page">← Previous</span>
-            #         <span class="pagination-page">1</span>
-            #         <span class="pagination-page pagination-current">2</span>
-            #         <span class="pagination-page">3</span>
-            #         <span class="pagination-page pagination-next">Next →</span>
-            #     </div>
-                
-            #     <div class="pagination-example">
-            #         <button style="background-color:#f0f0f0; border:1px solid #ccc; padding:8px 15px; border-radius:4px;">
-            #             Load More Results
-            #         </button>
-            #     </div>
-            #     """, unsafe_allow_html=True)
-        
+
         # Extraction Method
-        st.subheader("Extraction Method")
-        extraction_method = st.radio(
-            "Select data extraction method:",
-            ["regex", "css", "ai"],
-            horizontal=True,
-            help="regex: Basic pattern matching, CSS: Element-based extraction, AI: Intelligent context-aware extraction"
+
+
+        st.subheader(" Extraction Method")
+
+        # Extraction method selection
+        extraction_method = st.selectbox(
+            "Choose a data extraction method:",
+            ["Regex", "CSS", "AI"],
+            help="Regex: Pattern-based extraction | CSS: Element selectors | AI: Context-aware extraction"
         )
-        if(extraction_method=="regex"):
-            st.markdown("The regex will extract only addresses, phone numbers, and email addresses based on predefined text structure patterns. ")
-        if(extraction_method =="css"):
-            st.markdown("Use CSS selectors (class or ID) to define fields. For example, #user-email-id for emails or .user-number for phone numbers.")
-        if extraction_method =="ai":
-            ai_provider = st.selectbox("Select AI Model", ["OpenAI", "Gemini", "DeepSeek","Groq"])
-            ai_api = st.text_area("Enter AI API_KEY")
+
+        # Dynamic description
+        descriptions = {
+            "Regex": "🔹 Extracts addresses, phone numbers, and emails using predefined patterns.",
+            "CSS": "🔹 Use CSS selectors (class or ID) to target elements (e.g., `#user-email-id`, `.user-number`).",
+            "AI": "🔹 Uses an AI model for intelligent data extraction."
+        }
+        st.info(descriptions[extraction_method])
+
+        # AI options (only shown if AI is selected)
+        if extraction_method == "AI":
+            ai_provider = st.selectbox("Select AI Model", ["OpenAI", "Gemini", "DeepSeek", "Groq"])
+            ai_api = st.text_area("Enter AI API Key", placeholder="sk-...")
+
+
             
     with col2:
         # Status and Controls Section
@@ -813,12 +752,12 @@ with tab1:
                     # Add method-specific pagination options
                     if handle_pagination:
                         if pagination_method == "CSS Selector":
-                            options['pagination_selector'] = pagination_selector
+                            options['pagination_selector'] = pagination_selector if pagination_selector else st.error("No Selector Selected")
                         elif pagination_method == "XPath":
                             options['pagination_xpath'] = pagination_xpath
                         elif pagination_method == "Button Text":
-                            options['pagination_text'] = pagination_text
-                            options['pagination_text_match'] = pagination_text_match
+                            options['pagination_text'] = pagination_text if pagination_text else None
+                            # options['pagination_text_match'] = pagination_text_match if pagination_text_match else None
                         elif pagination_method == "AI-powered":
                             options['pagination_confidence'] = pagination_confidence
                     
@@ -894,44 +833,23 @@ with tab2:
         else:
             st.info("No results yet. Start a scraping job to see results here.")
 
+
 with tab3:
-    # Logs tab
     st.subheader("Scraping Logs")
-    
-    # Log filter
+
     log_levels = ["ALL", "INFO", "SUCCESS", "WARNING", "ERROR", "PROCESS"]
     selected_level = st.selectbox("Filter logs by level:", log_levels)
-    
-    # Display logs in a container with auto-scroll
-    log_container = st.container()
-    
-    with log_container:
-        st.markdown('<div class="log-container">', unsafe_allow_html=True)
-        
-        if not st.session_state.logs:
-            st.info("No logs yet. Start a scraping job to see logs here.")
-        else:
-            filtered_logs = st.session_state.logs
-            if selected_level != "ALL":
-                filtered_logs = [log for log in st.session_state.logs if log["level"] == selected_level]
-            
-            for log in filtered_logs:
-                timestamp = log["timestamp"]
-                level = log["level"]
-                message = log["message"]
-                
-                if level == "INFO":
-                    st.markdown(f'<div class="log-info">[{timestamp}] ℹ️ {message}</div>', unsafe_allow_html=True)
-                elif level == "SUCCESS":
-                    st.markdown(f'<div class="log-success">[{timestamp}] ✅ {message}</div>', unsafe_allow_html=True)
-                elif level == "WARNING":
-                    st.markdown(f'<div class="log-warning">[{timestamp}] ⚠️ {message}</div>', unsafe_allow_html=True)
-                elif level == "ERROR":
-                    st.markdown(f'<div class="log-error">[{timestamp}] ❌ {message}</div>', unsafe_allow_html=True)
-                elif level == "PROCESS":
-                    st.markdown(f'<div class="log-process">[{timestamp}] 🔄 {message}</div>', unsafe_allow_html=True)
-        
-        st.markdown('</div>', unsafe_allow_html=True)
+
+    logs = st.session_state.get("logs", [])
+
+    if not logs:
+        st.info("No logs yet. Start a scraping job to see logs here.")
+    else:
+        filtered_logs = logs if selected_level == "ALL" else [log for log in logs if log["level"] == selected_level]
+
+        for log in filtered_logs:
+            icons = {"INFO": "ℹ️", "SUCCESS": "✅", "WARNING": "⚠️", "ERROR": "❌", "PROCESS": "🔄"}
+            st.markdown(f"[{log['timestamp']}] {icons.get(log['level'], '')} {log['message']}")
 
 # Main scraping process (runs when is_scraping is True)
 if st.session_state.is_scraping:

@@ -110,3 +110,6 @@ def extract_data_with_ai(html_content, field,ai="groq",api=""):
         return cleaned_ai_response.split(",")  # Convert AI response to list
     
     return [f"No {field} found"]
+
+
+
