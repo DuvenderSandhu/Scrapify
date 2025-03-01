@@ -3,11 +3,12 @@ from playwright.async_api import async_playwright
 from bs4 import BeautifulSoup
 from log import log_info, log_success, log_error  # Import logging functions from app.py
 from database import db
-# from playwright.async_api import async_playwright
 
 # from playwright.async_api import async_playwright
 
+# from playwright.async_api import async_playwright
 
+rawid= ""
 
 async def get_html(url: str, button: str = None, options: dict = None, loader: str = None) -> str:
     """
@@ -120,7 +121,7 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
 
         await browser.close()
         log_info("Browser closed")
-        db.save_raw_html(url, html_content)
+        rawid= db.save_raw_html(url, html_content)
         return html_content
 
 def extract_data_by_css(html_content, selector):

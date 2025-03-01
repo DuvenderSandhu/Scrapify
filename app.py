@@ -6,21 +6,24 @@ import numpy as np
 import time
 import random
 import re
+from database import db
 import json
+from dotenv import load_dotenv
 from log import log_process,log_error,log_warning,log_success,log_info,add_log
 from datetime import datetime
 from urllib.parse import urlparse, urljoin
 import uuid
+from crawler import rawid
 from crawler import get_html_sync
 from scraper import find_elements_by_selector,extract_data_with_ai
 # Page configuration
-st.set_page_config(
-    page_title="Advanced Web Scraper",
-    page_icon="🕸️",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
-
+# st.set_page_config(
+#     page_title="Advanced Web Scraper",
+#     page_icon="🕸️",
+#     layout="wide",
+#     initial_sidebar_state="expanded"
+# )
+# load_dotenv()
 # Custom CSS
 st.markdown("""
 <style>
@@ -435,7 +438,8 @@ def extract_data(html_content, fields, method="regex"):
         elif method.lower() == "css":
             # In a real implementation, we would use BeautifulSoup selectors
             # Here we'll simulate CSS-based extraction
-            results[field] = find_elements_by_selector(html_content,field)
+            results[field] = find_elements_by_selector(html_content, field)
+            
             # simulate_css_extraction(html_content, field)
         elif method.lower() == "ai":
             # Simulate AI-based extraction
@@ -622,12 +626,12 @@ with tab1:
 
             pagination_method = st.selectbox(
                 "Select Pagination Detection Method",
-                ["Auto-detect", "CSS Selector", "XPath", "Button Text", "AI-powered"],
+                ["Auto-detect (Use Predefined Buttons)", "CSS Selector", "XPath", "Button Text", "AI-powered"],
                 help="Choose how to identify the 'Next' button or link."
             )
 
             if pagination_method == "CSS Selector":
-                st.text_input(
+                pagination_selector= st.text_input(
                     "Enter CSS Selector:",
                     placeholder=".pagination .next, a.next-page",
                     help="Example: `.pagination .next`, `#next-page`, `a[rel='next']`"
@@ -884,7 +888,7 @@ if st.session_state.is_scraping:
                         
                         # Extract data from the crawled page
                         extracted_data = extract_data(html_content, st.session_state.fields, st.session_state.extraction_method)
-                        
+                        db.save_extracted_data(rawid, next_url, extracted_data)
                         # Add the extracted data to results
                         if any(extracted_data.values()):
                             result_item = {

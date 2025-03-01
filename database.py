@@ -3,13 +3,14 @@ import mysql.connector
 from mysql.connector import Error
 from datetime import datetime
 from utils import generate_unique_id
-
+import os
 class Database:
     """MySQL database for storing scraping results"""
 
     def __init__(self, mysql_uri):
         """Initialize the MySQL connection and create tables if needed."""
         self.mysql_uri = mysql_uri
+        # print(os.environ)
         self.connection = self.connect_db()
 
         if self.connection:
@@ -19,16 +20,17 @@ class Database:
         """Establish a connection to MySQL database."""
         try:
             conn = mysql.connector.connect(
-                host="your_host",
-                user="your_user",
-                password="your_password",
-                database="your_database"
+                host="mysql-e613014-moviefordsandhu-195f.c.aivencloud.com",
+                user="avnadmin",
+                password="AVNS_J8TyM_YEio9Cfp3rYck",
+                database="defaultdb",
+                port=21010
             )
             if conn.is_connected():
-                st.success("Connected to MySQL database!")
+                print("Connected to MySQL database!")
                 return conn
         except Error as e:
-            st.error(f"Database connection error: {e}")
+            print(f"Database connection error: {e}")
             return None
 
     def create_tables(self):
