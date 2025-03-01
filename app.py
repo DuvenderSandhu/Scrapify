@@ -16,15 +16,21 @@ import uuid
 from crawler import rawid
 from crawler import get_html_sync
 from scraper import find_elements_by_selector,extract_data_with_ai
+max_depth= 0 
+max_pages=1
+stay_on_domain=""
+handle_lazy_loading=None
 # Page configuration
-# st.set_page_config(
-#     page_title="Advanced Web Scraper",
-#     page_icon="🕸️",
-#     layout="wide",
-#     initial_sidebar_state="expanded"
-# )
+st.set_page_config(
+    page_title="Advanced Web Scraper",
+    page_icon="🕸️",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 # load_dotenv()
 # Custom CSS
+if "extraction_method" not in st.session_state:
+    st.session_state.extraction_method = "None"
 st.markdown("""
 <style>
     .main-header {
@@ -426,7 +432,9 @@ def extract_data(html_content, fields, method="regex"):
                 results[field] = list(set(matches))
             elif any(keyword in field_lower for keyword in ['phone', 'tel', 'mobile']):
                 matches = re.findall(REGEX_PATTERNS['phone'], html_content)
+                print(matches)
                 formatted_numbers = ["+1"+re.sub(r'[\(\)\s\-]', '', number) for number in matches]
+                print(formatted_numbers)
                 results[field] = list(set(formatted_numbers))
             elif any(keyword in field_lower for keyword in ['address', 'location']):
                 matches = re.findall(REGEX_PATTERNS['address'], html_content)
@@ -444,7 +452,7 @@ def extract_data(html_content, fields, method="regex"):
         elif method.lower() == "ai":
             # Simulate AI-based extraction
             print("st.session_state.ai_provider",st.session_state.ai_provider)
-            ai_response = extract_data_with_ai(html_content,field,st.session_state.ai_provider,st.session_state.ai_api)
+            ai_response = extract_data_with_ai(html_content,fields,st.session_state.ai_provider,st.session_state.ai_api)
             for field, data in ai_response.items():
                 results[field] = data 
             break
@@ -580,7 +588,7 @@ with tab1:
                     st.session_state.fields.append(field)
                     st.success(f"Added: {field}")
                 st.session_state.field_input = ""  # Clear input box
-                st.rerun()
+                # st.rerun()
 
         # Input field with enter-to-add functionality
         field_input = st.text_input("Enter field to extract:", 
@@ -589,6 +597,10 @@ with tab1:
                                     on_change=add_field)
 
         # Add button
+        # st.session_state.extraction_method
+        if st.session_state.extraction_method =="CSS":
+
+            st.info("Use valid CSS selectors (class or ID) to target elements from website (e.g., #user-email-id, .user-number) not Email, Phone.")
         if st.button("➕ Add Field", use_container_width=True):
             add_field()
 
@@ -608,48 +620,49 @@ with tab1:
         st.subheader("Crawling Options")
         
         with st.expander("Configure Crawling", expanded=False):
-            follow_links = st.checkbox("Follow Links", help="Crawl links found on the page")
-            stay_on_domain = st.checkbox("Stay on Same Domain", value=True, help="Only crawl pages from the same domain")
-            handle_pagination = st.checkbox("Handle Pagination", value=True, help="Follow 'Next Page' links")
-            handle_lazy_loading = st.checkbox("Handle Lazy Loading", help="Load content that appears dynamically")
+            follow_links = st.checkbox("Follow Links", value=False, help="Crawl links found on the page")
+            if follow_links:
+                stay_on_domain = st.checkbox("Stay on Same Domain", value=True, help="Only crawl pages from the same domain")
+                handle_lazy_loading = st.checkbox("Handle Lazy Loading",  value=False, help="Load content that appears dynamically")
 
-            max_depth = st.slider("Max Depth", 0, 5, 1, help="0 = Only start URLs, 1 = Follow links one level deep, etc.")
-            max_pages = st.number_input("Max Pages", 1, 100, 10, help="Limit total pages to crawl")
-        # Enhanced pagination options
-        # import streamlit as st
+                max_depth = st.slider("Max Depth", 0, 5, 1, help="0 = Only start URLs, 1 = Follow links one level deep, etc.")
+                max_pages = st.number_input("Max Pages", 1, 100, 10, help="Limit total pages to crawl")
+            handle_pagination = st.checkbox("Handle Pagination", value=False, help="Follow 'Next Page' links")
+            if handle_pagination:
+                # Enhanced pagination options
+                # import streamlit as st
 
-        if "handle_pagination" not in st.session_state:
-            st.session_state.handle_pagination = True  # Default to enabled
+                if "handle_pagination" not in st.session_state:
+                    st.session_state.handle_pagination = True  # Default to enabled
 
-        if st.session_state.handle_pagination:
-            st.subheader("Pagination Control")
+                if st.session_state.handle_pagination:
+                   
+                    pagination_method = st.selectbox(
+                        "Select Pagination Detection Method",
+                        ["Auto-detect (Use Predefined Buttons)", "CSS Selector", "XPath", "Button Text", "AI-powered"],
+                        help="Choose how to identify the 'Next' button or link."
+                    )
 
-            pagination_method = st.selectbox(
-                "Select Pagination Detection Method",
-                ["Auto-detect (Use Predefined Buttons)", "CSS Selector", "XPath", "Button Text", "AI-powered"],
-                help="Choose how to identify the 'Next' button or link."
-            )
+                    if pagination_method == "CSS Selector":
+                        pagination_selector= st.text_input(
+                            "Enter CSS Selector:",
+                            placeholder=".pagination .next, a.next-page",
+                            help="Example: `.pagination .next`, `#next-page`, `a[rel='next']`"
+                        )
 
-            if pagination_method == "CSS Selector":
-                pagination_selector= st.text_input(
-                    "Enter CSS Selector:",
-                    placeholder=".pagination .next, a.next-page",
-                    help="Example: `.pagination .next`, `#next-page`, `a[rel='next']`"
-                )
+                    elif pagination_method == "XPath":
+                        st.text_input(
+                            "Enter XPath:",
+                            placeholder="//a[contains(text(), 'Next')]",
+                            help="Example: `//a[contains(text(), 'Next')]`, `//div[@class='pagination']/a[last()]`"
+                        )
 
-            elif pagination_method == "XPath":
-                st.text_input(
-                    "Enter XPath:",
-                    placeholder="//a[contains(text(), 'Next')]",
-                    help="Example: `//a[contains(text(), 'Next')]`, `//div[@class='pagination']/a[last()]`"
-                )
-
-            elif pagination_method == "Button Text":
-                pagination_text= st.text_input(
-                    "Enter Button Text:",
-                    placeholder="Next",
-                    help="Example: 'Next', 'Load More'"
-                )
+                    elif pagination_method == "Button Text":
+                        pagination_text= st.text_input(
+                            "Enter Button Text:",
+                            placeholder="Next",
+                            help="Example: 'Next', 'Load More'"
+                        )
 
             
 
@@ -675,9 +688,14 @@ with tab1:
 
         # AI options (only shown if AI is selected)
         if extraction_method == "AI":
+            st.session_state.extraction_method = "ai"
             ai_provider = st.selectbox("Select AI Model", ["OpenAI", "Gemini", "DeepSeek", "Groq"])
             ai_api = st.text_area("Enter AI API Key", placeholder="sk-...")
-
+        # elif extraction_method =="CSS":
+        #     st.session_state.extraction_method = "CSS"
+        #     st.rerun()
+        # else :
+        #     st.session_state.extraction_method = "regex"
 
             
     with col2:
@@ -744,11 +762,11 @@ with tab1:
                     log_info(f"Extraction method: {extraction_method}")
                     
                     options = {
-                        'follow_links': follow_links,
-                        'max_depth': max_depth,
-                        'max_pages': max_pages,
-                        'stay_on_domain': stay_on_domain,
-                        'handle_pagination': handle_pagination,
+                        'follow_links': follow_links if follow_links else None,
+                        'max_depth': max_depth if max_depth else None,
+                        'max_pages': len(urls) if len(urls) else None,
+                        'stay_on_domain': stay_on_domain if stay_on_domain else None,
+                        'handle_pagination': handle_pagination if handle_pagination else None,
                         'handle_lazy_loading': handle_lazy_loading,
                         'pagination_method': pagination_method if handle_pagination else None
                     }
@@ -756,7 +774,7 @@ with tab1:
                     # Add method-specific pagination options
                     if handle_pagination:
                         if pagination_method == "CSS Selector":
-                            options['pagination_selector'] = pagination_selector if pagination_selector else st.error("No Selector Selected")
+                            options['pagination_selector'] = pagination_selector if pagination_selector else ""
                         elif pagination_method == "XPath":
                             options['pagination_xpath'] = pagination_xpath
                         elif pagination_method == "Button Text":
@@ -792,6 +810,8 @@ with tab1:
                 st.session_state.logs = []
                 log_info("All data cleared")
                 st.rerun()
+            if st.session_state.current_phase == "complete":
+                st.info("Task Complete Go to Result Tab to See Result")
 
 with tab2:
     # Results tab
