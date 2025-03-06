@@ -14,6 +14,7 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
     options = options or {}
     max_pages = options.get('max_pages', 1)
     handle_lazy_loading = options.get('handle_lazy_loading', False)
+    numbered= options.get('pagination_method',False)=="Numbered"
     handle_pagination = options.get('handle_pagination', False)
     js_timeout = options.get('js_timeout', 10000)           # Reduced JS timeout (ms)
     navigation_timeout = options.get('navigation_timeout', 30000)  # Reduced navigation timeout (ms)
@@ -68,7 +69,8 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
                 
                 if handle_pagination and button:
                     await handle_pagination_with_backoff(page, button, loader, max_pages)
-                
+                if handle_pagination and numbered:
+                    await handle_numbered_pagination_with_backoff(page,url)
                 if handle_lazy_loading:
                     await handle_lazy_loading_with_limits(page)
                 
@@ -103,69 +105,172 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
         log_error(f"All {retry_attempts + 1} attempts failed for {url}")
         return ""
 
-async def handle_pagination_with_backoff(page, button, loader, max_pages):
+async def handle_pagination_with_backoff(page, buttons, loader, max_pages):
     """Handle pagination with detailed logging and strict button checks."""
-    log_info(f"Pagination enabled: Searching for button '{button}' (max_pages={max_pages})")
+    log_info(f"Pagination enabled: Searching for button '{buttons}' ")
     page_count = 0
     
-    while page_count < max_pages:
-        try:
-            if not button.startswith(("//", ".", "#")):
-                button_xpath = f"//button[normalize-space()='{button}'] | //*[text()='{button}']"
-                button_selector = f"xpath={button_xpath}"
-            else:
-                button_selector = button
+    while True:
+        for button in buttons.split(","):
+            try:
+                if not button.startswith(("//", ".", "#")):
+                    button_xpath = f"//button[normalize-space()='{button}'] | //*[text()='{button}']"
+                    button_selector = f"xpath={button_xpath}"
+                else:
+                    button_selector = button
 
-            button_element = None
-            for timeout_ms in [3000, 5000, 8000]:
-                try:
-                    button_element = await page.wait_for_selector(
-                        button_selector, timeout=timeout_ms, state="visible"
-                    )
-                    if button_element:
-                        log_success(f"Found button '{button}' after {timeout_ms}ms")
-                        break
-                except Exception:
-                    if timeout_ms == 8000:
-                        log_warning(f"Button '{button}' not found after {timeout_ms}ms")
-                        return
-                    continue
-            
-            if not button_element:
-                log_warning(f"Button '{button}' not found, stopping pagination")
-                return
-
-            await button_element.scroll_into_view_if_needed()
-            await page.wait_for_timeout(1000)
-            
-            click_success = False
-            for attempt in range(3):
-                try:
-                    await button_element.click()
-                    click_success = True
-                    break
-                except Exception as e:
-                    log_warning(f"Click attempt {attempt + 1}/3 failed: {str(e)}")
-                    await page.wait_for_timeout(1000)
-            
-            if not click_success:
-                log_error("Failed to click button after 3 attempts")
-                return
+                button_element = None
+                for timeout_ms in [3000, 5000, 8000]:
+                    try:
+                        button_element = await page.wait_for_selector(
+                            button_selector, timeout=timeout_ms, state="visible"
+                        )
+                        if button_element:
+                            log_success(f"Found button '{button}' after {timeout_ms}ms")
+                            break
+                    except Exception:
+                        if timeout_ms == 8000:
+                            log_warning(f"Button '{button}' not found after {timeout_ms}ms")
+                            return
+                        continue
                 
-            page_count += 1
-            log_success(f"Clicked '{button}' ({page_count}/{max_pages})")
-            await page.wait_for_timeout(2000)
+                if not button_element:
+                    log_warning(f"Button '{button}' not found, stopping pagination")
+                    return
+
+                await button_element.scroll_into_view_if_needed()
+                await page.wait_for_timeout(1000)
+                
+                click_success = False
+                for attempt in range(3):
+                    try:
+                        await button_element.click()
+                        click_success = True
+                        break
+                    except Exception as e:
+                        log_warning(f"Click attempt {attempt + 1}/3 failed: {str(e)}")
+                        await page.wait_for_timeout(1000)
+                
+                if not click_success:
+                    log_error("Failed to click button after 3 attempts")
+                    return
+                    
+                page_count += 1
+                log_success(f"Clicked '{button}' ({page_count}/{max_pages})")
+                await page.wait_for_timeout(2000)
+                continue
+                
+                if loader:
+                    try:
+                        await page.wait_for_selector(loader, state="hidden", timeout=5000)
+                        log_success("Loader disappeared")
+                    except Exception:
+                        log_warning("Loader still present, proceeding anyway")
+                        
+            except Exception as e:
+                log_error(f"Pagination error: {str(e)}")
+                return
+
+import asyncio
+
+async def handle_numbered_pagination_with_backoff(page, base_url: str="", max_pages: int=1, loader: str = None):
+    """
+    Handle numbered pagination with retries and backoff strategy.
+    Extracts HTML content from each page while navigating through the pages.
+    """
+    page_number = 1
+    all_html = []  # List to store HTML content of each page
+    
+    while True:
+        try:
+            # Call the function that handles pagination and HTML extraction
+            log_info(f"Fetching page {page_number}/{max_pages}...")
             
+            # Use the helper function to fetch HTML from the current page
+            html_content = await handle_numbered_pagination(page, base_url, page_number, loader)
+            all_html.extend(html_content)  # Add the current page's HTML to the list
+            
+            # Log success for the current page
+            log_success(f"Successfully extracted HTML from page {page_number}/{max_pages}")
+            
+            # Increment the page number for the next page
+            page_number += 1
+            
+            # Small delay to avoid overloading the server
+            await page.wait_for_timeout(2000)  # 2 seconds delay between page fetches
+            
+        except Exception as e:
+            log_error(f"Error on page {page_number}: {str(e)}")
+            break  # Exit the loop if there’s an error (e.g., page failed to load)
+    
+    return all_html
+
+
+async def handle_numbered_pagination(page, base_url: str, max_pages: int, loader: str = None) -> list:
+    """
+    Handle numbered pagination and extract HTML content for each page.
+    """
+    page_number = 1
+    all_html = []  # List to store the HTML content from each page
+    
+    while page_number <= max_pages:
+        try:
+            # Construct the URL for the current page (assuming ?page=<page_number> format)
+            paginated_url = f"{base_url}?page={page_number}"
+            log_info(f"Navigating to {paginated_url}")
+            
+            # Navigate to the current page
+            await page.goto(paginated_url)
+            
+            # Wait for the page to load (handle loader if present)
             if loader:
                 try:
                     await page.wait_for_selector(loader, state="hidden", timeout=5000)
-                    log_success("Loader disappeared")
+                    log_success(f"Loader disappeared on page {page_number}")
                 except Exception:
-                    log_warning("Loader still present, proceeding anyway")
-                    
+                    log_warning(f"Loader still present on page {page_number}, proceeding anyway")
+
+            # Wait for the page to fully load (network idle state)
+            await page.wait_for_load_state("networkidle", timeout=10000)
+            
+            # Extract HTML content of the page
+            html_content = await page.content()
+            all_html.append(html_content)  # Add the current page's HTML to the list
+
+            log_success(f"Successfully extracted HTML from page {page_number}")
+
+            # Increment page number for next iteration
+            page_number += 1
+            
+            # Add a small delay to avoid overwhelming the server
+            await page.wait_for_timeout(2000)  # 2 seconds delay between page fetches
+
         except Exception as e:
-            log_error(f"Pagination error: {str(e)}")
-            return
+            log_error(f"Error on page {page_number}: {str(e)}")
+            break  # Exit if there's an error (e.g., page failed to load)
+    
+    return all_html
+
+
+async def wait_for_page_content(page, loader):
+    """Wait for content to load after clicking a page number (handle page reloads or JS updates)."""
+    if loader:
+        try:
+            # Wait for loader to disappear, indicating the content is fully loaded
+            await page.wait_for_selector(loader, state="hidden", timeout=10000)
+            log_success("Page content loaded successfully.")
+        except Exception:
+            log_warning("Loader still present or timeout occurred while waiting for content.")
+            # Proceed anyway if content doesn't load within the timeout
+    else:
+        # If no loader is specified, wait for some visible content change (e.g., an element that should appear on page load)
+        try:
+            # For example, we could wait for a specific element that should be visible on the page
+            await page.wait_for_selector('div.content', state="visible", timeout=10000)
+            log_success("Page content loaded successfully.")
+        except Exception:
+            log_warning("Page content failed to load within the timeout.")
+            # Proceed anyway if content doesn't load within the timeout
 
 async def handle_lazy_loading_with_limits(page):
     """Handle lazy loading with detailed logging."""

@@ -26,8 +26,11 @@ def find_elements_by_selector(html_content, selector):
     if not grouped_texts:
         return []  # Return empty list instead of causing an error
     
-    return grouped_texts if len(grouped_texts) > 1 else grouped_texts[0]
+    # Flatten the list if there's only one group
+    flattened_texts = [item for sublist in grouped_texts for item in sublist]
 
+    # If only one group exists, return the flattened list directly
+    return flattened_texts if len(grouped_texts) > 1 else flattened_texts
 
 from bs4 import BeautifulSoup
 

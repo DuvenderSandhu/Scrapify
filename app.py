@@ -5,6 +5,10 @@ import pandas as pd
 import numpy as np
 import time
 import random
+import spacy
+
+# Load the spaCy model
+nlp = spacy.load("en_core_web_sm")
 import re
 from bs4 import BeautifulSoup
 from database import db
@@ -15,7 +19,7 @@ from datetime import datetime
 from urllib.parse import urlparse, urljoin
 import uuid
 from collections import defaultdict
-# from crawler import rawid
+from crawler import rawid
 from crawler import get_html_sync
 from scraper import find_elements_by_selector,extract_data_with_ai
 max_depth= 0 
@@ -408,149 +412,131 @@ def find_next_page(html_content, current_url, options):
     
     return next_url
 
+
+import re
+from collections import defaultdict, Counter
+from bs4 import BeautifulSoup
+
+from collections import defaultdict
+import re
+from bs4 import BeautifulSoup
+
 def extract_data(html_content, fields, method="regex"):
-    """Extract data from HTML based on specified fields"""
+    """Extract data from HTML based on specified fields with duplicate checking"""
     log_process(f"Extracting data using {method} method")
-    print(html_content)
     results = {}
-    
-    for field in fields:
-        log_info(f"Extracting field: {field}")
-        field_lower = field.lower()
+    all_seen_values = set()  # Track all previously seen values across fields
 
-        def clean_phone_numbers(phone_list):
-            """Ensure phone numbers are properly formatted with +1 prefix and unique."""
-            cleaned = list(dict.fromkeys(["+1" + re.sub(r'[^0-9]', '', num) for num in phone_list]))
-            return cleaned if cleaned else []
+    def clean_phone_numbers(phone_list):
+        """Ensure phone numbers are properly formatted with +1 prefix and unique."""
+        cleaned = []
+        for num in phone_list:
+            formatted = f"+1-{re.sub(r'[^0-9]', '', num)[:3]}-{re.sub(r'[^0-9]', '', num)[3:6]}-{re.sub(r'[^0-9]', '', num)[6:]}" if country_code and hyphen_separator else f"+1{re.sub(r'[^0-9]', '', num)}" if country_code else re.sub(r'[^0-9]', '', num)
+            cleaned.append(formatted)
+        return list(dict.fromkeys(cleaned))  # Remove duplicates while preserving order
 
-        def flatten_and_clean(matches):
-            """Flatten nested lists and remove duplicates while preserving order."""
-            return list(dict.fromkeys([item for sublist in matches for item in (sublist if isinstance(sublist, list) else [sublist])]))
+    def flatten_and_clean(matches):
+        """Flatten nested lists and remove duplicates while preserving order."""
+        return list(dict.fromkeys([item for sublist in matches for item in (sublist if isinstance(sublist, list) else [sublist])]))
 
-        if method.lower() == "regex":
-            soup = BeautifulSoup(html_content, "html.parser")
-            grouped_matches = defaultdict(list)
+    def should_include(matches, seen_values):
+        """Check if matches should be included based on duplicate status"""
+        unique_items = [item for item in matches if item not in seen_values]
+        return len(unique_items) > 0  # Include if at least one item is unique
 
-            # If field has a regex pattern defined, use it.
+    if method.lower() == "regex":
+        soup = BeautifulSoup(html_content, "html.parser")
+        grouped_matches = defaultdict(list)
+
+        for field in fields:
+            field_lower = field.lower()
+            log_info(f"Extracting field: {field}")
+            all_matches = []
+
             if field_lower in REGEX_PATTERNS:
                 pattern = REGEX_PATTERNS[field_lower]
-                print("Using regex pattern:", pattern)
-
-                # Pass 1: Iterate over every text node.
                 for text_node in soup.find_all(text=True):
                     text_content = text_node.strip()
                     if text_content:
                         matches = re.findall(pattern, text_content)
                         if matches:
-                            parent = text_node.parent
-                            grouped_matches[parent].extend(matches)
+                            grouped_matches[text_node.parent].extend(matches)
 
-                # Pass 2: Also check element attributes for potential matches.
                 for tag in soup.find_all():
                     for attr, value in tag.attrs.items():
-                        # Process attribute value if it's a string.
                         if isinstance(value, str):
                             matches = re.findall(pattern, value)
                             if matches:
                                 grouped_matches[tag].extend(matches)
-                        # If the attribute is a list (sometimes happens), iterate over its items.
-                        elif isinstance(value, list):
-                            for item in value:
-                                if isinstance(item, str):
-                                    matches = re.findall(pattern, item)
-                                    if matches:
-                                        grouped_matches[tag].extend(matches)
 
-                # Flatten and clean grouped matches.
                 all_matches = flatten_and_clean(grouped_matches.values())
-                print("Final matches:", all_matches)
 
-                if all_matches:
+                if all_matches and should_include(all_matches, all_seen_values):
                     log_success(f"Found {len(all_matches)} grouped matches for '{field}'")
-                    if any(keyword in field_lower for keyword in ["phone", "tel", "mobile"]):
-                        results[field] = clean_phone_numbers(all_matches)
+                    if any(kw in field_lower for kw in ["phone", "tel", "mobile"]):
+                        cleaned = clean_phone_numbers(all_matches)
+                        results[field] = cleaned
+                        all_seen_values.update(cleaned)
                     else:
                         results[field] = all_matches
+                        all_seen_values.update(all_matches)
                 else:
-                    log_warning(f"No matches found for '{field}'")
+                    log_warning(f"No unique matches found for '{field}'")
                     results[field] = []
 
-            # Fallback cases for email, phone, address, etc.
             elif "email" in field_lower:
-                print("Processing email extraction")
-                matches = re.findall(REGEX_PATTERNS['email'], html_content)
-                results[field] = flatten_and_clean(matches)
+                matches = flatten_and_clean(re.findall(REGEX_PATTERNS['email'], html_content))
+                if matches and should_include(matches, all_seen_values):
+                    results[field] = matches
+                    all_seen_values.update(matches)
+                else:
+                    results[field] = []
 
-            elif any(keyword in field_lower for keyword in ["phone", "tel", "mobile"]):
+            elif any(kw in field_lower for kw in ["phone", "tel", "mobile"]):
                 matches = re.findall(REGEX_PATTERNS['phone'], html_content)
-                results[field] = clean_phone_numbers(matches)
+                if matches and should_include(matches, all_seen_values):
+                    cleaned = clean_phone_numbers(matches)
+                    results[field] = cleaned
+                    all_seen_values.update(cleaned)
+                else:
+                    results[field] = []
 
-            elif any(keyword in field_lower for keyword in ["address", "location"]):
-                matches = re.findall(REGEX_PATTERNS['address'], html_content)
-                results[field] = flatten_and_clean(matches)
+            elif any(kw in field_lower for kw in ["address", "location"]):
+                matches = flatten_and_clean(re.findall(REGEX_PATTERNS['address'], html_content))
+                if matches and should_include(matches, all_seen_values):
+                    results[field] = matches
+                    all_seen_values.update(matches)
+                else:
+                    results[field] = []
 
             else:
                 log_warning(f"No predefined pattern for '{field}', attempting generic extraction")
-                results[field] = extract_unknown_field(html_content, field)
-
-            # Use the regex pattern for the field if defined.
-            if field_lower in REGEX_PATTERNS:
-                pattern = REGEX_PATTERNS[field_lower]
-                print("Using regex pattern:", pattern)
-                
-                # Iterate over every text node in the HTML.
-                for text_node in soup.find_all(text=True):
-                    text_content = text_node.strip()
-                    if text_content:
-                        matches = re.findall(pattern, text_content)
-                        if matches:
-                            # Group matches by the parent of the text node.
-                            parent = text_node.parent
-                            grouped_matches[parent].extend(matches)
-                
-                # Flatten and clean grouped matches.
-                all_matches = flatten_and_clean(grouped_matches.values())
-                if all_matches:
-                    log_success(f"Found {len(all_matches)} grouped matches for '{field}'")
-                    if any(keyword in field_lower for keyword in ["phone", "tel", "mobile"]):
-                        results[field] = clean_phone_numbers(all_matches)
-                    else:
-                        results[field] = all_matches
+                matches = extract_unknown_field(html_content, field)
+                if matches and should_include(matches, all_seen_values):
+                    results[field] = matches
+                    all_seen_values.update(matches)
                 else:
-                    log_warning(f"No matches found for '{field}'")
                     results[field] = []
-            
-            # If the field doesn't directly match a key in REGEX_PATTERNS, fall back on specific rules.
-            elif "email" in field_lower:
-                print("Processing email extraction")
-                matches = re.findall(REGEX_PATTERNS['email'], html_content)
-                results[field] = flatten_and_clean(matches)
-            
-            elif any(keyword in field_lower for keyword in ["phone", "tel", "mobile"]):
-                matches = re.findall(REGEX_PATTERNS['phone'], html_content)
-                results[field] = clean_phone_numbers(matches)
-            
-            elif any(keyword in field_lower for keyword in ["address", "location"]):
-                matches = re.findall(REGEX_PATTERNS['address'], html_content)
-                results[field] = flatten_and_clean(matches)
-            
+
+    elif method.lower() == "css":
+        for field in fields:
+            matches = find_elements_by_selector(html_content, field)
+            if matches and should_include(matches, all_seen_values):
+                results[field] = matches
+                all_seen_values.update(matches)
             else:
-                log_warning(f"No predefined pattern for '{field}', attempting generic extraction")
-                results[field] = extract_unknown_field(html_content, field)
+                results[field] = []
 
-        elif method.lower() == "css":
-            results[field] = find_elements_by_selector(html_content, field)
-
-        elif method.lower() == "ai":
-            print("st.session_state.ai_provider", st.session_state.ai_provider)
-            ai_response = extract_data_with_ai(html_content, fields, st.session_state.ai_provider, st.session_state.ai_api)
-            for field, data in ai_response.items():
-                results[field] = data 
-            break
-
+    elif method.lower() == "ai":
+        ai_response = extract_data_with_ai(html_content, fields, st.session_state.ai_provider, st.session_state.ai_api)
+        for field, data in ai_response.items():
+            if data and should_include(data, all_seen_values):
+                results[field] = data
+                all_seen_values.update(data)
+            else:
+                results[field] = []
     print(results)
     return results
-
 
 
 def extract_unknown_field(html_content, field):
@@ -603,10 +589,13 @@ def simulate_ai_extraction(html_content, field):
         domain = domain_match.group(1).split(' ')[0] if domain_match else "example.com"
         domain = domain.lower()
         return [f"info@{domain}", f"sales@{domain}", f"support@{domain}"]
-    elif 'name' in field_lower or 'contact' in field_lower:
+    elif 'name' in field_lower or 'username' in field_lower:
         # AI might be better at extracting complete names
+        text = html_content
+        doc = nlp(text)
         names = []
-        name_matches = re.findall(r'<h[3-4][^>]*>([A-Z][a-z]+ [A-Z][a-z]+)</h[3-4]>', html_content)
+        name_matches=[ent.text for ent in doc.ents if ent.label_ == "PERSON"]
+        # name_matches = re.findall(r'<h[3-4][^>]*>([A-Z][a-z]+ [A-Z][a-z]+)</h[3-4]>', html_content)
         if name_matches:
             names.extend(name_matches)
         else:
@@ -710,6 +699,10 @@ with tab1:
         else:
             st.info("No fields added yet. Add fields to extract data.")    
         # Advanced Crawling Options
+        hyphen_separator = st.checkbox("Format phone numbers with hyphens (e.g., 123-456-7890)", value=False)
+        country_code = st.checkbox("Add country code (+1) to phone numbers (e.g., +1234567890)", value=True)
+        if hyphen_separator and country_code:
+            st.info("Phone Number will be interpreted as +1-123-456-7890") 
         st.subheader("Crawling Options")
         
         with st.expander("Configure Crawling", expanded=False):
@@ -732,7 +725,7 @@ with tab1:
                    
                     pagination_method = st.selectbox(
                         "Select Pagination Detection Method",
-                        ["Auto-detect (Use Predefined Buttons)", "CSS Selector", "XPath", "Button Text", "AI-powered"],
+                        ["Auto-detect (Use Predefined Buttons)", "CSS Selector", "XPath", "Button Text"], #"Numbered"
                         help="Choose how to identify the 'Next' button or link."
                     )
 
@@ -857,11 +850,13 @@ with tab1:
                     options = {
                         'follow_links': follow_links if follow_links else None,
                         'max_depth': max_depth if max_depth else None,
-                        'max_pages': len(urls) if len(urls) else None,
+                        'max_pages': max_pages if max_pages else None,
                         'stay_on_domain': stay_on_domain if stay_on_domain else None,
                         'handle_pagination': handle_pagination if handle_pagination else None,
                         'handle_lazy_loading': handle_lazy_loading,
-                        'pagination_method': pagination_method if handle_pagination else None
+                        'pagination_method': pagination_method if handle_pagination else None,
+                        'hyphen_separator':hyphen_separator if hyphen_separator else False,
+                        'country_code' :country_code if country_code else False
                     }
                     
                     # Add method-specific pagination options
@@ -966,7 +961,7 @@ with tab2:
                     first_cols.append("timestamp")
                     
                 # Add any other standard metadata that should be near the front
-                other_priority = ["date", "datetime", "time", "title", "name"]
+                other_priority = ["date", "datetime", "time", "title"]
                 for col in other_priority:
                     if col in df.columns and col not in first_cols:
                         first_cols.append(col)
@@ -1069,7 +1064,7 @@ if st.session_state.is_scraping:
                         
                         # Extract data from the crawled page
                         extracted_data = extract_data(html_content, st.session_state.fields, st.session_state.extraction_method)
-                        db.save_extracted_data(rawid, next_url, extracted_data)
+                        # db.save_extracted_data(rawid, next_url, extracted_data)
                         # Add the extracted data to results
                         if any(extracted_data.values()):
                             result_item = {
