@@ -4,8 +4,11 @@ from playwright.async_api import async_playwright
 from bs4 import BeautifulSoup
 from log import log_info, log_success, log_error, log_warning  # Import logging functions
 from database import db
-
+from assets import selected_user_agent,http_headers,random_zigzag_move
+import random
 rawid = ""
+def random_sleep():
+    time.sleep(random.uniform(1, 3)) 
 
 async def get_html(url: str, button: str = None, options: dict = None, loader: str = None) -> str:
     """
@@ -33,18 +36,28 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
         for attempt in range(retry_attempts + 1):
             if attempt > 0:
                 log_info(f"Retry attempt {attempt + 1}/{retry_attempts + 1}")
-                
+            
+            print(selected_user_agent)
             # Create a fresh context and page for each attempt.
             context = await browser.new_context(
                 viewport={"width": 1920, "height": 1080},
-                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36",
+                user_agent=selected_user_agent,
                 ignore_https_errors=True,
                 java_script_enabled=True
             )
             page = await context.new_page()
+            print(http_headers)
+            # await page.set_extra_http_headers(http_headers)
             page.set_default_timeout(navigation_timeout)
-            page.on("dialog", lambda dialog: asyncio.create_task(dialog.dismiss()))
+            random_sleep()
+            # page.on("dialog", lambda dialog: asyncio.create_task(dialog.dismiss()))
+            start_x, start_y = 100, 100
             
+            # End position (e.g., somewhere in the middle of the page)
+            end_x, end_y = 600, 600
+
+            # Perform the human-like zigzag mouse movement
+            # await random_zigzag_move(page, start_x, start_y, end_x, end_y)
             try:
                 log_info(f"Navigating to {url} with timeout {navigation_timeout}ms")
                 nav_start = time.time()
@@ -220,7 +233,7 @@ async def handle_numbered_pagination(page, base_url: str, max_pages: int, loader
             log_info(f"Navigating to {paginated_url}")
             
             # Navigate to the current page
-            await page.goto(paginated_url)
+            await page.goto(paginated_url, wait_until="domcontentloaded")
             
             # Wait for the page to load (handle loader if present)
             if loader:

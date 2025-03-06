@@ -421,11 +421,31 @@ from collections import defaultdict
 import re
 from bs4 import BeautifulSoup
 
+import re
+from bs4 import BeautifulSoup
+from collections import defaultdict
+
+import re
+from bs4 import BeautifulSoup
+from collections import defaultdict
+
+import re
+import json
+from collections import defaultdict
+from bs4 import BeautifulSoup
+
+# Define regex patterns for common fields
+REGEX_PATTERNS = {
+    'email': r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',
+    'phone': r'\+?1?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}',
+    'address': r'\d+\s+\w+\s+\w+',
+    # Add more patterns as needed
+}
+
 def extract_data(html_content, fields, method="regex"):
-    """Extract data from HTML based on specified fields with duplicate checking"""
+    """Extract data from HTML based on structured element patterns or JSON-LD."""
     log_process(f"Extracting data using {method} method")
     results = {}
-    all_seen_values = set()  # Track all previously seen values across fields
 
     def clean_phone_numbers(phone_list):
         """Ensure phone numbers are properly formatted with +1 prefix and unique."""
@@ -435,109 +455,223 @@ def extract_data(html_content, fields, method="regex"):
             cleaned.append(formatted)
         return list(dict.fromkeys(cleaned))  # Remove duplicates while preserving order
 
-    def flatten_and_clean(matches):
-        """Flatten nested lists and remove duplicates while preserving order."""
-        return list(dict.fromkeys([item for sublist in matches for item in (sublist if isinstance(sublist, list) else [sublist])]))
+    def get_primary_selector(element):
+        """
+        Derive a primary CSS selector for the element.
+        Prefer the element's ID; if not available, use its first class;
+        otherwise, fall back to its tag name.
+        """
+        if element.get('id'):
+            return f"#{element.get('id')}"
+        elif element.get('class'):
+            return f".{element.get('class')[0]}"
+        else:
+            return element.name
 
-    def should_include(matches, seen_values):
-        """Check if matches should be included based on duplicate status"""
-        unique_items = [item for item in matches if item not in seen_values]
-        return len(unique_items) > 0  # Include if at least one item is unique
+    def group_by_parent_and_extract(soup, selector, pattern):
+        """
+        Extract text from all elements matching the given selector,
+        group them by their immediate parent, remove duplicates within each group,
+        and then return a flattened list.
+        Only include text that matches the provided regex pattern.
+        """
+        grouped_elements = defaultdict(list)
+        for element in soup.select(selector):
+            parent = element.find_parent() or element
+            text = element.get_text(strip=True)
+            if text and re.search(pattern, text):
+                grouped_elements[parent].append(text)
+        # Remove duplicates within each group while preserving order.
+        grouped_texts = [list(dict.fromkeys(texts)) for texts in grouped_elements.values()]
+        if not grouped_texts:
+            return []
+        flattened_texts = [item for sublist in grouped_texts for item in sublist]
+        return flattened_texts
+
+    def extract_json_ld(soup):
+        """Extract JSON-LD data from HTML content."""
+        json_ld_data = []
+        # Extract all <script type="application/ld+json"> elements
+        json_ld_script = soup.find_all('script', type='application/ld+json')
+        for script in json_ld_script:
+            try:
+                # Try to parse the JSON content inside the script tag
+                json_data = json.loads(script.string)
+                json_ld_data.append(json_data)
+            except json.JSONDecodeError as e:
+                print(f"Error parsing JSON-LD: {e}")
+        return json_ld_data
+
+    def flatten_json_ld(data, parent_key='', sep='_'):
+        """Flatten JSON-LD data into a simple key-value dictionary."""
+        flattened = {}
+        if isinstance(data, dict):
+            for key, value in data.items():
+                new_key = f"{parent_key}{sep}{key}" if parent_key else key
+                if isinstance(value, dict):
+                    # Recursively flatten nested dictionaries
+                    flattened.update(flatten_json_ld(value, new_key, sep))
+                elif isinstance(value, list):
+                    # Handle lists (e.g., multiple phone numbers or addresses)
+                    for i, item in enumerate(value):
+                        if isinstance(item, dict):
+                            flattened.update(flatten_json_ld(item, f"{new_key}{sep}{i}", sep))
+                        else:
+                            flattened[new_key] = value  # Store the list as-is
+                else:
+                    flattened[new_key] = value
+        return flattened
 
     if method.lower() == "regex":
         soup = BeautifulSoup(html_content, "html.parser")
-        grouped_matches = defaultdict(list)
 
-        for field in fields:
-            field_lower = field.lower()
-            log_info(f"Extracting field: {field}")
-            all_matches = []
+        # Step 1: Try to extract JSON-LD data
+        json_ld_data = extract_json_ld(soup)
 
-            if field_lower in REGEX_PATTERNS:
-                pattern = REGEX_PATTERNS[field_lower]
-                for text_node in soup.find_all(text=True):
-                    text_content = text_node.strip()
-                    if text_content:
-                        matches = re.findall(pattern, text_content)
-                        if matches:
-                            grouped_matches[text_node.parent].extend(matches)
+        if json_ld_data:
+            print("JSON-LD data found:", json_ld_data)  # Debugging: Print JSON-LD data
+            # Flatten JSON-LD data into a simple key-value structure
+            flattened_data = {}
+            for data in json_ld_data:
+                flattened_data.update(flatten_json_ld(data))
 
-                for tag in soup.find_all():
-                    for attr, value in tag.attrs.items():
-                        if isinstance(value, str):
-                            matches = re.findall(pattern, value)
-                            if matches:
-                                grouped_matches[tag].extend(matches)
+            print("Flattened JSON-LD data:", flattened_data)  # Debugging: Print flattened data
 
-                all_matches = flatten_and_clean(grouped_matches.values())
+            # Map JSON-LD fields to the requested fields
+            for field in fields:
+                field_lower = field.lower()
+                extracted_values = []
 
-                if all_matches and should_include(all_matches, all_seen_values):
-                    log_success(f"Found {len(all_matches)} grouped matches for '{field}'")
-                    if any(kw in field_lower for kw in ["phone", "tel", "mobile"]):
-                        cleaned = clean_phone_numbers(all_matches)
-                        results[field] = cleaned
-                        all_seen_values.update(cleaned)
-                    else:
-                        results[field] = all_matches
-                        all_seen_values.update(all_matches)
-                else:
-                    log_warning(f"No unique matches found for '{field}'")
-                    results[field] = []
+                # Check if the field exists in the flattened JSON-LD data
+                for key, value in flattened_data.items():
+                    if field_lower in key.lower():  # Case-insensitive match
+                        if isinstance(value, list):
+                            extracted_values.extend(value)
+                        else:
+                            extracted_values.append(value)
 
-            elif "email" in field_lower:
-                matches = flatten_and_clean(re.findall(REGEX_PATTERNS['email'], html_content))
-                if matches and should_include(matches, all_seen_values):
-                    results[field] = matches
-                    all_seen_values.update(matches)
-                else:
-                    results[field] = []
+                # Clean phone numbers if the field is phone-related
+                if any(kw in field_lower for kw in ["phone", "tel", "mobile", "cell"]):
+                    extracted_values = clean_phone_numbers(extracted_values)
 
-            elif any(kw in field_lower for kw in ["phone", "tel", "mobile"]):
-                matches = re.findall(REGEX_PATTERNS['phone'], html_content)
-                if matches and should_include(matches, all_seen_values):
-                    cleaned = clean_phone_numbers(matches)
+                # Remove duplicates while preserving order
+                results[field] = list(dict.fromkeys(extracted_values)) if extracted_values else []
+
+        # Step 2: If no JSON-LD data, fall back to regex extraction
+        else:
+            print("No JSON-LD data found, falling back to regex.")  # Debugging
+            for field in fields:
+                field_lower = field.lower()
+                log_info(f"Extracting field: {field}")
+                
+                # If a regex pattern is defined for the field, use it.
+                if field_lower in REGEX_PATTERNS:
+                    pattern = REGEX_PATTERNS[field_lower]
+                    
+                    # Find a first matching element by scanning text nodes.
+                    first_match_element = None
+                    for text_node in soup.find_all(text=True):
+                        text_content = text_node.strip()
+                        if text_content and re.search(pattern, text_content):
+                            first_match_element = text_node.parent
+                            log_info(f"Found first match for '{field}' in element: {first_match_element.name}")
+                            break
+                    
+                    # If not found in text, check element attributes.
+                    if not first_match_element:
+                        for tag in soup.find_all():
+                            for attr, value in tag.attrs.items():
+                                if isinstance(value, str) and re.search(pattern, value):
+                                    first_match_element = tag
+                                    log_info(f"Found first match for '{field}' in element attribute: {attr}")
+                                    break
+                            if first_match_element:
+                                break
+                    
+                    extracted_values = []
+                    if first_match_element:
+                        # Derive the primary selector from the first matching element.
+                        primary_selector = get_primary_selector(first_match_element)
+                        log_info(f"Using primary selector for '{field}': {primary_selector}")
+                        
+                        # Use our grouping function to extract text.
+                        extracted_values = group_by_parent_and_extract(soup, primary_selector, pattern)
+                        
+                        # For phone-related fields, apply phone cleaning.
+                        if any(kw in field_lower for kw in ["phone", "tel", "mobile", "cell"]):
+                            extracted_values = clean_phone_numbers(extracted_values)
+                    
+                    results[field] = extracted_values if extracted_values else []
+                
+                # Special-case handling for email fields.
+                elif "email" in field_lower:
+                    pattern = REGEX_PATTERNS['email']
+                    first_match_element = None
+                    for text_node in soup.find_all(text=True):
+                        text_content = text_node.strip()
+                        if text_content and re.search(pattern, text_content):
+                            first_match_element = text_node.parent
+                            break
+                    
+                    extracted_values = []
+                    if first_match_element:
+                        primary_selector = get_primary_selector(first_match_element)
+                        log_info(f"Using primary selector for email: {primary_selector}")
+                        extracted_values = group_by_parent_and_extract(soup, primary_selector, pattern)
+                    results[field] = list(dict.fromkeys(extracted_values)) if extracted_values else []
+
+                # Handle phone fields similarly.
+                elif any(kw in field_lower for kw in ["phone", "tel", "mobile", "cell"]):
+                    pattern = REGEX_PATTERNS['phone']
+                    first_match_element = None
+                    for text_node in soup.find_all(text=True):
+                        text_content = text_node.strip()
+                        if text_content and re.search(pattern, text_content):
+                            first_match_element = text_node.parent
+                            break
+                    
+                    extracted_values = []
+                    if first_match_element:
+                        primary_selector = get_primary_selector(first_match_element)
+                        log_info(f"Using primary selector for phone: {primary_selector}")
+                        extracted_values = group_by_parent_and_extract(soup, primary_selector, pattern)
+                    cleaned = clean_phone_numbers(extracted_values) if extracted_values else []
                     results[field] = cleaned
-                    all_seen_values.update(cleaned)
-                else:
-                    results[field] = []
 
-            elif any(kw in field_lower for kw in ["address", "location"]):
-                matches = flatten_and_clean(re.findall(REGEX_PATTERNS['address'], html_content))
-                if matches and should_include(matches, all_seen_values):
-                    results[field] = matches
-                    all_seen_values.update(matches)
-                else:
-                    results[field] = []
+                # Handle address fields similarly.
+                elif any(kw in field_lower for kw in ["address", "location"]):
+                    pattern = REGEX_PATTERNS['address']
+                    first_match_element = None
+                    for text_node in soup.find_all(text=True):
+                        text_content = text_node.strip()
+                        if text_content and re.search(pattern, text_content):
+                            first_match_element = text_node.parent
+                            break
+                    
+                    extracted_values = []
+                    if first_match_element:
+                        primary_selector = get_primary_selector(first_match_element)
+                        log_info(f"Using primary selector for address: {primary_selector}")
+                        extracted_values = group_by_parent_and_extract(soup, primary_selector, pattern)
+                    results[field] = list(dict.fromkeys(extracted_values)) if extracted_values else []
 
-            else:
-                log_warning(f"No predefined pattern for '{field}', attempting generic extraction")
-                matches = extract_unknown_field(html_content, field)
-                if matches and should_include(matches, all_seen_values):
-                    results[field] = matches
-                    all_seen_values.update(matches)
+                # Fallback for unknown fields.
                 else:
-                    results[field] = []
+                    log_warning(f"No predefined pattern for '{field}', attempting generic extraction")
+                    matches = extract_unknown_field(html_content, field)
+                    results[field] = list(dict.fromkeys(matches)) if matches else []
 
     elif method.lower() == "css":
+        # When the user supplies a selector, use the grouping logic.
         for field in fields:
-            matches = find_elements_by_selector(html_content, field)
-            if matches and should_include(matches, all_seen_values):
-                results[field] = matches
-                all_seen_values.update(matches)
-            else:
-                results[field] = []
-
+            # Assume the field is the CSS selector.
+            results[field] = find_elements_by_selector(html_content, field)
     elif method.lower() == "ai":
         ai_response = extract_data_with_ai(html_content, fields, st.session_state.ai_provider, st.session_state.ai_api)
         for field, data in ai_response.items():
-            if data and should_include(data, all_seen_values):
-                results[field] = data
-                all_seen_values.update(data)
-            else:
-                results[field] = []
-    print(results)
-    return results
+            results[field] = list(dict.fromkeys(data)) if data else []
 
+    return results
 
 def extract_unknown_field(html_content, field):
     """Attempt to extract an unknown field using heuristics"""
@@ -850,7 +984,7 @@ with tab1:
                     options = {
                         'follow_links': follow_links if follow_links else None,
                         'max_depth': max_depth if max_depth else None,
-                        'max_pages': max_pages if max_pages else None,
+                        'max_pages': max_pages if follow_links else len(urls)+1,
                         'stay_on_domain': stay_on_domain if stay_on_domain else None,
                         'handle_pagination': handle_pagination if handle_pagination else None,
                         'handle_lazy_loading': handle_lazy_loading,
