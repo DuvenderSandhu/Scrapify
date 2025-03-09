@@ -7,9 +7,11 @@ import time
 import random
 import spacy
 import asyncio
+# Load the spaCy model
+nlp = spacy.load("en_core_web_sm")
 import re
 from bs4 import BeautifulSoup
-from database import db
+# from database import db
 import json
 from dotenv import load_dotenv
 from log import log_process,log_error,log_warning,log_success,log_info,add_log
@@ -18,13 +20,13 @@ from urllib.parse import urlparse, urljoin
 import uuid
 from collections import defaultdict
 from crawler import rawid
-from crawler import get_html_sync,scrape_agent_data
-from test import get_all_data
+from crawler import get_html_sync
 from scraper import find_elements_by_selector,extract_data_with_ai
-import os
+from test import get_all_data
 max_depth= 0 
-max_pages=10
+max_pages=1
 stay_on_domain=""
+coldwell=False
 handle_lazy_loading=None
 # Page configuration
 st.set_page_config(
@@ -208,7 +210,7 @@ REGEX_PATTERNS = {
     'date': r'\d{1,2}[/\-]\d{1,2}[/\-]\d{2,4}',
     'price': r'\$\s*\d+(?:\.\d{2})?',
     'address': r'\d+\s+[A-Za-z\s,]+\s+(?:Avenue|Lane|Road|Boulevard|Drive|Street|Ave|Dr|Rd|Blvd|Ln|St)\.?(?:\s+[A-Za-z]+)?(?:,\s+[A-Za-z]+)?(?:,\s+[A-Z]{2})?(?:\s+\d{5})?',
-    'name': r'[A-Z][a-z]+ [A-Z][a-z]+'
+    'name': r"^([A-Z\u00C0-\u00D6\u00D8-\u00DE])([a-z\u00DF-\u00F6\u00F8-\u00FF '&-]+) ([A-Za-z\u00C0-\u00D6\u00D8-\u00DE\u00DF-\u00F6\u00F8-\u00FF '&-]+)$"
 }
 
 # Logging functions
@@ -248,7 +250,11 @@ async def crawl_url(url, options):
     # Generate simulated HTML content
     button= options.get('pagination_selector', False) or options.get('pagination_xpath', False) or options.get('pagination_text', False) or options.get('pagination_text_match', False) or options.get('pagination_confidence', False)
     print("button",button)
-    html_content = await get_all_data(url)#get_html_sync(url,button,options)
+    html_content =""#await get_all_data(url) # await get_html_sync(url,button,options)
+    if coldwell:
+        html_content=await get_all_data(url)
+    else :
+        html_content=await get_html_sync(url,button,options)
     # print("html",html_content)
     # Extract links if link following is enabled
     links = []
@@ -435,67 +441,72 @@ from collections import defaultdict
 from bs4 import BeautifulSoup
 
 # Define regex patterns for common fields
-REGEX_PATTERNS = {
-    'email': r'[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',
-    'phone': r'\+?1?[-.\s]?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}',
-    'address': r'\d+\s+\w+\s+\w+',
-    # Add more patterns as needed
-}
+
+
+from bs4 import BeautifulSoup
+import re
+import json
+from collections import defaultdict
+
+from bs4 import BeautifulSoup
+import re
+import json
+from collections import defaultdict
+
+from bs4 import BeautifulSoup
+import re
+import json
+from collections import defaultdict
+
+from bs4 import BeautifulSoup
+import re
+import json
+from collections import defaultdict
+
+from bs4 import BeautifulSoup
+import re
+import json
+from collections import defaultdict
+
+from bs4 import BeautifulSoup
+import re
+import json
+from collections import defaultdict
 
 def extract_data(html_content, fields, method="regex"):
-    """Extract data from HTML based on structured element patterns or JSON-LD."""
-    log_process(f"Extracting data using {method} method")
+    """Extract structured data from HTML without hardcoding assumptions."""
     results = {}
+    country_code=st.session_state.options.get('country_code',False)
+    hyphen_separator=st.session_state.options.get('hyphen_separator',False)
 
     def clean_phone_numbers(phone_list):
-        """Ensure phone numbers are properly formatted with +1 prefix and unique."""
+        """Ensure phone numbers are properly formatted, 10 digits, and unique."""
         cleaned = []
         for num in phone_list:
-            formatted = f"+1-{re.sub(r'[^0-9]', '', num)[:3]}-{re.sub(r'[^0-9]', '', num)[3:6]}-{re.sub(r'[^0-9]', '', num)[6:]}" if country_code and hyphen_separator else f"+1{re.sub(r'[^0-9]', '', num)}" if country_code else re.sub(r'[^0-9]', '', num)
+            if not num:  # Skip empty strings
+                continue
+            if num.find('-')<0:
+                continue
+            
+            # Extract only digits
+            digits = re.sub(r'[^0-9]', '', num)
+            formatted=digits
+            # Ensure the number is exactly 10 digits
+            if len(digits) == 10 and hyphen_separator==True:
+                formatted = f"{digits[:3]}-{digits[3:6]}-{digits[6:]}"  # Format as XXX-XXX-XXXX
+                
+            if country_code==True:
+                formatted = f"+1{"-"if hyphen_separator==True else ""}{formatted}"
             cleaned.append(formatted)
-        return list(dict.fromkeys(cleaned))  # Remove duplicates while preserving order
-
-    def get_primary_selector(element):
-        """
-        Derive a primary CSS selector for the element.
-        Prefer the element's ID; if not available, use its first class;
-        otherwise, fall back to its tag name.
-        """
-        if element.get('id'):
-            return f"#{element.get('id')}"
-        elif element.get('class'):
-            return f".{element.get('class')[0]}"
-        else:
-            return element.name
-
-    def group_by_parent_and_extract(soup, selector, pattern):
-        """
-        Extract text from all elements matching the given selector,
-        group them by their immediate parent, remove duplicates within each group,
-        and then return a flattened list.
-        Only include text that matches the provided regex pattern.
-        """
-        grouped_elements = defaultdict(list)
-        for element in soup.select(selector):
-            parent = element.find_parent() or element
-            text = element.get_text(strip=True)
-            if text and re.search(pattern, text):
-                grouped_elements[parent].append(text)
-        # Remove duplicates within each group while preserving order.
-        grouped_texts = [list(dict.fromkeys(texts)) for texts in grouped_elements.values()]
-        if not grouped_texts:
-            return []
-        flattened_texts = [item for sublist in grouped_texts for item in sublist]
-        return flattened_texts
+        # Remove duplicates while preserving order
+        return list(dict.fromkeys(cleaned))
 
     def extract_json_ld(soup):
         """Extract JSON-LD data from HTML content."""
         json_ld_data = []
-        # Extract all <script type="application/ld+json"> elements
         json_ld_script = soup.find_all('script', type='application/ld+json')
         for script in json_ld_script:
             try:
-                # Try to parse the JSON content inside the script tag
                 json_data = json.loads(script.string)
                 json_ld_data.append(json_data)
             except json.JSONDecodeError as e:
@@ -509,18 +520,61 @@ def extract_data(html_content, fields, method="regex"):
             for key, value in data.items():
                 new_key = f"{parent_key}{sep}{key}" if parent_key else key
                 if isinstance(value, dict):
-                    # Recursively flatten nested dictionaries
                     flattened.update(flatten_json_ld(value, new_key, sep))
                 elif isinstance(value, list):
-                    # Handle lists (e.g., multiple phone numbers or addresses)
                     for i, item in enumerate(value):
                         if isinstance(item, dict):
                             flattened.update(flatten_json_ld(item, f"{new_key}{sep}{i}", sep))
                         else:
-                            flattened[new_key] = value  # Store the list as-is
+                            flattened[new_key] = value
                 else:
                     flattened[new_key] = value
         return flattened
+
+    def extract_structured_data(soup, fields):
+        """Extract structured data dynamically based on context."""
+        structured_data = []
+        
+        # Define flexible regex patterns for common fields
+        field_patterns = {
+            "name": r"[A-Z][a-z]+(?: [A-Z][a-z]+)*",  # Matches names (e.g., "John Doe")
+            "phone": r"\b\(?\d{3}\)?[-.\s]?\d{3}-\d{4}\b",  # Matches 10-digit phone numbers
+            "email": r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",  # Matches emails
+        }
+        
+        # Find all parent elements that might contain structured data
+        for parent in soup.find_all():
+            data = {}
+            has_relevant_data = False
+            
+            for field in fields:
+                field_lower = field.lower()
+                pattern = field_patterns.get(field_lower, "")
+                
+                if not pattern:
+                    continue
+                
+                
+                # Search for matches in the parent element and its children
+                matches = []
+                for element in [parent] + parent.find_all():
+                    text = element.get_text()
+                    if text and re.search(pattern, text):
+                        matches.extend(x for x in re.findall(pattern, text) if x not in matches)
+                        
+                
+                # Clean and validate matches
+                if matches:
+                    if field_lower == "phone":
+                        matches = clean_phone_numbers(matches)
+                    data[field] = list(dict.fromkeys(matches))  # Remove duplicates
+                    has_relevant_data = True
+
+            # Only include parent elements that have at least one relevant field
+            if has_relevant_data:
+                structured_data.append(data)
+        
+        return structured_data
 
     if method.lower() == "regex":
         soup = BeautifulSoup(html_content, "html.parser")
@@ -528,168 +582,81 @@ def extract_data(html_content, fields, method="regex"):
         # Step 1: Try to extract JSON-LD data
         json_ld_data = extract_json_ld(soup)
 
-        if json_ld_data:
-            print("JSON-LD data found:", json_ld_data)  # Debugging: Print JSON-LD data
-            # Flatten JSON-LD data into a simple key-value structure
+        if False:
+            print("JSON-LD data found:", json_ld_data)
             flattened_data = {}
             for data in json_ld_data:
                 flattened_data.update(flatten_json_ld(data))
 
-            print("Flattened JSON-LD data:", flattened_data)  # Debugging: Print flattened data
+            print("Flattened JSON-LD data:", flattened_data)
 
-            # Map JSON-LD fields to the requested fields
             for field in fields:
                 field_lower = field.lower()
                 extracted_values = []
 
-                # Check if the field exists in the flattened JSON-LD data
                 for key, value in flattened_data.items():
-                    if field_lower in key.lower():  # Case-insensitive match
+                    if field_lower in key.lower():
                         if isinstance(value, list):
                             extracted_values.extend(value)
                         else:
                             extracted_values.append(value)
 
-                # Clean phone numbers if the field is phone-related
                 if any(kw in field_lower for kw in ["phone", "tel", "mobile", "cell"]):
                     extracted_values = clean_phone_numbers(extracted_values)
 
-                # Remove duplicates while preserving order
                 results[field] = list(dict.fromkeys(extracted_values)) if extracted_values else []
 
-        # Step 2: If no JSON-LD data, fall back to regex extraction
+        # Step 2: If no JSON-LD data, fall back to structured extraction
         else:
-            print("No JSON-LD data found, falling back to regex.")  # Debugging
-            for field in fields:
-                field_lower = field.lower()
-                log_info(f"Extracting field: {field}")
-                
-                # If a regex pattern is defined for the field, use it.
-                if field_lower in REGEX_PATTERNS:
-                    pattern = REGEX_PATTERNS[field_lower]
-                    
-                    # Find a first matching element by scanning text nodes.
-                    first_match_element = None
-                    for text_node in soup.find_all(text=True):
-                        text_content = text_node.strip()
-                        if text_content and re.search(pattern, text_content):
-                            first_match_element = text_node.parent
-                            log_info(f"Found first match for '{field}' in element: {first_match_element.name}")
-                            break
-                    
-                    # If not found in text, check element attributes.
-                    if not first_match_element:
-                        for tag in soup.find_all():
-                            for attr, value in tag.attrs.items():
-                                if isinstance(value, str) and re.search(pattern, value):
-                                    first_match_element = tag
-                                    log_info(f"Found first match for '{field}' in element attribute: {attr}")
-                                    break
-                            if first_match_element:
-                                break
-                    
-                    extracted_values = []
-                    if first_match_element:
-                        # Derive the primary selector from the first matching element.
-                        primary_selector = get_primary_selector(first_match_element)
-                        log_info(f"Using primary selector for '{field}': {primary_selector}")
-                        
-                        # Use our grouping function to extract text.
-                        extracted_values = group_by_parent_and_extract(soup, primary_selector, pattern)
-                        
-                        # For phone-related fields, apply phone cleaning.
-                        if any(kw in field_lower for kw in ["phone", "tel", "mobile", "cell"]):
-                            extracted_values = clean_phone_numbers(extracted_values)
-                    
-                    results[field] = extracted_values if extracted_values else []
-                
-                # Special-case handling for email fields.
-                elif "email" in field_lower:
-                    pattern = REGEX_PATTERNS['email']
-                    first_match_element = None
-                    for text_node in soup.find_all(text=True):
-                        text_content = text_node.strip()
-                        if text_content and re.search(pattern, text_content):
-                            first_match_element = text_node.parent
-                            break
-                    
-                    extracted_values = []
-                    if first_match_element:
-                        primary_selector = get_primary_selector(first_match_element)
-                        log_info(f"Using primary selector for email: {primary_selector}")
-                        extracted_values = group_by_parent_and_extract(soup, primary_selector, pattern)
-                    results[field] = list(dict.fromkeys(extracted_values)) if extracted_values else []
-
-                # Handle phone fields similarly.
-                elif any(kw in field_lower for kw in ["phone", "tel", "mobile", "cell"]):
-                    pattern = REGEX_PATTERNS['phone']
-                    first_match_element = None
-                    for text_node in soup.find_all(text=True):
-                        text_content = text_node.strip()
-                        if text_content and re.search(pattern, text_content):
-                            first_match_element = text_node.parent
-                            break
-                    
-                    extracted_values = []
-                    if first_match_element:
-                        primary_selector = get_primary_selector(first_match_element)
-                        log_info(f"Using primary selector for phone: {primary_selector}")
-                        extracted_values = group_by_parent_and_extract(soup, primary_selector, pattern)
-                    cleaned = clean_phone_numbers(extracted_values) if extracted_values else []
-                    results[field] = cleaned
-
-                # Handle address fields similarly.
-                elif any(kw in field_lower for kw in ["address", "location"]):
-                    pattern = REGEX_PATTERNS['address']
-                    first_match_element = None
-                    for text_node in soup.find_all(text=True):
-                        text_content = text_node.strip()
-                        if text_content and re.search(pattern, text_content):
-                            first_match_element = text_node.parent
-                            break
-                    
-                    extracted_values = []
-                    if first_match_element:
-                        primary_selector = get_primary_selector(first_match_element)
-                        log_info(f"Using primary selector for address: {primary_selector}")
-                        extracted_values = group_by_parent_and_extract(soup, primary_selector, pattern)
-                    results[field] = list(dict.fromkeys(extracted_values)) if extracted_values else []
-
-                # Fallback for unknown fields.
-                else:
-                    log_warning(f"No predefined pattern for '{field}', attempting generic extraction")
-                    matches = extract_unknown_field(html_content, field)
-                    results[field] = list(dict.fromkeys(matches)) if matches else []
+            print("No JSON-LD data found, falling back to structured extraction.")
+            structured_data = extract_structured_data(soup, fields)
+            
+            # Convert structured data to the desired output format
+            for data in structured_data:
+                for field, values in data.items():
+                    if field not in results:
+                        results[field] = []
+                    results[field].extend(values)
+            
+            # Ensure uniqueness across all parents
+            for field in results:
+                results[field] = list(dict.fromkeys(results[field]))
 
     elif method.lower() == "css":
-        # When the user supplies a selector, use the grouping logic.
         for field in fields:
-            # Assume the field is the CSS selector.
             results[field] = find_elements_by_selector(html_content, field)
     elif method.lower() == "ai":
-        ai_response = extract_data_with_ai(html_content, fields, st.session_state.ai_provider, st.session_state.ai_api)
+        ai_response = extract_data_with_ai(html_content, fields, "ai_provider", "ai_api")
         for field, data in ai_response.items():
             results[field] = list(dict.fromkeys(data)) if data else []
-
+    print(results)
     return results
 
 def extract_unknown_field(html_content, field):
-    """Attempt to extract an unknown field using heuristics"""
-    # Check for content near headings or labels that might match the field
-    patterns = [
-        f'<h[1-6][^>]*>.*?{field}.*?</h[1-6]>.*?<p>(.*?)</p>',
-        f'<label[^>]*>{field}[^<]*</label>.*?<input[^>]*value="([^"]*)"',
-        f'<dt[^>]*>{field}[^<]*</dt>.*?<dd[^>]*>(.*?)</dd>',
-        f'<strong[^>]*>{field}[^<]*</strong>.*?:?\\s*(.*?)(?:<|$)',
-        f'{field}\\s*:\\s*([^<\\n]+)'
-    ]
+    """Extract data for fields without predefined patterns."""
+    soup = BeautifulSoup(html_content, 'html.parser')
+    results = []
     
-    for pattern in patterns:
-        matches = re.findall(pattern, html_content, re.IGNORECASE | re.DOTALL)
-        if matches:
-            return matches
+    # Look for elements with the field name in their attributes
+    for elem in soup.find_all(attrs={"id": re.compile(field, re.I)}):
+        results.append(elem.get_text(strip=True))
     
-    return []
+    for elem in soup.find_all(attrs={"class": re.compile(field, re.I)}):
+        results.append(elem.get_text(strip=True))
+    
+    for elem in soup.find_all(attrs={"name": re.compile(field, re.I)}):
+        results.append(elem.get_text(strip=True))
+    
+    # Look for elements containing the field name as text
+    for elem in soup.find_all(text=re.compile(f"\\b{field}\\b", re.I)):
+        parent = elem.parent
+        if parent.name not in ['script', 'style']:
+            next_sibling = parent.find_next_sibling()
+            if next_sibling:
+                results.append(next_sibling.get_text(strip=True))
+    newresults = {k: list(dict.fromkeys(v)) for k, v in results.items()}
+
+    return newresults
 
 def simulate_css_extraction(html_content, field):
     """Simulate extraction using CSS selectors"""
@@ -738,7 +705,7 @@ def simulate_ai_extraction(html_content, field):
         return names
     elif any(keyword in field_lower for keyword in ['phone', 'tel', 'mobile']):
         # Extract phone numbers
-        phone_matches = re.findall(REGEX_PATTERNS['phone'], html_content)
+        phone_matches = re.findall(REGEX_PATTER['phone'], html_content)
         if phone_matches:
             return phone_matches
         return ["+1 (555) 123-4567", "+1 (555) 987-6543"]
@@ -788,6 +755,9 @@ with tab1:
             placeholder="https://example.com\nhttps://anothersite.com",
             height=100
         )
+        if url_input.find("coldwellbankerhomes")>=0:
+            coldwell= st.toggle("Extract Complete Data from ColdWellBankerHome (100% Accurate)")
+
         
         # Field Configuration
         st.subheader("🔍 Data Extraction")
@@ -929,7 +899,16 @@ with tab1:
                 st.rerun()
             
             st.write("Scraping in progress...")
-            progress = (len(st.session_state.processed_links) / max(1, len(st.session_state.urls) + len(st.session_state.found_links))) * 100
+            # progress = (len(st.session_state.processed_links) / max(1, len(st.session_state.urls) + len(st.session_state.found_links))) * 100
+            if coldwell:
+                try:
+                    with open("progress.json", "r") as f:
+                        progress_data = json.load(f)
+                    progress = (progress_data["processed_agents"] / max(1, progress_data["total_estimated_agents"])) * 100
+                except FileNotFoundError:
+                    progress = 0
+            else:
+                progress = (len(st.session_state.processed_links) / max(1, len(st.session_state.urls) + len(st.session_state.found_links))) * 100
             st.progress(min(100, progress) / 100)
             
             # Current phase display
@@ -984,7 +963,7 @@ with tab1:
                     options = {
                         'follow_links': follow_links if follow_links else None,
                         'max_depth': max_depth if max_depth else None,
-                        'max_pages': max_pages if follow_links else len(urls)+1,
+                        'max_pages': max_pages if follow_links else len(urls),
                         'stay_on_domain': stay_on_domain if stay_on_domain else None,
                         'handle_pagination': handle_pagination if handle_pagination else None,
                         'handle_lazy_loading': handle_lazy_loading,
@@ -1036,92 +1015,234 @@ with tab1:
                 st.info("Task Complete Go to Result Tab to See Result")
 
 with tab2:
-    st.subheader("📊 Scraping Results")
-
-    if st.session_state.get("results"):
-        def process_results(data_dicts):
-            if not data_dicts:
-                return pd.DataFrame()
+    if coldwell:
+        with tab2:
+            st.subheader("📊 Scraping Results (Coldwell)")
             
-            all_data = []
-            for i, data_dict in enumerate(data_dicts):
-                metadata = {"Source_Index": f"Data-{i+1}"}
-                list_fields = {}
-                
-                for key, value in data_dict.items():
-                    if isinstance(value, list) and len(value) > 1:
-                        list_fields[key] = value
+            try:
+                # Load data from coldwell_agents.csv
+                coldwell_df = pd.read_csv("data/coldwell_agents.csv")
+                def format_mobile_number(mobile, country_code, hyphen_separator):
+                    mobile = str(mobile)
+                    if hyphen_separator:
+                        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Add hyphens
+                    if country_code:
+                        mobile = f"+1 {mobile}"  # Add country code (e.g., +1 for US)
+                    return mobile
+
+                # Select only required columns
+                coldwell_df = coldwell_df[["name", "office", "email", "mobile"]]
+                # Add country code if enabled
+
+                # Display first 50 rows
+                st.dataframe(coldwell_df.head(50), use_container_width=True)
+                selected_columns = st.multiselect(
+                        "Select columns to download",
+                        options=coldwell_df.columns,
+                        default=coldwell_df.columns
+                    )
+                # 📥 Download Buttons (CSV, JSON)
+                if st.button("📥 Download Data", use_container_width=True):
+                    # Allow user to select columns for download
+                    
+                    
+                    if selected_columns:
+                        # Filter DataFrame based on selected columns
+                        download_df = coldwell_df[selected_columns]
+                        
+                        # Display download options (CSV, JSON)
+                        col1, col2, col3 = st.columns(3)
+                        
+                        # CSV Download
+                        with col1:
+                            csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                            st.download_button(
+                                label="📥 Download CSV",
+                                data=csv_data,
+                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                mime="text/csv",
+                            )
+                        
+                        # JSON Download
+                        with col2:
+                            json_str = download_df.to_json(orient="records", indent=2)
+                            st.download_button(
+                                label="📥 Download JSON",
+                                data=json_str,
+                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                mime="application/json",
+                            )
+
+                        # TXT
+                        with col3:
+                            csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                            st.download_button(
+                                label="📥 Download TXT (Comma Seperated)",
+                                data=csv_data,
+                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                mime="text/txt",
+                            )
                     else:
-                        metadata[key] = "" if value is None else str(value[0]) if isinstance(value, list) else str(value)
-                
-                if list_fields:
-                    max_length = max(len(value) for value in list_fields.values())
-                    for j in range(max_length):
-                        row = metadata.copy()
-                        for key, value_list in list_fields.items():
-                            row[key] = str(value_list[j]) if j < len(value_list) else ""
-                        all_data.append(row)
+                        st.warning("⚠️ Please select at least one column to download.")
+            
+            except FileNotFoundError:
+                st.error("❌ No Coldwell data found. Please ensure 'data/coldwell_agents.csv' exists.")
+    else:
+        # Original logic for other URLs
+        with tab2:
+            st.subheader("📊 Scraping Results")
+            
+            if st.session_state.get("results"):
+                def process_results(data_dicts, extend_metadata=True):
+                    if not data_dicts:
+                        return pd.DataFrame()
+                    
+                    all_data = []
+                    
+                    for i, data_dict in enumerate(data_dicts):
+                        # Define metadata fields explicitly
+                        metadata = {"Source_Index": f"Data-{i+1}"}
+                        list_fields = {}
+                        non_list_fields = {}
+                        
+                        # Separate fields into metadata, list fields, and non-list fields
+                        for key, value in data_dict.items():
+                            if key in ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]:
+                                if isinstance(value, list):
+                                    metadata[key] = "" if not value else str(value[0])
+                                else:
+                                    metadata[key] = "" if value is None else str(value)
+                            elif isinstance(value, list) and len(value) > 1:
+                                list_fields[key] = value
+                            else:
+                                if isinstance(value, list):
+                                    non_list_fields[key] = "" if not value else str(value[0])
+                                else:
+                                    non_list_fields[key] = "" if value is None else str(value)
+                        
+                        # Special handling for email - only include in the first row
+                        email_value = None
+                        if "email" in non_list_fields:
+                            email_value = non_list_fields.pop("email")
+                        
+                        # If there are list fields, expand them into rows
+                        if list_fields:
+                            max_length = max(len(value) for value in list_fields.values())
+                            for j in range(max_length):
+                                row = metadata.copy() if j == 0 or not extend_metadata else {"Source_Index": f"Data-{i+1}"}
+                                
+                                # Add non-list fields (excluding email)
+                                row.update(non_list_fields)
+                                
+                                # Add email only to the first row
+                                if j == 0 and email_value is not None:
+                                    row["email"] = email_value
+                                elif "email" not in row:
+                                    row["email"] = ""
+                                
+                                for key, value_list in list_fields.items():
+                                    row[key] = str(value_list[j]) if j < len(value_list) else ""
+                                all_data.append(row)
+                        else:
+                            row = metadata.copy()
+                            row.update(non_list_fields)
+                            
+                            # Add email back to the row
+                            if email_value is not None:
+                                row["email"] = email_value
+                                
+                            all_data.append(row)
+                    
+                    # Create DataFrame
+                    try:
+                        df = pd.DataFrame(all_data)
+                        
+                        # If extend_metadata is True, clear metadata in duplicate rows
+                        if extend_metadata:
+                            metadata_cols = ["url", "timestamp", "date", "datetime", "time", "title"]
+                            df.loc[df.duplicated(subset=["Source_Index"]), [col for col in metadata_cols if col in df.columns]] = ""
+                        
+                        # Define column order: Source_Index first, then others
+                        first_cols = ["Source_Index"]
+                        if "url" in df.columns:
+                            first_cols.append("url")
+                        if "timestamp" in df.columns:
+                            first_cols.append("timestamp")
+                        other_priority = ["date", "datetime", "time", "title"]
+                        for col in other_priority:
+                            if col in df.columns and col not in first_cols:
+                                first_cols.append(col)
+                                
+                        # Make sure email is prioritized in column ordering
+                        remaining_cols = [col for col in df.columns if col not in first_cols]
+                        if "email" in remaining_cols:
+                            remaining_cols.remove("email")
+                            remaining_cols.append("email")
+                            
+                        df = df[first_cols + remaining_cols]
+                        
+                    except Exception as e:
+                        return pd.DataFrame({"Error": [str(e)]})
+                    
+                    return df
+
+                def get_data_without_metadata(df):
+                    # Define metadata columns to exclude
+                    metadata_cols = ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]
+                    # Keep only columns that are not metadata
+                    data_cols = [col for col in df.columns if col.lower() not in metadata_cols]
+                    return df[data_cols]
+
+                # Process results with extend_metadata=True
+                results_df = process_results(st.session_state.results, extend_metadata=True)
+
+                # Display the full DataFrame in Streamlit
+                st.dataframe(results_df, use_container_width=True)
+
+                # Prepare data for download (exclude metadata)
+                download_df = get_data_without_metadata(results_df)
+
+                # 📥 Download Buttons (CSV, JSON, TXT)
+                col1, col2, col3 = st.columns(3)
+
+                # CSV Download
+                with col1:
+                    if st.button("📥 Download CSV", use_container_width=True):
+                        csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                        st.download_button(
+                            label="📥 Download CSV",
+                            data=csv_data,
+                            file_name=f"scraping_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                            mime="text/csv",
+                        )
+
+                # JSON Download
+                with col2:
+                    if st.button("📥 Download JSON", use_container_width=True):
+                        json_str = download_df.to_json(orient="records", indent=2)
+                        st.download_button(
+                            label="📥 Download JSON",
+                            data=json_str,
+                            file_name=f"scraping_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                            mime="application/json",
+                        )
+
+                # TXT (Comma-Separated) Download
+                with col3:
+                    if st.button("📥 Download TXT", use_container_width=True):
+                        txt_data = download_df.to_csv(index=False, sep=",", encoding="utf-8-sig")
+                        st.download_button(
+                            label="📥 Download TXT",
+                            data=txt_data,
+                            file_name=f"scraping_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                            mime="text/plain",
+                        )
+
+            else:
+                if st.session_state.get("is_scraping", False):
+                    st.info("⏳ Scraping in progress... Results will appear here when available.")
                 else:
-                    all_data.append(metadata)
-            
-            df = pd.DataFrame(all_data)
-            first_cols = ["Source_Index"]
-            if "url" in df.columns:
-                first_cols.append("url")
-            if "timestamp" in df.columns:
-                first_cols.append("timestamp")
-            
-            other_priority = ["date", "datetime", "time", "title"]
-            for col in other_priority:
-                if col in df.columns and col not in first_cols:
-                    first_cols.append(col)
-            
-            remaining_cols = [col for col in df.columns if col not in first_cols]
-            return df[first_cols + remaining_cols]
-
-        results_df = process_results(st.session_state.results)
-        st.dataframe(results_df, use_container_width=True)
-
-        col1, col2 = st.columns(2)
-        with col1:
-            if st.button("📥 Download CSV", use_container_width=True):
-                csv_data = results_df.to_csv(index=False, encoding="utf-8-sig")
-                st.download_button("📥 Download CSV", csv_data, file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mime="text/csv")
-        with col2:
-            if st.button("📥 Download JSON", use_container_width=True):
-                json_str = results_df.to_json(orient="records", indent=2)
-                st.download_button("📥 Download JSON", json_str, file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", mime="application/json")
-    else:
-        st.info("🔍 No results yet. Start a scraping job to see results here.")
-
-    # Large CSV File Handling
-    st.subheader("📂 Large CSV File Viewer")
-    csv_file = "data/coldwell_agents_20250307_153709.csv"
-    if os.path.exists(csv_file):
-        chunk_size = 1000
-        df_chunks = pd.read_csv(csv_file, chunksize=chunk_size)
-        df_sample = next(df_chunks)
-        st.write(f"Loaded first {chunk_size} rows from {csv_file}")
-        
-        # Column Selection
-        selected_columns = st.multiselect("Select columns to download:", df_sample.columns.tolist(), default=df_sample.columns.tolist())
-        
-        if selected_columns:
-            filtered_df = df_sample[selected_columns]
-            st.dataframe(filtered_df, use_container_width=True)
-            
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                csv_data = filtered_df.to_csv(index=False, encoding="utf-8-sig")
-                st.download_button("📥 Download CSV", csv_data, file_name=f"filtered_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mime="text/csv")
-            with col2:
-                json_data = filtered_df.to_json(orient="records", indent=2)
-                st.download_button("📥 Download JSON", json_data, file_name=f"filtered_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", mime="application/json")
-            with col3:
-                txt_data = ",".join(selected_columns) + "\n" + "\n".join([",".join(map(str, row)) for row in filtered_df.values])
-                st.download_button("📥 Download TXT", txt_data, file_name=f"filtered_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt", mime="text/plain")
-    else:
-        st.warning("⚠ CSV file not found! Please check the file path.")
+                    st.info("🔍 No results yet. Start a scraping job to see results here.")
 
 with tab3:
     st.subheader("Scraping Logs")
@@ -1291,4 +1412,3 @@ if st.session_state.is_scraping:
         st.session_state.is_scraping = False
         time.sleep(0.1)
         st.rerun()
-        

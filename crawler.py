@@ -95,11 +95,11 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
                 if raw_size > 500:
                     log_success(f"Extracted raw HTML: {raw_size} bytes")
                     filtered_html = html_content #extract_relevant_container(html_content)
-                    # filtered_size = len(filtered_html)
+                    filtered_size = len(filtered_html)
                     reduction = ((raw_size - filtered_size) / raw_size * 100)
                     log_info(f"Filtered content size: {filtered_size} bytes (reduction: {reduction:.1f}%)")
                     global rawid
-                    rawid = db.save_raw_html(url, filtered_html)
+                    # rawid = db.save_raw_html(url, filtered_html)
                     await context.close()
                     log_info(f"Fetch completed in {time.time() - start_time:.2f}s")
                     await browser.close()
@@ -131,7 +131,7 @@ import signal
 
 # Global variables for tracking and resuming
 CHECKPOINT_FILE = "scraper_checkpoint.json"
-BATCH_SIZE = 100  # Save data after processing this many agents
+BATCH_SIZE = 200  # Save data after processing this many agents
 MAX_CONCURRENT_PAGES = 5  # Limit concurrent pages to avoid memory issues
 
 class ScraperState:
@@ -810,7 +810,8 @@ def extract_data_by_css(html_content, selector):
 
 def get_html_sync(url: str, button: str = None, options: dict = None, loader: str = None) -> str:
     """Synchronous wrapper for async function."""
-    return asyncio.run(get_html(url, button, options, loader))
+    print("Here")
+    return get_html(url, button, options, loader)
 
 # Example Usage
 # if __name__ == "__main__":

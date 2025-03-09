@@ -193,4 +193,5 @@ class Database:
             self.connection.close()
             st.info("Database connection closed.")
 
-db= Database("fd")
+# db= Database("fd")
+db=""

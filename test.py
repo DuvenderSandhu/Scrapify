@@ -1,20 +1,93 @@
-from playwright.sync_api import sync_playwright
-import time
-import traceback
+import asyncio
+from playwright.async_api import async_playwright
 import json
 import csv
 import os
+import logging
 from datetime import datetime
-from playwright.async_api import async_playwright
-from log import log_info, log_success, log_error, log_warning 
-import asyncio
+import streamlit as st
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+log_info = logging.info
+log_error = logging.error
+
+# Constants
+BATCH_SIZE = 100  # Save data in batches of 100 agents
+OUTPUT_FOLDER = "data"
+PROGRESS_FILE = f"{OUTPUT_FOLDER}/progress.json"
+CONCURRENT_REQUESTS = 10  # Adjust based on server capacity
+
+# Ensure the output folder exists
+if not os.path.exists(OUTPUT_FOLDER):
+    os.makedirs(OUTPUT_FOLDER)
+
+async def fetch_agent_details(context, agent_url, agent_data):
+    """Fetch agent details (e.g., email) concurrently."""
+    try:
+        full_agent_url = f'https://www.coldwellbankerhomes.com{agent_url}' if agent_url.startswith('/') else agent_url
+        agent_page = await context.new_page()
+        await agent_page.goto(full_agent_url, wait_until="domcontentloaded")
+        email_element = await agent_page.query_selector('.email-link')
+        if email_element:
+            agent_data["email"] = (await email_element.inner_text()).strip()
+        await agent_page.close()
+    except Exception as e:
+        log_error(f"Error fetching agent details for {agent_url}: {e}")
+
+async def process_page(context, page, inner_city_name, city_name, page_num, semaphore, all_agents):
+    """Process a single page of agents with concurrency control."""
+    async with semaphore:
+        log_info(f"    Processing page {page_num} for {inner_city_name}")
+        agent_blocks = await page.query_selector_all('.agent-block')
+        log_info(f"    Found {len(agent_blocks)} agents on page {page_num}")
+        
+        tasks = []
+        
+        for agent_index, agent_block in enumerate(agent_blocks):
+            try:
+                agent_name_element = await agent_block.query_selector('.agent-content-name > a')
+                agent_name = (await agent_name_element.inner_text()).strip() if agent_name_element else "N/A"
+                
+                office_element = await agent_block.query_selector('.office > a')
+                office = (await office_element.inner_text()).strip() if office_element else "N/A"
+                
+                mobile_element = await agent_block.query_selector('.phone-link')
+                mobile = (await mobile_element.inner_text()).strip() if mobile_element else "N/A"
+                
+                agent_url = await agent_name_element.get_attribute('href') if agent_name_element else None
+                
+                current_agent = {
+                    "name": agent_name,
+                    "office": office,
+                    "mobile": mobile,
+                    "email": "N/A",
+                    "main_city": city_name,
+                    "inner_city": inner_city_name,
+                    "url": agent_url,
+                    "page_num": page_num
+                }
+                
+                all_agents.append(current_agent)
+                
+                if agent_url:
+                    tasks.append(fetch_agent_details(context, agent_url, current_agent))
+                
+                log_info(f"      Agent {agent_index+1}: {current_agent['name']}")
+            except Exception as e:
+                log_error(f"      Error processing agent: {e}")
+        
+        if tasks:
+            await asyncio.gather(*tasks)
 
 async def get_all_data(url):
     all_agents = []
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-    
+    start_time = datetime.now()
+    processed_agents = 0
+    total_estimated_agents = 50000  # Approximate total agents (can be adjusted)
+
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=True)
+        browser = await p.chromium.launch(headless=False)
         context = await browser.new_context(viewport={'width': 1280, 'height': 800})
         page = await context.new_page()
         
@@ -36,6 +109,8 @@ async def get_all_data(url):
                         city_urls.append((city_name, city_url))
                         log_info(f"Added city: {city_name} ({city_url})")
             
+            semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
+
             for city_index, (city_name, city_url) in enumerate(city_urls):
                 log_info(f"\nProcessing city {city_index+1}/{len(city_urls)}: {city_name}")
                 
@@ -67,120 +142,82 @@ async def get_all_data(url):
                             has_more_pages = True
                             
                             while has_more_pages:
-                                log_info(f"    Processing page {page_num} for {inner_city_name}")
-                                agent_blocks = await page.query_selector_all('.agent-block')
-                                log_info(f"    Found {len(agent_blocks)} agents on page {page_num}")
+                                await process_page(context, page, inner_city_name, city_name, page_num, semaphore, all_agents)
+                                processed_agents = len(all_agents)
                                 
-                                for agent_index, agent_block in enumerate(agent_blocks):
-                                    try:
-                                        agent_name_element = await agent_block.query_selector('.agent-content-name > a')
-                                        agent_name = (await agent_name_element.inner_text()).strip() if agent_name_element else "N/A"
-                                        
-                                        office_element = await agent_block.query_selector('.office > a')
-                                        office = (await office_element.inner_text()).strip() if office_element else "N/A"
-                                        
-                                        mobile_element = await agent_block.query_selector('.phone-link')
-                                        mobile = (await mobile_element.inner_text()).strip() if mobile_element else "N/A"
-                                        
-                                        agent_url = await agent_name_element.get_attribute('href') if agent_name_element else None
-                                        
-                                        current_agent = {
-                                            "name": agent_name,
-                                            "office": office, 
-                                            "mobile": mobile,
-                                            "email": "N/A",
-                                            "main_city": city_name,
-                                            "inner_city": inner_city_name,
-                                            "url": agent_url,
-                                            "page_num": page_num
-                                        }
-                                        
-                                        if agent_url:
-                                            full_agent_url = f'https://www.coldwellbankerhomes.com{agent_url}' if agent_url.startswith('/') else agent_url
-                                            agent_page = await context.new_page()
-                                            await agent_page.goto(full_agent_url, wait_until="networkidle")
-                                            await asyncio.sleep(1)
-                                            
-                                            email_element = await agent_page.query_selector('.email-link')
-                                            if email_element:
-                                                current_agent["email"] = (await email_element.inner_text()).strip()
-                                            
-                                            await agent_page.close()
-                                        
-                                        all_agents.append(current_agent)
-                                        log_info(f"      Agent {agent_index+1}: {current_agent['name']}")
-                                        
-                                        if len(all_agents) % 10 == 0:
-                                            save_data(all_agents, timestamp, save_json=True, save_csv=True)
-                                    except Exception as e:
-                                        log_error(f"      Error processing agent: {e}")
-                                        traceback.print_exc()
+                                # Save data in batches
+                                if processed_agents % BATCH_SIZE == 0:
+                                    save_data(all_agents)
+                                    log_info(f"Saved {processed_agents} agents so far.")
                                 
-                                has_more_pages = False
-                                try:
-                                    pagination = await page.query_selector('.pagination')
-                                    if pagination:
-                                        next_button = await pagination.query_selector('ul > li:last-child > a')
-                                        is_disabled = await pagination.query_selector('ul > li:last-child.disabled')
-                                        
-                                        if next_button and not is_disabled:
-                                            log_info(f"    Moving to next page for {inner_city_name}")
-                                            await next_button.click()
-                                            await page.wait_for_load_state('networkidle')
-                                            await asyncio.sleep(2)
-                                            page_num += 1
-                                            has_more_pages = True
-                                        else:
-                                            log_info(f"    No more pages for {inner_city_name}")
-                                except Exception as e:
-                                    log_error(f"    Error checking pagination: {e}")
-                                    traceback.print_exc()
+                                # Update progress
+                                elapsed_time = (datetime.now() - start_time).total_seconds()
+                                time_per_agent = elapsed_time / max(1, processed_agents)
+                                remaining_agents = total_estimated_agents - processed_agents
+                                estimated_time_remaining = remaining_agents * time_per_agent
+                                
+                                progress_data = {
+                                    "processed_agents": processed_agents,
+                                    "total_estimated_agents": total_estimated_agents,
+                                    "estimated_time_remaining": estimated_time_remaining,
+                                    "elapsed_time": elapsed_time
+                                }
+                                with open(PROGRESS_FILE, "w") as f:
+                                    json.dump(progress_data, f)
+                                if st.session_state.is_scraping==False:
+                                    return "<h1>Exited Successfully</h1>"
+                                # Check if there's a next page
+                                next_page_button = await page.query_selector('.pagination ul > li:last-child > a')
+                                if next_page_button:
+                                    next_page_url = await next_page_button.get_attribute('href')
+                                    if next_page_url:
+                                        await page.goto(f'https://www.coldwellbankerhomes.com{next_page_url}', wait_until="networkidle")
+                                        page_num += 1
+                                        await asyncio.sleep(1)
+                                    else:
+                                        has_more_pages = False
+                                else:
+                                    has_more_pages = False
+
                         except Exception as e:
                             log_error(f"  Error processing inner city {inner_city_name}: {e}")
-                            traceback.print_exc()
+
                 except Exception as e:
                     log_error(f"Error processing city {city_name}: {e}")
-                    traceback.print_exc()
             
-            if all_agents:
-                save_data(all_agents, timestamp, save_json=True, save_csv=True)
-                log_success(f"Scraped data for {len(all_agents)} agents successfully!")
         except Exception as e:
             log_error(f"Main error: {e}")
-            traceback.print_exc()
-            if all_agents:
-                save_data(all_agents, timestamp, save_json=True, save_csv=True)
-                log_info(f"Saved partial data for {len(all_agents)} agents before error.")
+
         finally:
+            # Save remaining agents
+            if all_agents:
+                save_data(all_agents)
+                log_info(f"Final save: {len(all_agents)} agents saved.")
             await browser.close()
             log_info("Browser closed. Scraping completed")
-  
-            
-def save_data(agents, timestamp, save_json=True, save_csv=True):
-    """Save the agent data to files"""
-    # Create data directory if it doesn't exist
-    if not os.path.exists('data'):
-        os.makedirs('data')
-    
-    # Save as JSON
-    if save_json:
-        json_file = f"data/coldwell_agents_{timestamp}.json"
-        with open(json_file, 'w', encoding='utf-8') as f:
-            json.dump(agents, f, indent=4, ensure_ascii=False)
-        print(f"Saved JSON data to {json_file}")
-    
-    # Save as CSV
-    if save_csv:
-        csv_file = f"data/coldwell_agents_{timestamp}.csv"
-        if agents:
-            fieldnames = agents[0].keys()
-            with open(csv_file, 'w', newline='', encoding='utf-8') as f:
-                writer = csv.DictWriter(f, fieldnames=fieldnames)
-                writer.writeheader()
-                writer.writerows(agents)
-            print(f"Saved CSV data to {csv_file}")
 
-if __name__ == "__main__":
-    # Target URL
-    target_url = "https://www.coldwellbankerhomes.com/sitemap/agents/"
-    main(target_url)
+def save_data(agents):
+    """Save the agent data to files. If files exist, update them."""
+    json_file = f"{OUTPUT_FOLDER}/coldwell_agents.json"
+    csv_file = f"{OUTPUT_FOLDER}/coldwell_agents.csv"
+    
+    # Save JSON
+    with open(json_file, 'w', encoding='utf-8') as f:
+        json.dump(agents, f, indent=4, ensure_ascii=False)
+    log_info(f"Updated JSON data in {json_file}")
+    
+    # Save CSV
+    if agents:
+        fieldnames = agents[0].keys()
+        with open(csv_file, 'w', newline='', encoding='utf-8') as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(agents)
+        log_info(f"Updated CSV data in {csv_file}")
+
+# async def main():
+#     target_url = "https://www.coldwellbankerhomes.com/sitemap/agents/"
+#     await get_all_data(target_url)
+
+# if __name__ == "__main__":
+#     asyncio.run(main())
