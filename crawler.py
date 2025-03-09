@@ -6,6 +6,7 @@ from log import log_info, log_success, log_error, log_warning  # Import logging 
 from database import db
 from assets import selected_user_agent,http_headers,random_zigzag_move
 import random
+import spacy
 rawid = ""
 def random_sleep():
     time.sleep(random.uniform(1, 3)) 
@@ -93,8 +94,8 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
                 
                 if raw_size > 500:
                     log_success(f"Extracted raw HTML: {raw_size} bytes")
-                    filtered_html = extract_relevant_container(html_content)
-                    filtered_size = len(filtered_html)
+                    filtered_html = html_content #extract_relevant_container(html_content)
+                    # filtered_size = len(filtered_html)
                     reduction = ((raw_size - filtered_size) / raw_size * 100)
                     log_info(f"Filtered content size: {filtered_size} bytes (reduction: {reduction:.1f}%)")
                     global rawid
@@ -117,6 +118,428 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
         log_info("Browser closed")
         log_error(f"All {retry_attempts + 1} attempts failed for {url}")
         return ""
+
+import asyncio
+import json
+import csv
+import time
+import os
+import psutil
+from datetime import datetime
+from playwright.async_api import async_playwright
+import signal
+
+# Global variables for tracking and resuming
+CHECKPOINT_FILE = "scraper_checkpoint.json"
+BATCH_SIZE = 100  # Save data after processing this many agents
+MAX_CONCURRENT_PAGES = 5  # Limit concurrent pages to avoid memory issues
+
+class ScraperState:
+    def __init__(self):
+        self.current_city_page = 1
+        self.current_city_index = 0
+        self.current_agent_page = 1
+        self.processed_agents = 0
+        self.total_agents = 0
+        self.start_time = time.time()
+        self.is_running = True
+        self.current_city_name = ""
+        
+        # Load checkpoint if exists
+        if os.path.exists(CHECKPOINT_FILE):
+            try:
+                with open(CHECKPOINT_FILE, 'r') as f:
+                    checkpoint = json.load(f)
+                    self.current_city_page = checkpoint.get('city_page', 1)
+                    self.current_city_index = checkpoint.get('city_index', 0)
+                    self.current_agent_page = checkpoint.get('agent_page', 1)
+                    self.processed_agents = checkpoint.get('processed_agents', 0)
+                    self.current_city_name = checkpoint.get('city_name', "")
+                    log_info(f"Resuming from checkpoint: City page {self.current_city_page}, City index {self.current_city_index}, Agent page {self.current_agent_page}")
+            except Exception as e:
+                log_error(f"Error loading checkpoint: {str(e)}")
+    
+    def save_checkpoint(self):
+        checkpoint = {
+            'city_page': self.current_city_page,
+            'city_index': self.current_city_index,
+            'agent_page': self.current_agent_page,
+            'processed_agents': self.processed_agents,
+            'city_name': self.current_city_name,
+            'timestamp': datetime.now().isoformat()
+        }
+        with open(CHECKPOINT_FILE, 'w') as f:
+            json.dump(checkpoint, f, indent=2)
+        log_info(f"Checkpoint saved: {checkpoint}")
+
+# Initialize logging with timestamps
+def log_info(message):
+    print(f"[INFO] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {message}")
+
+def log_success(message):
+    print(f"[SUCCESS] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {message}")
+
+def log_warning(message):
+    print(f"[WARNING] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {message}")
+
+def log_error(message):
+    print(f"[ERROR] {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} - {message}")
+
+def get_memory_usage():
+    """Get current memory usage in MB"""
+    process = psutil.Process(os.getpid())
+    memory_info = process.memory_info()
+    return memory_info.rss / 1024 / 1024  # Convert to MB
+
+# File management functions
+def get_output_filenames(base_name="agent_data"):
+    """Generate timestamped filenames for output"""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    json_file = f"{base_name}_{timestamp}.json"
+    csv_file = f"{base_name}_{timestamp}.csv"
+    return json_file, csv_file
+
+def append_to_json_file(data, filename):
+    """Append data to JSON file with proper formatting"""
+    if not os.path.exists(filename):
+        with open(filename, 'w', encoding='utf-8') as f:
+            json.dump([], f)
+    
+    with open(filename, 'r+', encoding='utf-8') as f:
+        try:
+            file_data = json.load(f)
+            file_data.extend(data)
+            f.seek(0)
+            json.dump(file_data, f, indent=2)
+        except json.JSONDecodeError:
+            # If file is empty or corrupted
+            f.seek(0)
+            json.dump(data, f, indent=2)
+
+def append_to_csv_file(data, filename):
+    """Append data to CSV file"""
+    file_exists = os.path.exists(filename)
+    
+    with open(filename, 'a', newline='', encoding='utf-8') as f:
+        fieldnames = data[0].keys() if data else []
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        
+        if not file_exists:
+            writer.writeheader()
+        
+        writer.writerows(data)
+
+async def scrape_agent_data(url: str, options: dict = None, json_file=None, csv_file=None) -> None:
+    """
+    Optimized function to scrape agent data handling millions of records.
+    Uses batch processing and checkpoints for reliability.
+    """
+    options = options or {}
+    js_timeout = options.get('js_timeout', 10000)
+    navigation_timeout = options.get('navigation_timeout', 30000)
+    retry_attempts = options.get('retry_attempts', 2)
+    print(options)
+    # Setup output files if not provided
+    if not json_file or not csv_file:
+        json_file, csv_file = get_output_filenames()
+    
+    # Initialize scraper state for resuming capability
+    state = ScraperState()
+    await scrape_agent_data(state)
+    # Setup signal handlers for graceful termination
+    def signal_handler(sig, frame):
+        log_info("Received termination signal, finishing current batch and exiting...")
+        state.is_running = False
+    
+    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(signal.SIGTERM, signal_handler)
+    
+    # Buffer for batch processing
+    agent_buffer = []
+    
+    log_info(f"Starting optimized agent data scraping from: {url}")
+    log_info(f"Output files: JSON={json_file}, CSV={csv_file}")
+    log_info(f"Initial memory usage: {get_memory_usage():.2f} MB")
+    print("here")
+    async with async_playwright() as p:
+        browser = await p.chromium.launch(
+            headless=True,
+            args=[
+                '--disable-web-security',
+                '--disable-features=IsolateOrigins,site-per-process',
+                '--disable-dev-shm-usage',  # Reduces memory usage
+                '--disable-gpu',            # Reduces memory usage
+                '--no-sandbox'              # Improves performance in some environments
+            ]
+        )
+        log_info("Launched headless Chromium browser with optimized memory settings")
+        
+        context = await browser.new_context(
+            viewport={"width": 1920, "height": 1080},
+            user_agent=options.get('user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'),
+            ignore_https_errors=True,
+            java_script_enabled=True
+        )
+        
+        # Disable unnecessary features to save memory
+        await context.route('**/*.{png,jpg,jpeg,gif,svg,pdf,mp4,webp}', lambda route: route.abort())
+        await context.route('**/*google*', lambda route: route.abort())
+        await context.route('**/*analytics*', lambda route: route.abort())
+        await context.route('**/*tracking*', lambda route: route.abort())
+        await context.route('**/*advertisement*', lambda route: route.abort())
+        
+        # Navigate to main page with cities
+        main_page = await context.new_page()
+        main_page.set_default_timeout(navigation_timeout)
+        
+        # Semaphore to limit concurrent pages
+        page_semaphore = asyncio.Semaphore(MAX_CONCURRENT_PAGES)
+        
+        try:
+            # Skip to the checkpoint city page if resuming
+            if state.current_city_page > 1:
+                log_info(f"Navigating to city page {state.current_city_page} (resumed from checkpoint)")
+                await main_page.goto(url, timeout=navigation_timeout, wait_until="domcontentloaded")
+                
+                # Navigate to the correct city page
+                for _ in range(1, state.current_city_page):
+                    pagination = await main_page.query_selector(".pagination ul")
+                    if pagination:
+                        next_button = await pagination.query_selector("li:last-child:not(.disabled) a.next-icon")
+                        if next_button:
+                            await next_button.click()
+                            await main_page.wait_for_timeout(3000)
+                            try:
+                                await main_page.wait_for_load_state("networkidle", timeout=js_timeout // 2)
+                            except Exception as e:
+                                log_warning(f"Network idle timeout: {str(e)}")
+            else:
+                log_info(f"Navigating to main page: {url}")
+                await main_page.goto(url, timeout=navigation_timeout, wait_until="domcontentloaded")
+            
+            await main_page.wait_for_timeout(3000)
+            
+            # Process all city pages (with pagination)
+            has_more_cities = True
+            city_page = state.current_city_page
+            
+            while has_more_cities and state.is_running:
+                log_info(f"Processing city page {city_page}")
+                
+                # Find all city links in the table with class .notranslate
+                city_links = await main_page.query_selector_all("tbody.notranslate tr td:first-child a")
+                city_count = len(city_links)
+                log_info(f"Found {city_count} cities on page {city_page}")
+                
+                # Process each city, starting from checkpoint if resuming
+                for city_idx in range(state.current_city_index, city_count):
+                    if not state.is_running:
+                        break
+                        
+                    city_link = city_links[city_idx]
+                    city_name = await city_link.text_content()
+                    state.current_city_name = city_name
+                    state.current_city_index = city_idx
+                    
+                    log_info(f"Processing city {city_idx+1}/{city_count}: {city_name}")
+                    
+                    # Open city page in a new tab
+                    city_page = await context.new_page()
+                    city_href = await city_link.get_attribute("href")
+                    city_url = url + city_href if not city_href.startswith("http") else city_href
+                    
+                    await city_page.goto(city_url, timeout=navigation_timeout, wait_until="domcontentloaded")
+                    await city_page.wait_for_timeout(3000)
+                    
+                    # Process all agent pages for this city (with pagination)
+                    has_more_agents = True
+                    agent_page_num = state.current_agent_page if city_idx == state.current_city_index else 1
+                    
+                    # If we're resuming on this city, navigate to the correct agent page
+                    if agent_page_num > 1:
+                        for _ in range(1, agent_page_num):
+                            pagination = await city_page.query_selector(".pagination ul")
+                            if pagination:
+                                next_button = await pagination.query_selector("li:last-child:not(.disabled) a.next-icon")
+                                if next_button:
+                                    await next_button.click()
+                                    await city_page.wait_for_timeout(3000)
+                    
+                    while has_more_agents and state.is_running:
+                        log_info(f"Processing agent page {agent_page_num} for city: {city_name}")
+                        
+                        # Find all agent blocks
+                        agent_blocks = await city_page.query_selector_all(".agent-team-results .agent-block")
+                        agent_count = len(agent_blocks)
+                        log_info(f"Found {agent_count} agents on page {agent_page_num}")
+                        
+                        # Create tasks to process agents concurrently but with limits
+                        agent_tasks = []
+                        
+                        for agent_idx, agent_block in enumerate(agent_blocks):
+                            agent_tasks.append(
+                                process_agent(
+                                    context, url, agent_block, city_name, page_semaphore
+                                )
+                            )
+                            
+                        # Wait for all agent processing tasks to complete
+                        agent_results = await asyncio.gather(*agent_tasks, return_exceptions=True)
+                        
+                        # Add successful results to buffer
+                        for result in agent_results:
+                            if isinstance(result, dict):  # Successful result
+                                agent_buffer.append(result)
+                                state.processed_agents += 1
+                                state.total_agents += 1
+                            elif isinstance(result, Exception):
+                                log_error(f"Agent processing error: {str(result)}")
+                        
+                        # Save batches to disk when buffer reaches threshold
+                        if len(agent_buffer) >= BATCH_SIZE:
+                            log_info(f"Saving batch of {len(agent_buffer)} agents")
+                            append_to_json_file(agent_buffer, json_file)
+                            append_to_csv_file(agent_buffer, csv_file)
+                            
+                            # Update progress stats
+                            elapsed = time.time() - state.start_time
+                            rate = state.total_agents / elapsed if elapsed > 0 else 0
+                            memory = get_memory_usage()
+                            log_info(f"Progress: {state.total_agents} agents processed ({rate:.2f}/sec), Memory: {memory:.2f} MB")
+                            
+                            # Save checkpoint
+                            state.save_checkpoint()
+                            
+                            # Clear buffer after saving
+                            agent_buffer = []
+                        
+                        # Check for pagination
+                        has_more_agents = False
+                        pagination = await city_page.query_selector(".pagination ul")
+                        
+                        if pagination:
+                            next_button = await pagination.query_selector("li:last-child:not(.disabled) a.next-icon")
+                            
+                            if next_button:
+                                log_info("Found next page button, clicking...")
+                                await next_button.click()
+                                await city_page.wait_for_timeout(3000)
+                                try:
+                                    await city_page.wait_for_load_state("networkidle", timeout=js_timeout // 2)
+                                except Exception as e:
+                                    log_warning(f"Network idle timeout: {str(e)}")
+                                
+                                has_more_agents = True
+                                agent_page_num += 1
+                                state.current_agent_page = agent_page_num
+                            else:
+                                log_info("No more agent pages for this city")
+                    
+                    # Reset agent page counter for next city
+                    state.current_agent_page = 1
+                    
+                    # Close city page
+                    await city_page.close()
+                
+                # Reset city index for next page
+                state.current_city_index = 0
+                
+                # Check for city pagination
+                has_more_cities = False
+                pagination = await main_page.query_selector(".pagination ul")
+                
+                if pagination and state.is_running:
+                    next_button = await pagination.query_selector("li:last-child:not(.disabled) a.next-icon")
+                    
+                    if next_button:
+                        log_info("Found next city page button, clicking...")
+                        await next_button.click()
+                        await main_page.wait_for_timeout(3000)
+                        try:
+                            await main_page.wait_for_load_state("networkidle", timeout=js_timeout // 2)
+                        except Exception as e:
+                            log_warning(f"Network idle timeout: {str(e)}")
+                        
+                        has_more_cities = True
+                        city_page += 1
+                        state.current_city_page = city_page
+                    else:
+                        log_info("No more city pages")
+            
+            # Save any remaining agents in buffer
+            if agent_buffer:
+                log_info(f"Saving final batch of {len(agent_buffer)} agents")
+                append_to_json_file(agent_buffer, json_file)
+                append_to_csv_file(agent_buffer, csv_file)
+            
+            # Final stats
+            elapsed = time.time() - state.start_time
+            log_success(f"Scraping completed. Extracted data for {state.total_agents} agents in {elapsed:.2f} seconds.")
+            log_info(f"Final memory usage: {get_memory_usage():.2f} MB")
+            
+            # Remove checkpoint file if completed successfully
+            if os.path.exists(CHECKPOINT_FILE) and state.is_running:
+                os.remove(CHECKPOINT_FILE)
+                log_info("Removed checkpoint file (scraping completed successfully)")
+            
+        except Exception as e:
+            log_error(f"Error during scraping: {str(e)}")
+            state.save_checkpoint()
+        
+        finally:
+            await browser.close()
+            log_info(f"Browser closed")
+
+async def process_agent(context, base_url, agent_block, city_name, semaphore):
+    """Process a single agent with semaphore to limit concurrency"""
+    async with semaphore:
+        try:
+            # Extract basic agent data
+            name_elem = await agent_block.query_selector(".agent-content-name")
+            office_elem = await agent_block.query_selector(".office")
+            phone_elem = await agent_block.query_selector(".phone-link")
+            
+            name = await name_elem.text_content() if name_elem else "N/A"
+            office = await office_elem.text_content() if office_elem else "N/A"
+            phone = await phone_elem.text_content() if phone_elem else "N/A"
+            
+            # Get the link to the agent's page
+            agent_link = await agent_block.query_selector("a")
+            agent_href = await agent_link.get_attribute("href")
+            agent_url = base_url + agent_href if not agent_href.startswith("http") else agent_href
+            
+            # Navigate to agent page to get email
+            email_page = await context.new_page()
+            try:
+                await email_page.goto(agent_url, timeout=30000, wait_until="domcontentloaded")
+                await email_page.wait_for_timeout(1500)  # Reduced wait time
+                
+                # Try to get email
+                email = "N/A"
+                email_link = await email_page.query_selector(".email-link")
+                if email_link:
+                    email = await email_link.text_content()
+                
+                # Create agent data object
+                agent_data = {
+                    "name": name.strip(),
+                    "office": office.strip(),
+                    "phone": phone.strip(),
+                    "email": email.strip(),
+                    "city": city_name.strip(),
+                    "timestamp": datetime.now().isoformat()
+                }
+                
+                return agent_data
+                
+            finally:
+                # Always close the page to free resources
+                await email_page.close()
+                
+        except Exception as e:
+            raise Exception(f"Error processing agent {name if 'name' in locals() else 'unknown'}: {str(e)}")
+
+
 
 async def handle_pagination_with_backoff(page, buttons, loader, max_pages):
     """Handle pagination with detailed logging and strict button checks."""

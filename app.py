@@ -6,9 +6,7 @@ import numpy as np
 import time
 import random
 import spacy
-
-# Load the spaCy model
-nlp = spacy.load("en_core_web_sm")
+import asyncio
 import re
 from bs4 import BeautifulSoup
 from database import db
@@ -20,10 +18,12 @@ from urllib.parse import urlparse, urljoin
 import uuid
 from collections import defaultdict
 from crawler import rawid
-from crawler import get_html_sync
+from crawler import get_html_sync,scrape_agent_data
+from test import get_all_data
 from scraper import find_elements_by_selector,extract_data_with_ai
+import os
 max_depth= 0 
-max_pages=1
+max_pages=10
 stay_on_domain=""
 handle_lazy_loading=None
 # Page configuration
@@ -236,7 +236,7 @@ def normalize_url(url, base_url):
     return urljoin(base_url, url)
 
 # Crawler functions
-def crawl_url(url, options):
+async def crawl_url(url, options):
     """Simulate crawling a URL with configurable options"""
     log_process(f"Crawling URL: {url}")
     domain = extract_domain(url)
@@ -248,7 +248,7 @@ def crawl_url(url, options):
     # Generate simulated HTML content
     button= options.get('pagination_selector', False) or options.get('pagination_xpath', False) or options.get('pagination_text', False) or options.get('pagination_text_match', False) or options.get('pagination_confidence', False)
     print("button",button)
-    html_content = get_html_sync(url,button,options)
+    html_content = await get_all_data(url)#get_html_sync(url,button,options)
     # print("html",html_content)
     # Extract links if link following is enabled
     links = []
@@ -1043,110 +1043,85 @@ with tab2:
             if not data_dicts:
                 return pd.DataFrame()
             
-            # Create a completely flattened view of the data
             all_data = []
-            
             for i, data_dict in enumerate(data_dicts):
-                # Identify metadata fields that should be repeated in every row
                 metadata = {"Source_Index": f"Data-{i+1}"}
                 list_fields = {}
                 
-                # First pass: separate metadata from list fields
                 for key, value in data_dict.items():
                     if isinstance(value, list) and len(value) > 1:
                         list_fields[key] = value
                     else:
-                        # Convert to string and add to metadata
-                        if isinstance(value, list):
-                            metadata[key] = "" if not value else str(value[0])
-                        else:
-                            metadata[key] = "" if value is None else str(value)
+                        metadata[key] = "" if value is None else str(value[0]) if isinstance(value, list) else str(value)
                 
-                # If we have list fields, create multiple rows
                 if list_fields:
-                    # Find the maximum length of any list
                     max_length = max(len(value) for value in list_fields.values())
-                    
-                    # Create a row for each item in the longest list
                     for j in range(max_length):
-                        row = metadata.copy()  # Start with all metadata fields
-                        
-                        # Add list items for this row index
+                        row = metadata.copy()
                         for key, value_list in list_fields.items():
                             row[key] = str(value_list[j]) if j < len(value_list) else ""
-                        
                         all_data.append(row)
                 else:
-                    # No lists, just add the metadata as a single row
                     all_data.append(metadata)
             
-            # Create DataFrame
-            try:
-                df = pd.DataFrame(all_data)
-                
-                # Force URL and timestamp to be first columns after Source_Index
-                # Define the exact column order
-                first_cols = ["Source_Index"]
-                
-                # Always put url and timestamp first if they exist
-                if "url" in df.columns:
-                    first_cols.append("url")
-                if "timestamp" in df.columns:
-                    first_cols.append("timestamp")
-                    
-                # Add any other standard metadata that should be near the front
-                other_priority = ["date", "datetime", "time", "title"]
-                for col in other_priority:
-                    if col in df.columns and col not in first_cols:
-                        first_cols.append(col)
-                
-                # Get remaining columns (excluding those already in first_cols)
-                remaining_cols = [col for col in df.columns if col not in first_cols]
-                
-                # Reorder columns with priority columns first
-                df = df[first_cols + remaining_cols]
-                
-            except Exception as e:
-                return pd.DataFrame({"Error": [str(e)]})
+            df = pd.DataFrame(all_data)
+            first_cols = ["Source_Index"]
+            if "url" in df.columns:
+                first_cols.append("url")
+            if "timestamp" in df.columns:
+                first_cols.append("timestamp")
             
-            return df
-        # Process results into a structured format
-        results_df = process_results(st.session_state.results)
+            other_priority = ["date", "datetime", "time", "title"]
+            for col in other_priority:
+                if col in df.columns and col not in first_cols:
+                    first_cols.append(col)
+            
+            remaining_cols = [col for col in df.columns if col not in first_cols]
+            return df[first_cols + remaining_cols]
 
-        # Display the DataFrame in Streamlit
+        results_df = process_results(st.session_state.results)
         st.dataframe(results_df, use_container_width=True)
 
-        # 📥 Download Buttons (CSV & JSON)
         col1, col2 = st.columns(2)
-
-        # CSV Download
         with col1:
             if st.button("📥 Download CSV", use_container_width=True):
                 csv_data = results_df.to_csv(index=False, encoding="utf-8-sig")
-                st.download_button(
-                    label="📥 Download CSV",
-                    data=csv_data,
-                    file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                    mime="text/csv",
-                )
-
-        # JSON Download
+                st.download_button("📥 Download CSV", csv_data, file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mime="text/csv")
         with col2:
             if st.button("📥 Download JSON", use_container_width=True):
                 json_str = results_df.to_json(orient="records", indent=2)
-                st.download_button(
-                    label="📥 Download JSON",
-                    data=json_str,
-                    file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-                    mime="application/json",
-                )
-
+                st.download_button("📥 Download JSON", json_str, file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", mime="application/json")
     else:
-        # Show appropriate messages based on scraping state
-        if st.session_state.get("is_scraping", False):
-            st.info("⏳ Scraping in progress... Results will appear here when available.")
-        else:
-            st.info("🔍 No results yet. Start a scraping job to see results here.")
+        st.info("🔍 No results yet. Start a scraping job to see results here.")
+
+    # Large CSV File Handling
+    st.subheader("📂 Large CSV File Viewer")
+    csv_file = "data/coldwell_agents_20250307_153709.csv"
+    if os.path.exists(csv_file):
+        chunk_size = 1000
+        df_chunks = pd.read_csv(csv_file, chunksize=chunk_size)
+        df_sample = next(df_chunks)
+        st.write(f"Loaded first {chunk_size} rows from {csv_file}")
+        
+        # Column Selection
+        selected_columns = st.multiselect("Select columns to download:", df_sample.columns.tolist(), default=df_sample.columns.tolist())
+        
+        if selected_columns:
+            filtered_df = df_sample[selected_columns]
+            st.dataframe(filtered_df, use_container_width=True)
+            
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                csv_data = filtered_df.to_csv(index=False, encoding="utf-8-sig")
+                st.download_button("📥 Download CSV", csv_data, file_name=f"filtered_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv", mime="text/csv")
+            with col2:
+                json_data = filtered_df.to_json(orient="records", indent=2)
+                st.download_button("📥 Download JSON", json_data, file_name=f"filtered_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json", mime="application/json")
+            with col3:
+                txt_data = ",".join(selected_columns) + "\n" + "\n".join([",".join(map(str, row)) for row in filtered_df.values])
+                st.download_button("📥 Download TXT", txt_data, file_name=f"filtered_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt", mime="text/plain")
+    else:
+        st.warning("⚠ CSV file not found! Please check the file path.")
 
 with tab3:
     st.subheader("Scraping Logs")
@@ -1193,7 +1168,7 @@ if st.session_state.is_scraping:
                     
                     try:
                         # Crawl the URL
-                        crawl_result = crawl_url(next_url, st.session_state.options)
+                        crawl_result = asyncio.run(crawl_url(next_url, st.session_state.options))
                         html_content = crawl_result.get('html', '')
                         
                         # Extract data from the crawled page
@@ -1253,7 +1228,7 @@ if st.session_state.is_scraping:
             
             try:
                 # Crawl the URL
-                crawl_result = crawl_url(next_url, st.session_state.options)
+                crawl_result = asyncio.run(crawl_url(next_url, st.session_state.options))
                 html_content = crawl_result.get('html', '')
                 
                 # Extract data from the crawled page
@@ -1316,3 +1291,4 @@ if st.session_state.is_scraping:
         st.session_state.is_scraping = False
         time.sleep(0.1)
         st.rerun()
+        
