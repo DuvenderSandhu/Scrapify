@@ -1,9 +1,9 @@
-import asyncio
-from flask import Flask, request, jsonify, send_file
 import threading
 import time
-import tempfile
+import asyncio
 import os
+import requests
+from flask import Flask, request, jsonify, send_file
 from app import crawl_url, extract_data  # Assuming these functions are defined elsewhere in your app
 
 app = Flask(__name__)
@@ -58,22 +58,33 @@ def api():
         # Run the crawling function asynchronously using asyncio
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
+
+        # Crawl the URL
         crawl_result = loop.run_until_complete(crawl_url(url, crawl_options))
 
         html_content = crawl_result.get('html', '')
+        print("htmlContent:", html_content)
 
-        # Extract data from the crawled page
-        extracted_data = extract_data(html_content, crawl_options)
+        # Extract the data from the HTML content (or any other data)
+        extracted_data = extract_data(html_content, data.get('fields', ["phone", "email"]))
 
-        # Save the extracted data in a temporary file
-        with tempfile.NamedTemporaryFile(delete=False, mode='w', newline='') as temp_file:
-            temp_file.write(extracted_data)  # Save the extracted data in the file
-            temp_file_path = temp_file.name  # Get the path of the temporary file
+        if not extracted_data:  # Check if extracted data is empty
+            extracted_data = {"message": "No data found"}  # Return a message if no data found
+
+        print("Extracted_data:", extracted_data)
+
+        # Generate the file name using work_id
+        result_file_path = os.path.join("data_files", f"{work_id}.txt")
+
+        # Save the extracted data to a file named with the work_id
+        os.makedirs("data_files", exist_ok=True)  # Ensure the directory exists
+        with open(result_file_path, 'w') as temp_file:
+            temp_file.write(str(extracted_data))  # Save the extracted data (converted to string)
 
         # Once the task is done, update the work status and store the file path
         work_status[work_id] = {
             'status': 'completed',
-            'result_file': temp_file_path  # Save the file path for later access
+            'result_file': result_file_path  # Save the file path for later access
         }
 
     # Store initial status as 'in progress'
@@ -90,6 +101,7 @@ def api():
 
     return jsonify(response_data)
 
+
 # API endpoint to check the status of a task
 @app.route('/api/status/<work_id>', methods=['GET'])
 def check_status(work_id):
@@ -102,6 +114,7 @@ def check_status(work_id):
         return jsonify({"status": "in progress"})
     else:
         return jsonify({"error": "Work ID not found or task not yet completed"}), 404
+
 
 # API endpoint to download the result file
 @app.route('/api/download/<work_id>', methods=['GET'])
@@ -116,7 +129,8 @@ def download_result(work_id):
         return jsonify({"status": "in progress"}), 202
     return jsonify({"error": "Work ID not found"}), 404
 
-# Cleanup function to delete the temporary file after the user downloads it
+
+# Function to cleanup temporary files after the user downloads it
 @app.after_request
 def cleanup(response):
     for work_id, status in work_status.items():
@@ -128,5 +142,40 @@ def cleanup(response):
                 work_status[work_id]['status'] = 'removed'  # Mark as removed
     return response
 
+
+# Automatically hit the API after the Flask app starts
+def hit_api_after_start():
+    url = "https://www.google.com"
+    options = {
+        "follow_links": True,
+        "max_depth": 3,
+        "max_pages": 10,
+        "stay_on_domain": True,
+        "handle_pagination": False,
+        "handle_lazy_loading": False,
+        "pagination_method": "next_page",
+        "hyphen_separator": True,
+        "country_code": "US",
+        "extraction_method": "regex",
+        "fields": ["title"]
+    }
+
+    data = {
+        "url": url,
+        "options": options
+    }
+
+    # POST request to the /api/crawl endpoint
+    response = requests.post("http://127.0.0.1:5000/api/crawl", json=data)
+
+    # Print the response from the API
+    print(response.json())
+
+
+# Main block
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Run the API call after starting the Flask app
+    # hit_api_after_start()
+
+    # Start Flask app
+    app.run(debug=True, use_reloader=False)
