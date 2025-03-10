@@ -9,7 +9,7 @@ import random
 import spacy
 rawid = ""
 def random_sleep():
-    time.sleep(random.uniform(1, 3)) 
+    time.sleep(random.uniform(1, 5)) 
 
 async def get_html(url: str, button: str = None, options: dict = None, loader: str = None) -> str:
     """

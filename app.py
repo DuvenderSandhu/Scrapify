@@ -6,6 +6,9 @@ import numpy as np
 import time
 import random
 import spacy
+# from flask import Flask
+
+
 import asyncio
 # Load the spaCy model
 nlp = spacy.load("en_core_web_sm")
@@ -28,6 +31,7 @@ max_pages=1
 stay_on_domain=""
 coldwell=False
 handle_lazy_loading=None
+# app = Flask(__name__)
 # Page configuration
 st.set_page_config(
     page_title="Advanced Web Scraper",
@@ -472,7 +476,13 @@ from bs4 import BeautifulSoup
 import re
 import json
 from collections import defaultdict
-
+def read_progress():
+    try:
+        with open("progress.json", "r") as f:
+            progress_data = json.load(f)
+        return progress_data
+    except FileNotFoundError:
+        return {"progress": 0, "processed_agents": 0, "total_estimated_agents": 50434, "estimated_time_remaining": 0}
 def extract_data(html_content, fields, method="regex"):
     """Extract structured data from HTML without hardcoding assumptions."""
     results = {}
@@ -614,6 +624,8 @@ def extract_data(html_content, fields, method="regex"):
             # Convert structured data to the desired output format
             for data in structured_data:
                 for field, values in data.items():
+                    print("field",field)
+                    print("values",values)
                     if field not in results:
                         results[field] = []
                     results[field].extend(values)
@@ -626,7 +638,7 @@ def extract_data(html_content, fields, method="regex"):
         for field in fields:
             results[field] = find_elements_by_selector(html_content, field)
     elif method.lower() == "ai":
-        ai_response = extract_data_with_ai(html_content, fields, "ai_provider", "ai_api")
+        ai_response = extract_data_with_ai(html_content, fields, ai_provider, ai_api)
         for field, data in ai_response.items():
             results[field] = list(dict.fromkeys(data)) if data else []
     print(results)
@@ -905,6 +917,11 @@ with tab1:
                     with open("progress.json", "r") as f:
                         progress_data = json.load(f)
                     progress = (progress_data["processed_agents"] / max(1, progress_data["total_estimated_agents"])) * 100
+                    estimated_time_remaining= progress_data['estimated_time_remaining'] or "calculating Estimate Time"
+                    # estimated_time_remaining = ((total_estimated_agents - processed_agents) * (datetime.now() - start_time).total_seconds()) / max(1, processed_agents)
+
+                    st.write(f"Estimated Time Remaining: {estimated_time_remaining/60:.2f} minutes")
+
                 except FileNotFoundError:
                     progress = 0
             else:
@@ -1018,24 +1035,52 @@ with tab2:
     if coldwell:
         with tab2:
             st.subheader("📊 Scraping Results (Coldwell)")
-            
+            def format_mobile_number(mobile, country_code, hyphen_separator):
+                digits = "".join(filter(str.isdigit, str(mobile)))  # Remove non-numeric characters
+                if len(digits) == 10:
+                    formatted = f"{digits[:3]}-{digits[3:6]}-{digits[6:]}" if hyphen_separator else digits
+                    if country_code:
+                        formatted = f"+1{'-' if hyphen_separator else ''}{formatted}"
+                    return formatted
+                return mobile  # Return as is if it's not a 10-digit number
+
             try:
                 # Load data from coldwell_agents.csv
                 coldwell_df = pd.read_csv("data/coldwell_agents.csv")
-                def format_mobile_number(mobile, country_code, hyphen_separator):
-                    mobile = str(mobile)
-                    if hyphen_separator:
-                        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Add hyphens
-                    if country_code:
-                        mobile = f"+1 {mobile}"  # Add country code (e.g., +1 for US)
-                    return mobile
+                def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
+                    if pd.isna(mobile):  # Handle NaN values
+                        return ""
 
+                    # Remove all non-numeric characters
+                    mobile = re.sub(r"\D", "", str(mobile))
+
+                    if len(mobile) < 10:  # Ensure a valid 10-digit number
+                        return mobile  # Return as-is if not a full number
+
+                    # Apply hyphen separator if enabled
+                    if hyphen_separator:
+                        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
+
+                    # Apply country code if enabled
+                    if country_code:
+                        if hyphen_separator:
+                            mobile = f"+1-{mobile}"  # Add +1- before the number
+                        else:
+                            mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
+
+                    return mobile
+                
                 # Select only required columns
                 coldwell_df = coldwell_df[["name", "office", "email", "mobile"]]
                 # Add country code if enabled
 
                 # Display first 50 rows
+                coldwell_df["mobile"] = coldwell_df["mobile"].fillna("").apply(
+        lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
+    )
+                st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
                 st.dataframe(coldwell_df.head(50), use_container_width=True)
+
                 selected_columns = st.multiselect(
                         "Select columns to download",
                         options=coldwell_df.columns,
@@ -1079,7 +1124,7 @@ with tab2:
                             st.download_button(
                                 label="📥 Download TXT (Comma Seperated)",
                                 data=csv_data,
-                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                                 mime="text/txt",
                             )
                     else:
@@ -1205,39 +1250,55 @@ with tab2:
                 # 📥 Download Buttons (CSV, JSON, TXT)
                 col1, col2, col3 = st.columns(3)
 
-                # CSV Download
-                with col1:
-                    if st.button("📥 Download CSV", use_container_width=True):
-                        csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                        st.download_button(
-                            label="📥 Download CSV",
-                            data=csv_data,
-                            file_name=f"scraping_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                            mime="text/csv",
-                        )
+                selected_columns = st.multiselect(
+                                        "Select columns to download",
+                                        options=results_df.columns,
+                                        default=results_df.columns
+                                    )
+                # 📥 Download Buttons (CSV, JSON)
+                if st.button("📥 Download Data", use_container_width=True):
+                    # Allow user to select columns for download
+                    
+                    
+                    if selected_columns:
+                        # Filter DataFrame based on selected columns
+                        download_df = results_df[selected_columns]
+                        
+                        # Display download options (CSV, JSON)
+                        col1, col2, col3 = st.columns(3)
+                        
+                        # CSV Download
+                        with col1:
+                            csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                            st.download_button(
+                                label="📥 Download CSV",
+                                data=csv_data,
+                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                mime="text/csv",
+                            )
+                        
+                        # JSON Download
+                        with col2:
+                            json_str = download_df.to_json(orient="records", indent=2)
+                            st.download_button(
+                                label="📥 Download JSON",
+                                data=json_str,
+                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                mime="application/json",
+                            )
 
-                # JSON Download
-                with col2:
-                    if st.button("📥 Download JSON", use_container_width=True):
-                        json_str = download_df.to_json(orient="records", indent=2)
-                        st.download_button(
-                            label="📥 Download JSON",
-                            data=json_str,
-                            file_name=f"scraping_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-                            mime="application/json",
-                        )
-
-                # TXT (Comma-Separated) Download
-                with col3:
-                    if st.button("📥 Download TXT", use_container_width=True):
-                        txt_data = download_df.to_csv(index=False, sep=",", encoding="utf-8-sig")
-                        st.download_button(
-                            label="📥 Download TXT",
-                            data=txt_data,
-                            file_name=f"scraping_data_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                            mime="text/plain",
-                        )
-
+                        # TXT
+                        with col3:
+                            csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                            st.download_button(
+                                label="📥 Download TXT (Comma Seperated)",
+                                data=csv_data,
+                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                mime="text/txt",
+                            )
+                    else:
+                        st.warning("⚠️ Please select at least one column to download.")
+            
             else:
                 if st.session_state.get("is_scraping", False):
                     st.info("⏳ Scraping in progress... Results will appear here when available.")
