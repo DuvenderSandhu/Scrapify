@@ -611,7 +611,9 @@ def extract_data(html_content, fields, method="regex"):
             
             # Add extracted data to results
             for field, value in extracted.items():
-                results[field].append(value)
+                # Skip duplicate values for each field (except metadata)
+                if value not in results[field]:
+                    results[field].append(value)
         
         return results
 
@@ -633,6 +635,7 @@ def extract_data(html_content, fields, method="regex"):
             results[field] = handle_duplicates(data) if data else []
     
     return results
+
 def extract_unknown_field(html_content, field):
     """Extract data for fields without predefined patterns."""
     soup = BeautifulSoup(html_content, 'html.parser')
