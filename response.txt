@@ -399,3 +399,6 @@ def get_html_sync(url: str, button: str = None, options: dict = None, loader: st
 #     }
 #     html = get_html_sync(url, button="Load More", options=options, loader=".loading-spinner")
 #     print(f"Extracted content (first 500 chars): {html[:500]}...")
+
+
+we can extract email, phone from any website and has a button to get Data from https://www.coldwellbankerhomes.com/sitemap/agents/ which will get all 50000 something agent 100% accurate details and that user can download CSV, JSON, TXT (Comman Seperated) it is a long process it might take time

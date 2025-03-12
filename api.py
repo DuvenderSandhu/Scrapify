@@ -4,12 +4,21 @@ import asyncio
 import os
 import requests
 from flask import Flask, request, jsonify, send_file
-from app import crawl_url, extract_data  # Assuming these functions are defined elsewhere in your app
-
+import resend 
 app = Flask(__name__)
 
 # In-memory storage for work ID status
 work_status = {}
+
+# Mock functions for crawling and data extraction
+async def crawl_url(url, options):
+    # Simulate a crawling process
+    await asyncio.sleep(5)  # Simulate network delay
+    return {"html": f"<html>Mock HTML content from {url}</html>"}
+
+def extract_data(html_content, fields):
+    # Simulate data extraction
+    return {"data": f"Extracted data from {html_content} using fields {fields}"}
 
 # Define the API route for crawling URLs
 @app.route('/api/crawl', methods=['POST'])
@@ -26,28 +35,17 @@ def api():
     # Get options from the data (using default values if missing)
     options = data.get('options', {})
 
-    # Set default values for the options if they are not provided
-    follow_links = options.get('follow_links', None)
-    max_depth = options.get('max_depth', None)
-    max_pages = options.get('max_pages', len([url]))  # Use length of URL list as default
-    stay_on_domain = options.get('stay_on_domain', None)
-    handle_pagination = options.get('handle_pagination', None)
-    handle_lazy_loading = options.get('handle_lazy_loading', False)
-    pagination_method = options.get('pagination_method', None)
-    hyphen_separator = options.get('hyphen_separator', False)
-    country_code = options.get('country_code', False)
-
     # Prepare options
     crawl_options = {
-        'follow_links': follow_links,
-        'max_depth': max_depth,
-        'max_pages': max_pages,
-        'stay_on_domain': stay_on_domain,
-        'handle_pagination': handle_pagination,
-        'handle_lazy_loading': handle_lazy_loading,
-        'pagination_method': pagination_method,
-        'hyphen_separator': hyphen_separator,
-        'country_code': country_code
+        'follow_links': options.get('follow_links', False),
+        'max_depth': options.get('max_depth', 1),
+        'max_pages': options.get('max_pages', 1),
+        'stay_on_domain': options.get('stay_on_domain', True),
+        'handle_pagination': options.get('handle_pagination', False),
+        'handle_lazy_loading': options.get('handle_lazy_loading', False),
+        'pagination_method': options.get('pagination_method', None),
+        'hyphen_separator': options.get('hyphen_separator', False),
+        'country_code': options.get('country_code', None)
     }
 
     # Generate a unique work ID (using timestamp as a simple work ID)
@@ -143,39 +141,7 @@ def cleanup(response):
     return response
 
 
-# Automatically hit the API after the Flask app starts
-def hit_api_after_start():
-    url = "https://www.google.com"
-    options = {
-        "follow_links": True,
-        "max_depth": 3,
-        "max_pages": 10,
-        "stay_on_domain": True,
-        "handle_pagination": False,
-        "handle_lazy_loading": False,
-        "pagination_method": "next_page",
-        "hyphen_separator": True,
-        "country_code": "US",
-        "extraction_method": "regex",
-        "fields": ["title"]
-    }
-
-    data = {
-        "url": url,
-        "options": options
-    }
-
-    # POST request to the /api/crawl endpoint
-    response = requests.post("http://127.0.0.1:5000/api/crawl", json=data)
-
-    # Print the response from the API
-    print(response.json())
-
-
 # Main block
 if __name__ == '__main__':
-    # Run the API call after starting the Flask app
-    # hit_api_after_start()
-
     # Start Flask app
     app.run(debug=True, use_reloader=False)

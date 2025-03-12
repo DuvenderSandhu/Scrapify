@@ -5,10 +5,10 @@ import pandas as pd
 import numpy as np
 import time
 import random
+import threading
 import spacy
 # from flask import Flask
-
-
+import resend 
 import asyncio
 # Load the spaCy model
 nlp = spacy.load("en_core_web_sm")
@@ -39,6 +39,11 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+
+
+
+
 # load_dotenv()
 # Custom CSS
 if "extraction_method" not in st.session_state:
@@ -181,7 +186,16 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+query_params = st.query_params
+selected_tab = query_params.get("tab", False) 
 
+
+tab_names = ["Setup & Controls", "Results", "Logs"]
+tab_ids = ["tab1", "tab2", "tab3"]
+# default_tab_index = tab_ids.index(selected_tab) if selected_tab in tab_ids else 0
+
+# Create tabs and set the default active tab based on URL parameter
+# tab1, tab2, tab3 = st.tabs(tab_names)
 # Initialize session state
 if 'logs' not in st.session_state:
     st.session_state.logs = []
@@ -243,6 +257,7 @@ def normalize_url(url, base_url):
 
 # Crawler functions
 async def crawl_url(url, options):
+   
     """Simulate crawling a URL with configurable options"""
     log_process(f"Crawling URL: {url}")
     domain = extract_domain(url)
@@ -256,7 +271,12 @@ async def crawl_url(url, options):
     print("button",button)
     html_content =""#await get_all_data(url) # await get_html_sync(url,button,options)
     if coldwell:
-        html_content=await get_all_data(url)
+        try:
+            html_content=await get_all_data(url)
+            print("Pring Here")
+            
+        except : 
+            print("Eror Occured")
     else :
         html_content=await get_html_sync(url,button,options)
     # print("html",html_content)
@@ -446,7 +466,8 @@ from bs4 import BeautifulSoup
 
 # Define regex patterns for common fields
 
-
+# query_params = st.experimental_get_query_params()
+# selected_tab = query_params.get("tab", ["Tab 1"])[0]
 from bs4 import BeautifulSoup
 import re
 import json
@@ -483,11 +504,38 @@ def read_progress():
         return progress_data
     except FileNotFoundError:
         return {"progress": 0, "processed_agents": 0, "total_estimated_agents": 50434, "estimated_time_remaining": 0}
+
+import re
+from bs4 import BeautifulSoup
+import json
+import itertools
+
+import re
+import json
+from bs4 import BeautifulSoup
+import streamlit as st
+
+import re
+import json
+from bs4 import BeautifulSoup
+
+import re
+import json
+from bs4 import BeautifulSoup
+
+import re
+import json
+from bs4 import BeautifulSoup
+
+import re
+import json
+from bs4 import BeautifulSoup
+
 def extract_data(html_content, fields, method="regex"):
     """Extract structured data from HTML without hardcoding assumptions."""
-    results = {}
-    country_code=st.session_state.options.get('country_code',False)
-    hyphen_separator=st.session_state.options.get('hyphen_separator',False)
+    results = {field: [] for field in fields}  # Maintain old structure
+    country_code = st.session_state.options.get('country_code', False)
+    hyphen_separator = st.session_state.options.get('hyphen_separator', False)
 
     def clean_phone_numbers(phone_list):
         """Ensure phone numbers are properly formatted, 10 digits, and unique."""
@@ -495,18 +543,17 @@ def extract_data(html_content, fields, method="regex"):
         for num in phone_list:
             if not num:  # Skip empty strings
                 continue
-            if num.find('-')<0:
-                continue
             
             # Extract only digits
             digits = re.sub(r'[^0-9]', '', num)
-            formatted=digits
+            formatted = digits
             # Ensure the number is exactly 10 digits
-            if len(digits) == 10 and hyphen_separator==True:
+            if len(digits) == 10 and hyphen_separator:
                 formatted = f"{digits[:3]}-{digits[3:6]}-{digits[6:]}"  # Format as XXX-XXX-XXXX
                 
-            if country_code==True:
-                formatted = f"+1{"-"if hyphen_separator==True else ""}{formatted}"
+            if country_code:
+                separator = "-" if hyphen_separator else ""
+                formatted = f"+1{separator}{formatted}"
             cleaned.append(formatted)
         # Remove duplicates while preserving order
         return list(dict.fromkeys(cleaned))
@@ -519,72 +566,54 @@ def extract_data(html_content, fields, method="regex"):
             try:
                 json_data = json.loads(script.string)
                 json_ld_data.append(json_data)
-            except json.JSONDecodeError as e:
-                print(f"Error parsing JSON-LD: {e}")
+            except json.JSONDecodeError:
+                pass
         return json_ld_data
 
-    def flatten_json_ld(data, parent_key='', sep='_'):
-        """Flatten JSON-LD data into a simple key-value dictionary."""
-        flattened = {}
-        if isinstance(data, dict):
-            for key, value in data.items():
-                new_key = f"{parent_key}{sep}{key}" if parent_key else key
-                if isinstance(value, dict):
-                    flattened.update(flatten_json_ld(value, new_key, sep))
-                elif isinstance(value, list):
-                    for i, item in enumerate(value):
-                        if isinstance(item, dict):
-                            flattened.update(flatten_json_ld(item, f"{new_key}{sep}{i}", sep))
-                        else:
-                            flattened[new_key] = value
-                else:
-                    flattened[new_key] = value
-        return flattened
-
     def extract_structured_data(soup, fields):
-        """Extract structured data dynamically based on context."""
-        structured_data = []
-        
+        """Extract structured data dynamically, ensuring values come from the same parent."""
         # Define flexible regex patterns for common fields
         field_patterns = {
-            "name": r"[A-Z][a-z]+(?: [A-Z][a-z]+)*",  # Matches names (e.g., "John Doe")
-            "phone": r"\b\(?\d{3}\)?[-.\s]?\d{3}-\d{4}\b",  # Matches 10-digit phone numbers
-            "email": r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}",  # Matches emails
+            "name": r"[A-Z][a-z]+(?:\s[A-Z][a-z]+)*",  # Matches names (e.g., "John Doe")
+            "phone": r"\b\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b",  # Matches 10-digit phone numbers
+            "email": r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?=[\s<]|$)",  # Matches emails, stops at space or end
         }
         
-        # Find all parent elements that might contain structured data
+        seen_data = {field: set() for field in fields}  # Track duplicates
+        
+        # Iterate through parent containers
         for parent in soup.find_all():
-            data = {}
-            has_relevant_data = False
+            extracted = {}  # Store extracted data for this parent
             
             for field in fields:
-                field_lower = field.lower()
-                pattern = field_patterns.get(field_lower, "")
-                
+                pattern = field_patterns.get(field.lower(), "")
                 if not pattern:
                     continue
                 
-                
-                # Search for matches in the parent element and its children
+                # Search within the parent and its children
                 matches = []
                 for element in [parent] + parent.find_all():
-                    text = element.get_text()
-                    if text and re.search(pattern, text):
-                        matches.extend(x for x in re.findall(pattern, text) if x not in matches)
-                        
+                    text = element.get_text(strip=True)
+                    if text:
+                        # Use regex to find matches in the text
+                        matches.extend(re.findall(pattern, text))
                 
-                # Clean and validate matches
+                # Clean & validate matches
+                if field.lower() == "phone":
+                    matches = clean_phone_numbers(matches)
+                
+                # Only take the first match per field per parent
                 if matches:
-                    if field_lower == "phone":
-                        matches = clean_phone_numbers(matches)
-                    data[field] = list(dict.fromkeys(matches))  # Remove duplicates
-                    has_relevant_data = True
-
-            # Only include parent elements that have at least one relevant field
-            if has_relevant_data:
-                structured_data.append(data)
+                    match = matches[0]
+                    if match not in seen_data[field]:  # Skip duplicates
+                        seen_data[field].add(match)
+                        extracted[field] = match
+            
+            # Add extracted data to results
+            for field, value in extracted.items():
+                results[field].append(value)
         
-        return structured_data
+        return results
 
     if method.lower() == "regex":
         soup = BeautifulSoup(html_content, "html.parser")
@@ -592,47 +621,8 @@ def extract_data(html_content, fields, method="regex"):
         # Step 1: Try to extract JSON-LD data
         json_ld_data = extract_json_ld(soup)
 
-        if False:
-            print("JSON-LD data found:", json_ld_data)
-            flattened_data = {}
-            for data in json_ld_data:
-                flattened_data.update(flatten_json_ld(data))
-
-            print("Flattened JSON-LD data:", flattened_data)
-
-            for field in fields:
-                field_lower = field.lower()
-                extracted_values = []
-
-                for key, value in flattened_data.items():
-                    if field_lower in key.lower():
-                        if isinstance(value, list):
-                            extracted_values.extend(value)
-                        else:
-                            extracted_values.append(value)
-
-                if any(kw in field_lower for kw in ["phone", "tel", "mobile", "cell"]):
-                    extracted_values = clean_phone_numbers(extracted_values)
-
-                results[field] = list(dict.fromkeys(extracted_values)) if extracted_values else []
-
-        # Step 2: If no JSON-LD data, fall back to structured extraction
-        else:
-            print("No JSON-LD data found, falling back to structured extraction.")
-            structured_data = extract_structured_data(soup, fields)
-            
-            # Convert structured data to the desired output format
-            for data in structured_data:
-                for field, values in data.items():
-                    print("field",field)
-                    print("values",values)
-                    if field not in results:
-                        results[field] = []
-                    results[field].extend(values)
-            
-            # Ensure uniqueness across all parents
-            for field in results:
-                results[field] = list(dict.fromkeys(results[field]))
+        # Step 2: Extract structured data grouped by parent
+        extract_structured_data(soup, fields)
 
     elif method.lower() == "css":
         for field in fields:
@@ -640,10 +630,9 @@ def extract_data(html_content, fields, method="regex"):
     elif method.lower() == "ai":
         ai_response = extract_data_with_ai(html_content, fields, ai_provider, ai_api)
         for field, data in ai_response.items():
-            results[field] = list(dict.fromkeys(data)) if data else []
-    print(results)
+            results[field] = handle_duplicates(data) if data else []
+    
     return results
-
 def extract_unknown_field(html_content, field):
     """Extract data for fields without predefined patterns."""
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -748,12 +737,48 @@ def simulate_ai_extraction(html_content, field):
 # Main application layout
 st.title("🕸️ Advanced Web Scraper")
 st.markdown("Crawl websites with intelligent extraction and comprehensive link following")
+def show_temp_alert(message, seconds=3):
+    """Displays a temporary alert only once per session, without blocking UI."""
+    if "alert_shown" in st.session_state and st.session_state["alert_shown"]:
+        return  # Prevent showing again
 
+    st.session_state["alert_message"] = message
+    st.session_state["alert_shown"] = True  # Mark as shown
+
+    def remove_alert():
+        time.sleep(seconds)
+        st.session_state["alert_message"] = None
+
+    threading.Thread(target=remove_alert, daemon=True).start()
+# Display the alert without blocking UI updates
+show_temp_alert("Go to Result Tab to Download Coldwell Data ")
+
+# Execute alert removal in the background if set
+if "remove_alert" in st.session_state:
+    st.session_state["remove_alert"]()
+    del st.session_state["remove_alert"]
+
+# Clear the alert
+# alert_placeholder.empty()
+
+emails= ""
+with open('email.txt', 'r') as file:
+    # Read the content of the file
+    content = file.read()
+    emails= content
 # Create tabs for different sections
 tab1, tab2, tab3 = st.tabs(["Setup & Controls", "Results", "Logs"])
 ai_provider=""
 ai_api=""
+
+def addEmail():
+    data_to_write=  st.session_state["emails"]
+    with open('email.txt', 'w') as file:
+        # Write new data to the file
+        file.write(data_to_write)
 # pagination_text_match= ""
+# if selected_tab == "tab1":
+
 with tab1:
     # Setup & Controls tab
     col1, col2 = st.columns([2, 1])
@@ -769,7 +794,13 @@ with tab1:
         )
         if url_input.find("coldwellbankerhomes")>=0:
             coldwell= st.toggle("Extract Complete Data from ColdWellBankerHome (100% Accurate)")
-
+            if coldwell:
+                emails = st.text_input("Enter Email to Notify:", 
+                                    key="emails", 
+                                    placeholder="johndoe@gmail.com,sales@gmail.com", 
+                                    value=emails,
+                                    on_change=addEmail
+                                    )
         
         # Field Configuration
         st.subheader("🔍 Data Extraction")
@@ -838,7 +869,7 @@ with tab1:
                     st.session_state.handle_pagination = True  # Default to enabled
 
                 if st.session_state.handle_pagination:
-                   
+                
                     pagination_method = st.selectbox(
                         "Select Pagination Detection Method",
                         ["Auto-detect (Use Predefined Buttons)", "CSS Selector", "XPath", "Button Text"], #"Numbered"
@@ -953,10 +984,17 @@ with tab1:
                 st.text(f"• Items extracted: {len(st.session_state.results)}")
         else:
             # Start button - only show if URLs and fields are provided
-            start_disabled = not (url_input.strip() and st.session_state.fields)
+            start_disabled = not (url_input.strip() and st.session_state.fields if not coldwell else True)
             
             if st.button("▶️ Start Scraping", type="primary", use_container_width=True, disabled=start_disabled):
                 # Parse URLs
+                if coldwell:
+                    if not emails:
+                        st.error("Please enter Email For Notification")
+                        start_disabled= False
+                    
+
+
                 urls = [url.strip() for url in url_input.split('\n') if validate_url(url.strip())]
                 
                 if urls:
@@ -1015,7 +1053,7 @@ with tab1:
             if start_disabled:
                 if not url_input.strip():
                     st.warning("Please enter at least one URL to scrape")
-                if not st.session_state.fields:
+                if not st.session_state.fields and not coldwell:
                     st.warning("Please add at least one field to extract")
             
             # Clear all button
@@ -1029,282 +1067,288 @@ with tab1:
                 log_info("All data cleared")
                 st.rerun()
             if st.session_state.current_phase == "complete":
-                st.info("Task Complete Go to Result Tab to See Result")
+                if coldwell:
+                    st.info("Task Started You will be notified after completion by email")
+                else:    
+                    st.info("Task Complete Go to Result Tab to See Result")
+if selected_tab != "tab2":
+    with tab2:
+        if not coldwell:
+            showcoldWellResult=st.toggle("View Coldwell Task Results", key="result-coldwell" ,help=f"Toggle between Coldwell task results and other quick tasks.")
+        if coldwell or showcoldWellResult:
+            with tab2:
+                st.subheader("📊 Scraping Results (Coldwell)")
+                def format_mobile_number(mobile, country_code, hyphen_separator):
+                    digits = "".join(filter(str.isdigit, str(mobile)))  # Remove non-numeric characters
+                    if len(digits) == 10:
+                        formatted = f"{digits[:3]}-{digits[3:6]}-{digits[6:]}" if hyphen_separator else digits
+                        if country_code:
+                            formatted = f"+1{'-' if hyphen_separator else ''}{formatted}"
+                        return formatted
+                    return mobile  # Return as is if it's not a 10-digit number
 
-with tab2:
-    if coldwell:
-        with tab2:
-            st.subheader("📊 Scraping Results (Coldwell)")
-            def format_mobile_number(mobile, country_code, hyphen_separator):
-                digits = "".join(filter(str.isdigit, str(mobile)))  # Remove non-numeric characters
-                if len(digits) == 10:
-                    formatted = f"{digits[:3]}-{digits[3:6]}-{digits[6:]}" if hyphen_separator else digits
-                    if country_code:
-                        formatted = f"+1{'-' if hyphen_separator else ''}{formatted}"
-                    return formatted
-                return mobile  # Return as is if it's not a 10-digit number
+                try:
+                    # Load data from coldwell_agents.csv
+                    coldwell_df = pd.read_csv("data/coldwell_agents.csv")
+                    def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
+                        if pd.isna(mobile):  # Handle NaN values
+                            return ""
 
-            try:
-                # Load data from coldwell_agents.csv
-                coldwell_df = pd.read_csv("data/coldwell_agents.csv")
-                def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
-                    if pd.isna(mobile):  # Handle NaN values
-                        return ""
+                        # Remove all non-numeric characters
+                        mobile = re.sub(r"\D", "", str(mobile))
 
-                    # Remove all non-numeric characters
-                    mobile = re.sub(r"\D", "", str(mobile))
+                        if len(mobile) < 10:  # Ensure a valid 10-digit number
+                            return mobile  # Return as-is if not a full number
 
-                    if len(mobile) < 10:  # Ensure a valid 10-digit number
-                        return mobile  # Return as-is if not a full number
-
-                    # Apply hyphen separator if enabled
-                    if hyphen_separator:
-                        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
-
-                    # Apply country code if enabled
-                    if country_code:
+                        # Apply hyphen separator if enabled
                         if hyphen_separator:
-                            mobile = f"+1-{mobile}"  # Add +1- before the number
-                        else:
-                            mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
+                            mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
 
-                    return mobile
-                
-                # Select only required columns
-                coldwell_df = coldwell_df[["name", "office", "email", "mobile"]]
-                # Add country code if enabled
-
-                # Display first 50 rows
-                coldwell_df["mobile"] = coldwell_df["mobile"].fillna("").apply(
-        lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
-    )
-                st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
-                st.dataframe(coldwell_df.head(50), use_container_width=True)
-
-                selected_columns = st.multiselect(
-                        "Select columns to download",
-                        options=coldwell_df.columns,
-                        default=coldwell_df.columns
-                    )
-                # 📥 Download Buttons (CSV, JSON)
-                if st.button("📥 Download Data", use_container_width=True):
-                    # Allow user to select columns for download
-                    
-                    
-                    if selected_columns:
-                        # Filter DataFrame based on selected columns
-                        download_df = coldwell_df[selected_columns]
-                        
-                        # Display download options (CSV, JSON)
-                        col1, col2, col3 = st.columns(3)
-                        
-                        # CSV Download
-                        with col1:
-                            csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                            st.download_button(
-                                label="📥 Download CSV",
-                                data=csv_data,
-                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                                mime="text/csv",
-                            )
-                        
-                        # JSON Download
-                        with col2:
-                            json_str = download_df.to_json(orient="records", indent=2)
-                            st.download_button(
-                                label="📥 Download JSON",
-                                data=json_str,
-                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-                                mime="application/json",
-                            )
-
-                        # TXT
-                        with col3:
-                            csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                            st.download_button(
-                                label="📥 Download TXT (Comma Seperated)",
-                                data=csv_data,
-                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                mime="text/txt",
-                            )
-                    else:
-                        st.warning("⚠️ Please select at least one column to download.")
-            
-            except FileNotFoundError:
-                st.error("❌ No Coldwell data found. Please ensure 'data/coldwell_agents.csv' exists.")
-    else:
-        # Original logic for other URLs
-        with tab2:
-            st.subheader("📊 Scraping Results")
-            
-            if st.session_state.get("results"):
-                def process_results(data_dicts, extend_metadata=True):
-                    if not data_dicts:
-                        return pd.DataFrame()
-                    
-                    all_data = []
-                    
-                    for i, data_dict in enumerate(data_dicts):
-                        # Define metadata fields explicitly
-                        metadata = {"Source_Index": f"Data-{i+1}"}
-                        list_fields = {}
-                        non_list_fields = {}
-                        
-                        # Separate fields into metadata, list fields, and non-list fields
-                        for key, value in data_dict.items():
-                            if key in ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]:
-                                if isinstance(value, list):
-                                    metadata[key] = "" if not value else str(value[0])
-                                else:
-                                    metadata[key] = "" if value is None else str(value)
-                            elif isinstance(value, list) and len(value) > 1:
-                                list_fields[key] = value
+                        # Apply country code if enabled
+                        if country_code:
+                            if hyphen_separator:
+                                mobile = f"+1-{mobile}"  # Add +1- before the number
                             else:
-                                if isinstance(value, list):
-                                    non_list_fields[key] = "" if not value else str(value[0])
+                                mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
+
+                        return mobile
+                    
+                    # Select only required columns
+                    coldwell_df = coldwell_df[["name", "office", "email", "mobile"]]
+                    # Add country code if enabled
+
+                    # Display first 50 rows
+                    coldwell_df["mobile"] = coldwell_df["mobile"].fillna("").apply(
+            lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
+        )
+                    st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
+                    st.dataframe(coldwell_df.head(50), use_container_width=True)
+
+                    selected_columns = st.multiselect(
+                            "Select columns to download",
+                            options=coldwell_df.columns,
+                            default=coldwell_df.columns
+                        )
+                    # 📥 Download Buttons (CSV, JSON)
+                    if st.button("📥 Download Data", use_container_width=True):
+                        # Allow user to select columns for download
+                        
+                        
+                        if selected_columns:
+                            # Filter DataFrame based on selected columns
+                            download_df = coldwell_df[selected_columns]
+                            
+                            # Display download options (CSV, JSON)
+                            col1, col2, col3 = st.columns(3)
+                            
+                            # CSV Download
+                            with col1:
+                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                st.download_button(
+                                    label="📥 Download CSV",
+                                    data=csv_data,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                    mime="text/csv",
+                                )
+                            
+                            # JSON Download
+                            with col2:
+                                json_str = download_df.to_json(orient="records", indent=2)
+                                st.download_button(
+                                    label="📥 Download JSON",
+                                    data=json_str,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                    mime="application/json",
+                                )
+
+                            # TXT
+                            with col3:
+                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                st.download_button(
+                                    label="📥 Download TXT (Comma Seperated)",
+                                    data=csv_data,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                    mime="text/txt",
+                                )
+                        else:
+                            st.warning("⚠️ Please select at least one column to download.")
+                
+                except FileNotFoundError:
+                    st.error("Data is being fetched: 100 agents are being loaded. Please check back shortly!")
+        else:
+            # Original logic for other URLs
+            with tab2:
+                st.subheader("📊 Scraping Results")
+                
+                if st.session_state.get("results"):
+                    def process_results(data_dicts, extend_metadata=True):
+                        if not data_dicts:
+                            return pd.DataFrame()
+                        
+                        all_data = []
+                        
+                        for i, data_dict in enumerate(data_dicts):
+                            # Define metadata fields explicitly
+                            metadata = {"Source_Index": f"Data-{i+1}"}
+                            list_fields = {}
+                            non_list_fields = {}
+                            
+                            # Separate fields into metadata, list fields, and non-list fields
+                            for key, value in data_dict.items():
+                                if key in ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]:
+                                    if isinstance(value, list):
+                                        metadata[key] = "" if not value else str(value[0])
+                                    else:
+                                        metadata[key] = "" if value is None else str(value)
+                                elif isinstance(value, list) and len(value) > 1:
+                                    list_fields[key] = value
                                 else:
-                                    non_list_fields[key] = "" if value is None else str(value)
-                        
-                        # Special handling for email - only include in the first row
-                        email_value = None
-                        if "email" in non_list_fields:
-                            email_value = non_list_fields.pop("email")
-                        
-                        # If there are list fields, expand them into rows
-                        if list_fields:
-                            max_length = max(len(value) for value in list_fields.values())
-                            for j in range(max_length):
-                                row = metadata.copy() if j == 0 or not extend_metadata else {"Source_Index": f"Data-{i+1}"}
-                                
-                                # Add non-list fields (excluding email)
+                                    if isinstance(value, list):
+                                        non_list_fields[key] = "" if not value else str(value[0])
+                                    else:
+                                        non_list_fields[key] = "" if value is None else str(value)
+                            
+                            # Special handling for email - only include in the first row
+                            email_value = None
+                            if "email" in non_list_fields:
+                                email_value = non_list_fields.pop("email")
+                            
+                            # If there are list fields, expand them into rows
+                            if list_fields:
+                                max_length = max(len(value) for value in list_fields.values())
+                                for j in range(max_length):
+                                    row = metadata.copy() if j == 0 or not extend_metadata else {"Source_Index": f"Data-{i+1}"}
+                                    
+                                    # Add non-list fields (excluding email)
+                                    row.update(non_list_fields)
+                                    
+                                    # Add email only to the first row
+                                    if j == 0 and email_value is not None:
+                                        row["email"] = email_value
+                                    elif "email" not in row:
+                                        row["email"] = ""
+                                    
+                                    for key, value_list in list_fields.items():
+                                        row[key] = str(value_list[j]) if j < len(value_list) else ""
+                                    all_data.append(row)
+                            else:
+                                row = metadata.copy()
                                 row.update(non_list_fields)
                                 
-                                # Add email only to the first row
-                                if j == 0 and email_value is not None:
+                                # Add email back to the row
+                                if email_value is not None:
                                     row["email"] = email_value
-                                elif "email" not in row:
-                                    row["email"] = ""
-                                
-                                for key, value_list in list_fields.items():
-                                    row[key] = str(value_list[j]) if j < len(value_list) else ""
+                                    
                                 all_data.append(row)
+                        
+                        # Create DataFrame
+                        try:
+                            df = pd.DataFrame(all_data)
+                            
+                            # If extend_metadata is True, clear metadata in duplicate rows
+                            if extend_metadata:
+                                metadata_cols = ["url", "timestamp", "date", "datetime", "time", "title"]
+                                df.loc[df.duplicated(subset=["Source_Index"]), [col for col in metadata_cols if col in df.columns]] = ""
+                            
+                            # Define column order: Source_Index first, then others
+                            first_cols = ["Source_Index"]
+                            if "url" in df.columns:
+                                first_cols.append("url")
+                            if "timestamp" in df.columns:
+                                first_cols.append("timestamp")
+                            other_priority = ["date", "datetime", "time", "title"]
+                            for col in other_priority:
+                                if col in df.columns and col not in first_cols:
+                                    first_cols.append(col)
+                                    
+                            # Make sure email is prioritized in column ordering
+                            remaining_cols = [col for col in df.columns if col not in first_cols]
+                            if "email" in remaining_cols:
+                                remaining_cols.remove("email")
+                                remaining_cols.append("email")
+                                
+                            df = df[first_cols + remaining_cols]
+                            
+                        except Exception as e:
+                            return pd.DataFrame({"Error": [str(e)]})
+                        
+                        return df
+
+                    def get_data_without_metadata(df):
+                        # Define metadata columns to exclude
+                        metadata_cols = ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]
+                        # Keep only columns that are not metadata
+                        data_cols = [col for col in df.columns if col.lower() not in metadata_cols]
+                        return df[data_cols]
+
+                    # Process results with extend_metadata=True
+                    results_df = process_results(st.session_state.results, extend_metadata=True)
+
+                    # Display the full DataFrame in Streamlit
+                    st.dataframe(results_df, use_container_width=True)
+
+                    # Prepare data for download (exclude metadata)
+                    download_df = get_data_without_metadata(results_df)
+
+                    # 📥 Download Buttons (CSV, JSON, TXT)
+                    col1, col2, col3 = st.columns(3)
+
+                    selected_columns = st.multiselect(
+                                            "Select columns to download",
+                                            options=results_df.columns,
+                                            default=results_df.columns
+                                        )
+                    # 📥 Download Buttons (CSV, JSON)
+                    if st.button("📥 Download Data", use_container_width=True):
+                        # Allow user to select columns for download
+                        
+                        
+                        if selected_columns:
+                            # Filter DataFrame based on selected columns
+                            download_df = results_df[selected_columns]
+                            
+                            # Display download options (CSV, JSON)
+                            col1, col2, col3 = st.columns(3)
+                            
+                            # CSV Download
+                            with col1:
+                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                st.download_button(
+                                    label="📥 Download CSV",
+                                    data=csv_data,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                    mime="text/csv",
+                                )
+                            
+                            # JSON Download
+                            with col2:
+                                json_str = download_df.to_json(orient="records", indent=2)
+                                st.download_button(
+                                    label="📥 Download JSON",
+                                    data=json_str,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                    mime="application/json",
+                                )
+
+                            # TXT
+                            with col3:
+                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                st.download_button(
+                                    label="📥 Download TXT (Comma Seperated)",
+                                    data=csv_data,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                    mime="text/txt",
+                                )
                         else:
-                            row = metadata.copy()
-                            row.update(non_list_fields)
-                            
-                            # Add email back to the row
-                            if email_value is not None:
-                                row["email"] = email_value
-                                
-                            all_data.append(row)
-                    
-                    # Create DataFrame
-                    try:
-                        df = pd.DataFrame(all_data)
-                        
-                        # If extend_metadata is True, clear metadata in duplicate rows
-                        if extend_metadata:
-                            metadata_cols = ["url", "timestamp", "date", "datetime", "time", "title"]
-                            df.loc[df.duplicated(subset=["Source_Index"]), [col for col in metadata_cols if col in df.columns]] = ""
-                        
-                        # Define column order: Source_Index first, then others
-                        first_cols = ["Source_Index"]
-                        if "url" in df.columns:
-                            first_cols.append("url")
-                        if "timestamp" in df.columns:
-                            first_cols.append("timestamp")
-                        other_priority = ["date", "datetime", "time", "title"]
-                        for col in other_priority:
-                            if col in df.columns and col not in first_cols:
-                                first_cols.append(col)
-                                
-                        # Make sure email is prioritized in column ordering
-                        remaining_cols = [col for col in df.columns if col not in first_cols]
-                        if "email" in remaining_cols:
-                            remaining_cols.remove("email")
-                            remaining_cols.append("email")
-                            
-                        df = df[first_cols + remaining_cols]
-                        
-                    except Exception as e:
-                        return pd.DataFrame({"Error": [str(e)]})
-                    
-                    return df
-
-                def get_data_without_metadata(df):
-                    # Define metadata columns to exclude
-                    metadata_cols = ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]
-                    # Keep only columns that are not metadata
-                    data_cols = [col for col in df.columns if col.lower() not in metadata_cols]
-                    return df[data_cols]
-
-                # Process results with extend_metadata=True
-                results_df = process_results(st.session_state.results, extend_metadata=True)
-
-                # Display the full DataFrame in Streamlit
-                st.dataframe(results_df, use_container_width=True)
-
-                # Prepare data for download (exclude metadata)
-                download_df = get_data_without_metadata(results_df)
-
-                # 📥 Download Buttons (CSV, JSON, TXT)
-                col1, col2, col3 = st.columns(3)
-
-                selected_columns = st.multiselect(
-                                        "Select columns to download",
-                                        options=results_df.columns,
-                                        default=results_df.columns
-                                    )
-                # 📥 Download Buttons (CSV, JSON)
-                if st.button("📥 Download Data", use_container_width=True):
-                    # Allow user to select columns for download
-                    
-                    
-                    if selected_columns:
-                        # Filter DataFrame based on selected columns
-                        download_df = results_df[selected_columns]
-                        
-                        # Display download options (CSV, JSON)
-                        col1, col2, col3 = st.columns(3)
-                        
-                        # CSV Download
-                        with col1:
-                            csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                            st.download_button(
-                                label="📥 Download CSV",
-                                data=csv_data,
-                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                                mime="text/csv",
-                            )
-                        
-                        # JSON Download
-                        with col2:
-                            json_str = download_df.to_json(orient="records", indent=2)
-                            st.download_button(
-                                label="📥 Download JSON",
-                                data=json_str,
-                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-                                mime="application/json",
-                            )
-
-                        # TXT
-                        with col3:
-                            csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                            st.download_button(
-                                label="📥 Download TXT (Comma Seperated)",
-                                data=csv_data,
-                                file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                mime="text/txt",
-                            )
-                    else:
-                        st.warning("⚠️ Please select at least one column to download.")
-            
-            else:
-                if st.session_state.get("is_scraping", False):
-                    st.info("⏳ Scraping in progress... Results will appear here when available.")
+                            st.warning("⚠️ Please select at least one column to download.")
+                
                 else:
-                    st.info("🔍 No results yet. Start a scraping job to see results here.")
+                    if st.session_state.get("is_scraping", False):
+                        st.info("⏳ Scraping in progress... Results will appear here when available.")
+                    else:
+                        st.info("🔍 No results yet. Start a scraping job to see results here.")
 
+# if selected_tab == "tab3":
 with tab3:
     st.subheader("Scraping Logs")
 
@@ -1321,6 +1365,285 @@ with tab3:
         for log in filtered_logs:
             icons = {"INFO": "ℹ️", "SUCCESS": "✅", "WARNING": "⚠️", "ERROR": "❌", "PROCESS": "🔄"}
             st.markdown(f"[{log['timestamp']}] {icons.get(log['level'], '')} {log['message']}")
+
+if selected_tab == "tab2":
+    print(selected_tab)
+    with tab2:
+        if True:
+            showcoldWellResult=st.toggle("View Coldwell Task Results", help=f"Toggle between Coldwell task results and other quick tasks.",value=True)
+        if coldwell or showcoldWellResult:
+            with tab2:
+                st.subheader("📊 Scraping Results (Coldwell)")
+                def format_mobile_number(mobile, country_code, hyphen_separator):
+                    digits = "".join(filter(str.isdigit, str(mobile)))  # Remove non-numeric characters
+                    if len(digits) == 10:
+                        formatted = f"{digits[:3]}-{digits[3:6]}-{digits[6:]}" if hyphen_separator else digits
+                        if country_code:
+                            formatted = f"+1{'-' if hyphen_separator else ''}{formatted}"
+                        return formatted
+                    return mobile  # Return as is if it's not a 10-digit number
+
+                try:
+                    # Load data from coldwell_agents.csv
+                    coldwell_df = pd.read_csv("data/coldwell_agents.csv")
+                    def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
+                        if pd.isna(mobile):  # Handle NaN values
+                            return ""
+
+                        # Remove all non-numeric characters
+                        mobile = re.sub(r"\D", "", str(mobile))
+
+                        if len(mobile) < 10:  # Ensure a valid 10-digit number
+                            return mobile  # Return as-is if not a full number
+
+                        # Apply hyphen separator if enabled
+                        if hyphen_separator:
+                            mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
+
+                        # Apply country code if enabled
+                        if country_code:
+                            if hyphen_separator:
+                                mobile = f"+1-{mobile}"  # Add +1- before the number
+                            else:
+                                mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
+
+                        return mobile
+                    
+                    # Select only required columns
+                    coldwell_df = coldwell_df[["name", "office", "email", "mobile"]]
+                    # Add country code if enabled
+
+                    # Display first 50 rows
+                    coldwell_df["mobile"] = coldwell_df["mobile"].fillna("").apply(
+            lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
+        )
+                    st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
+                    st.dataframe(coldwell_df.head(50), use_container_width=True)
+
+                    selected_columns = st.multiselect(
+                            "Select columns to download",
+                            options=coldwell_df.columns,
+                            default=coldwell_df.columns
+                        )
+                    # 📥 Download Buttons (CSV, JSON)
+                    if st.button("📥 Download Data", use_container_width=True):
+                        # Allow user to select columns for download
+                        
+                        
+                        if selected_columns:
+                            # Filter DataFrame based on selected columns
+                            download_df = coldwell_df[selected_columns]
+                            
+                            # Display download options (CSV, JSON)
+                            col1, col2, col3 = st.columns(3)
+                            
+                            # CSV Download
+                            with col1:
+                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                st.download_button(
+                                    label="📥 Download CSV",
+                                    data=csv_data,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                    mime="text/csv",
+                                )
+                            
+                            # JSON Download
+                            with col2:
+                                json_str = download_df.to_json(orient="records", indent=2)
+                                st.download_button(
+                                    label="📥 Download JSON",
+                                    data=json_str,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                    mime="application/json",
+                                )
+
+                            # TXT
+                            with col3:
+                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                st.download_button(
+                                    label="📥 Download TXT (Comma Seperated)",
+                                    data=csv_data,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                    mime="text/txt",
+                                )
+                        else:
+                            st.warning("⚠️ Please select at least one column to download.")
+                
+                except FileNotFoundError:
+                    st.error("Data is being fetched: 100 agents are being loaded. Please check back shortly!")
+        else:
+            # Original logic for other URLs
+            with tab2:
+                st.subheader("📊 Scraping Results")
+                
+                if st.session_state.get("results"):
+                    def process_results(data_dicts, extend_metadata=True):
+                        if not data_dicts:
+                            return pd.DataFrame()
+                        
+                        all_data = []
+                        
+                        for i, data_dict in enumerate(data_dicts):
+                            # Define metadata fields explicitly
+                            metadata = {"Source_Index": f"Data-{i+1}"}
+                            list_fields = {}
+                            non_list_fields = {}
+                            
+                            # Separate fields into metadata, list fields, and non-list fields
+                            for key, value in data_dict.items():
+                                if key in ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]:
+                                    if isinstance(value, list):
+                                        metadata[key] = "" if not value else str(value[0])
+                                    else:
+                                        metadata[key] = "" if value is None else str(value)
+                                elif isinstance(value, list) and len(value) > 1:
+                                    list_fields[key] = value
+                                else:
+                                    if isinstance(value, list):
+                                        non_list_fields[key] = "" if not value else str(value[0])
+                                    else:
+                                        non_list_fields[key] = "" if value is None else str(value)
+                            
+                            # Special handling for email - only include in the first row
+                            email_value = None
+                            if "email" in non_list_fields:
+                                email_value = non_list_fields.pop("email")
+                            
+                            # If there are list fields, expand them into rows
+                            if list_fields:
+                                max_length = max(len(value) for value in list_fields.values())
+                                for j in range(max_length):
+                                    row = metadata.copy() if j == 0 or not extend_metadata else {"Source_Index": f"Data-{i+1}"}
+                                    
+                                    # Add non-list fields (excluding email)
+                                    row.update(non_list_fields)
+                                    
+                                    # Add email only to the first row
+                                    if j == 0 and email_value is not None:
+                                        row["email"] = email_value
+                                    elif "email" not in row:
+                                        row["email"] = ""
+                                    
+                                    for key, value_list in list_fields.items():
+                                        row[key] = str(value_list[j]) if j < len(value_list) else ""
+                                    all_data.append(row)
+                            else:
+                                row = metadata.copy()
+                                row.update(non_list_fields)
+                                
+                                # Add email back to the row
+                                if email_value is not None:
+                                    row["email"] = email_value
+                                    
+                                all_data.append(row)
+                        
+                        # Create DataFrame
+                        try:
+                            df = pd.DataFrame(all_data)
+                            
+                            # If extend_metadata is True, clear metadata in duplicate rows
+                            if extend_metadata:
+                                metadata_cols = ["url", "timestamp", "date", "datetime", "time", "title"]
+                                df.loc[df.duplicated(subset=["Source_Index"]), [col for col in metadata_cols if col in df.columns]] = ""
+                            
+                            # Define column order: Source_Index first, then others
+                            first_cols = ["Source_Index"]
+                            if "url" in df.columns:
+                                first_cols.append("url")
+                            if "timestamp" in df.columns:
+                                first_cols.append("timestamp")
+                            other_priority = ["date", "datetime", "time", "title"]
+                            for col in other_priority:
+                                if col in df.columns and col not in first_cols:
+                                    first_cols.append(col)
+                                    
+                            # Make sure email is prioritized in column ordering
+                            remaining_cols = [col for col in df.columns if col not in first_cols]
+                            if "email" in remaining_cols:
+                                remaining_cols.remove("email")
+                                remaining_cols.append("email")
+                                
+                            df = df[first_cols + remaining_cols]
+                            
+                        except Exception as e:
+                            return pd.DataFrame({"Error": [str(e)]})
+                        
+                        return df
+
+                    def get_data_without_metadata(df):
+                        # Define metadata columns to exclude
+                        metadata_cols = ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]
+                        # Keep only columns that are not metadata
+                        data_cols = [col for col in df.columns if col.lower() not in metadata_cols]
+                        return df[data_cols]
+
+                    # Process results with extend_metadata=True
+                    results_df = process_results(st.session_state.results, extend_metadata=True)
+
+                    # Display the full DataFrame in Streamlit
+                    st.dataframe(results_df, use_container_width=True)
+
+                    # Prepare data for download (exclude metadata)
+                    download_df = get_data_without_metadata(results_df)
+
+                    # 📥 Download Buttons (CSV, JSON, TXT)
+                    col1, col2, col3 = st.columns(3)
+
+                    selected_columns = st.multiselect(
+                                            "Select columns to download",
+                                            options=results_df.columns,
+                                            default=results_df.columns
+                                        )
+                    # 📥 Download Buttons (CSV, JSON)
+                    if st.button("📥 Download Data", use_container_width=True):
+                        # Allow user to select columns for download
+                        
+                        
+                        if selected_columns:
+                            # Filter DataFrame based on selected columns
+                            download_df = results_df[selected_columns]
+                            
+                            # Display download options (CSV, JSON)
+                            col1, col2, col3 = st.columns(3)
+                            
+                            # CSV Download
+                            with col1:
+                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                st.download_button(
+                                    label="📥 Download CSV",
+                                    data=csv_data,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                    mime="text/csv",
+                                )
+                            
+                            # JSON Download
+                            with col2:
+                                json_str = download_df.to_json(orient="records", indent=2)
+                                st.download_button(
+                                    label="📥 Download JSON",
+                                    data=json_str,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                    mime="application/json",
+                                )
+
+                            # TXT
+                            with col3:
+                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                st.download_button(
+                                    label="📥 Download TXT (Comma Seperated)",
+                                    data=csv_data,
+                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                    mime="text/txt",
+                                )
+                        else:
+                            st.warning("⚠️ Please select at least one column to download.")
+                
+                else:
+                    if st.session_state.get("is_scraping", False):
+                        st.info("⏳ Scraping in progress... Results will appear here when available.")
+                    else:
+                        st.info("🔍 No results yet. Start a scraping job to see results here.")
+    # if selected_tab == "tab3":
 
 # Main scraping process (runs when is_scraping is True)
 if st.session_state.is_scraping:
@@ -1357,6 +1680,7 @@ if st.session_state.is_scraping:
                         extracted_data = extract_data(html_content, st.session_state.fields, st.session_state.extraction_method)
                         # db.save_extracted_data(rawid, next_url, extracted_data)
                         # Add the extracted data to results
+                        
                         if any(extracted_data.values()):
                             result_item = {
                                 'URL': next_url,
@@ -1415,7 +1739,6 @@ if st.session_state.is_scraping:
                 
                 # Extract data from the crawled page
                 extracted_data = extract_data(html_content, st.session_state.fields, st.session_state.extraction_method)
-                
                 # Add the extracted data to results
                 if any(extracted_data.values()):
                     result_item = {
@@ -1466,7 +1789,10 @@ if st.session_state.is_scraping:
     elif st.session_state.current_phase == "complete":
         # Crawling is complete
         if st.session_state.results:
-            log_success(f"Scraping job completed: extracted data from {len(st.session_state.results)} pages")
+            if coldwell:
+                log_success(f"Task Scheduled You will be notified when Task will complete by email")
+            else:
+                log_success(f"Scraping job completed: extracted data from {len(st.session_state.results)} pages")
         else:
             log_warning("Scraping job completed but no data was extracted")
         
