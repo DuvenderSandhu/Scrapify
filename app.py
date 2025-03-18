@@ -1409,6 +1409,29 @@ if selected_tab != "tab2":
             with tab2:
                 st.subheader("📊 Scraping Results (Coldwell)")
 
+                def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
+                    if pd.isna(mobile):  # Handle NaN values
+                        return ""
+
+                    # Remove all non-numeric characters
+                    mobile = re.sub(r"\D", "", str(mobile))
+
+                    if len(mobile) < 10:  # Ensure a valid 10-digit number
+                        return mobile  # Return as-is if not a full number
+
+                    # Apply hyphen separator if enabled
+                    if hyphen_separator:
+                        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
+
+                    # Apply country code if enabled
+                    if country_code:
+                        if hyphen_separator:
+                            mobile = f"+1-{mobile}"  # Add +1- before the number
+                        else:
+                            mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
+
+                    return mobile
+
                 try:
                     # Load data from coldwell_agents.csv
                     coldwell_df = pd.read_csv("data/coldwell_agents.csv")
@@ -1420,9 +1443,6 @@ if selected_tab != "tab2":
                     coldwell_df["mobile"] = coldwell_df["mobile"].fillna("").apply(
                         lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
                     )
-
-                    # Normalize emails to lowercase and strip whitespace
-                    coldwell_df["email"] = coldwell_df["email"].apply(normalize_and_deduplicate)
 
                     st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
 
@@ -1437,6 +1457,7 @@ if selected_tab != "tab2":
                         key="coldwell_editor"
                     )
 
+
                     # Allow users to download the edited data
                     selected_columns = st.multiselect(
                         "Select columns to download",
@@ -1448,9 +1469,6 @@ if selected_tab != "tab2":
                         if selected_columns:
                             # Filter DataFrame based on selected columns
                             download_df = edited_df[selected_columns]
-
-                            # Clean the data (remove duplicates and empty strings)
-                            download_df = clean_download_data(download_df)
 
                             # Display download options (CSV, JSON, TXT)
                             col1, col2, col3 = st.columns(3)
@@ -1495,7 +1513,142 @@ if selected_tab != "tab2":
                 st.subheader("📊 Scraping Results")
 
                 if st.session_state.get("results"):
-                    # Process results with deduplication and empty string filtering
+                    def process_results(data_dicts, extend_metadata=True):
+                        if not data_dicts:
+                            return pd.DataFrame()
+                        
+                        # First, collect all the data into a list of dictionaries
+                        all_data = []
+                        metadata_cols = ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]
+                        
+                        # Track seen values for deduplication
+                        seen_values = {}
+                        
+                        for i, data_dict in enumerate(data_dicts):
+                            source_index = f"Data-{i+1}"
+                            
+                            # Extract metadata
+                            metadata = {"Source_Index": source_index}
+                            for key in metadata_cols:
+                                if key in data_dict:
+                                    value = data_dict[key]
+                                    if isinstance(value, list):
+                                        metadata[key] = "" if not value else str(value[0])
+                                    else:
+                                        metadata[key] = "" if value is None else str(value)
+                            
+                            # Extract list fields and non-list fields
+                            list_fields = {}
+                            non_list_fields = {}
+                            
+                            for key, value in data_dict.items():
+                                if key in metadata_cols:
+                                    continue
+                                elif isinstance(value, list) and len(value) > 1:
+                                    list_fields[key] = value
+                                else:
+                                    if isinstance(value, list):
+                                        non_list_fields[key] = "" if not value else str(value[0])
+                                    else:
+                                        non_list_fields[key] = "" if value is None else str(value)
+                            
+                            # Process list fields
+                            if list_fields:
+                                max_length = max(len(value) for value in list_fields.values())
+                                for j in range(max_length):
+                                    row_data = {}
+                                    
+                                    # Add metadata
+                                    if j == 0 or not extend_metadata:
+                                        row_data.update(metadata)
+                                    else:
+                                        row_data["Source_Index"] = source_index
+                                    
+                                    # Add non-list fields
+                                    row_data.update(non_list_fields)
+                                    
+                                    # Add list fields for this row
+                                    has_valid_data = False
+                                    for key, value_list in list_fields.items():
+                                        if j < len(value_list):
+                                            value = str(value_list[j])
+                                            if value:  # Only process non-empty values
+                                                # Initialize seen_values for this column if needed
+                                                if key not in seen_values:
+                                                    seen_values[key] = set()
+                                                
+                                                # Only add the value if it hasn't been seen before
+                                                if value not in seen_values[key]:
+                                                    row_data[key] = value
+                                                    seen_values[key].add(value)
+                                                    has_valid_data = True
+                                        
+                                    # Only add row if it has valid data
+                                    if has_valid_data or j == 0:  # Keep at least one row per source
+                                        all_data.append(row_data)
+                            else:
+                                # Process single row
+                                row_data = {}
+                                row_data.update(metadata)
+                                
+                                # Add non-list fields with deduplication
+                                has_valid_data = False
+                                for key, value in non_list_fields.items():
+                                    if value:  # Only process non-empty values
+                                        # Initialize seen_values for this column if needed
+                                        if key not in seen_values:
+                                            seen_values[key] = set()
+                                        
+                                        # Only add the value if it hasn't been seen before
+                                        if value not in seen_values[key]:
+                                            row_data[key] = value
+                                            seen_values[key].add(value)
+                                            has_valid_data = True
+                                
+                                # Only add row if it has valid data
+                                if has_valid_data or i == 0:  # Keep at least one row per source
+                                    all_data.append(row_data)
+                        
+                        # Create DataFrame
+                        try:
+                            # Create DataFrame from collected data
+                            df = pd.DataFrame(all_data)
+                            
+                            # If DataFrame is empty, return empty DataFrame
+                            if df.empty:
+                                return df
+                            
+                            # Fill NaN values that might have been created during the process
+                            df = df.fillna("")
+                            
+                            # If extend_metadata is True, clear metadata in duplicate rows
+                            if extend_metadata:
+                                metadata_cols_in_df = [col for col in metadata_cols if col in df.columns and col != "Source_Index"]
+                                df.loc[df.duplicated(subset=["Source_Index"]), metadata_cols_in_df] = ""
+                            
+                            # Define column order: Source_Index first, then other metadata, then data
+                            first_cols = ["Source_Index"]
+                            for col in ["url", "timestamp", "date", "datetime", "time", "title"]:
+                                if col in df.columns:
+                                    first_cols.append(col)
+                                    
+                            # Arrange the rest of the columns
+                            remaining_cols = [col for col in df.columns if col not in first_cols]
+                            
+                            # Final result with proper column order
+                            return df[first_cols + remaining_cols]
+                            
+                        except Exception as e:
+                            return pd.DataFrame({"Error": [str(e)]})
+                    def get_data_without_metadata(df):
+                        # Define metadata columns to exclude
+                        metadata_cols = ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]
+                        # Keep only columns that are not metadata
+                        data_cols = [col for col in df.columns if col.lower() not in metadata_cols]
+                        return df[data_cols]
+
+
+                    # Process results with extend_metadata=True
                     results_df = process_results(st.session_state.results, extend_metadata=True)
 
                     # Display the editable table
@@ -1509,6 +1662,7 @@ if selected_tab != "tab2":
                         key="results_editor"
                     )
 
+                    # Add a "Delete Selected Rows" button
                     # Allow users to download the edited data
                     selected_columns = st.multiselect(
                         "Select columns to download",
@@ -1520,9 +1674,6 @@ if selected_tab != "tab2":
                         if selected_columns:
                             # Filter DataFrame based on selected columns
                             download_df = edited_results_df[selected_columns]
-
-                            # Clean the data (remove duplicates and empty strings)
-                            download_df = clean_download_data(download_df)
 
                             # Display download options (CSV, JSON, TXT)
                             col1, col2, col3 = st.columns(3)
@@ -1563,7 +1714,9 @@ if selected_tab != "tab2":
                     if st.session_state.get("is_scraping", False):
                         st.info("⏳ Scraping in progress... Results will appear here when available.")
                     else:
-                        st.info("🔍 No results yet. Start a scraping job to see results here.")              
+                        st.info("🔍 No results yet. Start a scraping job to see results here.")
+   
+
 # if selected_tab == "tab3":
 with tab3:
     st.subheader("Scraping Logs")
