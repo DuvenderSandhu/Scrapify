@@ -967,7 +967,7 @@ with tab1:
                 "Estimate Time:", 
                 (st.session_state.options.get("max_pages") if st.session_state.options.get("follow_links") and st.session_state.options.get("max_pages") 
                 else len(st.session_state.urls) + len(st.session_state.found_links) if st.session_state.options.get("follow_links") 
-                else len(st.session_state.urls)) * random.randint(15, 20), 
+                else len(st.session_state.urls)) * random.randint(15, 20) * 1.5, 
                 "seconds for", 
                 st.session_state.options.get("max_pages") if st.session_state.options.get("follow_links") and st.session_state.options.get("max_pages") 
                 else "each" if st.session_state.options.get("follow_links") 
@@ -980,46 +980,38 @@ with tab1:
 
 
             my_html = """
-            <script>
-            function startTimer(display) {
-                var seconds = 0;
-                setInterval(function () {
-                    var minutes = parseInt(seconds / 60, 10);
-                    var remainingSeconds = parseInt(seconds % 60, 10);
+                    <script>
+                    function startTimer(display) {
+                        var seconds = 0;
+                        setInterval(function () {
+                            var minutes = Math.floor(seconds / 60);
+                            var remainingSeconds = seconds % 60;
 
-                    minutes = minutes < 10 ? "0" + minutes : minutes;
-                    remainingSeconds = remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds;
+                            minutes = minutes < 10 ? "0" + minutes : minutes;
+                            remainingSeconds = remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds;
 
-                    display.textContent = minutes + ":" + remainingSeconds;
-                    
-                    if (seconds < 1000) {
-                        seconds++;
+                            display.textContent = minutes + ":" + remainingSeconds;
+                            seconds++;
+                        }, 1000);
                     }
-                }, 1000);
-            }
 
-            window.onload = function () {
-                var display = document.querySelector('#time');
-                startTimer(display);
-            };
-            </script>
+                    window.onload = function () {
+                        var display = document.querySelector('#time');
+                        startTimer(display);
+                    };
+                    </script>
 
-            <style>
-            body, html {
-                margin: 0;
-                padding: 0;
-                height: auto;
-                overflow: hidden;
-            }
-            .timer-container {
-                line-height: 1;
-                font-family: monospace;
-                font-size: 1.2em;
-                color: #0066cc;
-            }
-            </style>
+                    <style>
+                    body, html {
+                        height: 100vh;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                    }
+                    </style>
 
-            <div class="timer-container"><span id="time">00:00</span></div>
+                    <div id="time">00:00</div>
+
             """
 
             html(my_html, height=20)
