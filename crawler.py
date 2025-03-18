@@ -50,7 +50,7 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(
-            headless=False,
+            headless=True,
             args=['--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']
         )
         log_info("Launched headless Chromium browser with args: --disable-web-security")
