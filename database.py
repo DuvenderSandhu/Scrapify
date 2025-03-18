@@ -21,10 +21,12 @@ class Database:
         """Establish a connection to MySQL database."""
         try:
             conn = mysql.connector.connect(
-                host="localhost",#"mysql-e613014-moviefordsandhu-195f.c.aivencloud.com",
-                user="scrapper",#avnadmin",
-                password="nDbyL3jrSwmdkakn" ,  #"AVNS_J8TyM_AYEio9Cfp3rYck",
-                database="scrapper",#"defaultdb"
+                host="mysql-e613014-moviefordsandhu-195f.c.aivencloud.com",#
+                user="avnadmin",#"scrapper"
+                password="AVNS_J8TyM_YEio9Cfp3rYck", #"nDbyL3jrSwmdkakn" , 
+                database="defaultdb", #"scrapper",
+                port=21010
+                
             )
             if conn.is_connected():
                 print("Connected to MySQL database!")
