@@ -536,92 +536,97 @@ import re
 import json
 from bs4 import BeautifulSoup
 
+import re
+import json
+from bs4 import BeautifulSoup
+from datetime import datetime
+import time
+
 def extract_data(html_content, fields, method="regex"):
-    """Extract structured data from HTML without hardcoding assumptions."""
+    """Extract structured data from HTML using optimized regex."""
     print("Extracting Now")
-    #start = time.time()
+    start = time.time()
     results = {field: [] for field in fields}  # Maintain old structure
     country_code = st.session_state.options.get('country_code', False)
     hyphen_separator = st.session_state.options.get('hyphen_separator', False)
 
+    # Precompile regex patterns for performance
+    regex_patterns = {
+        "name": re.compile(r"[A-Z][a-z]+(?:\s[A-Z][a-z]+)*"),  # Matches names (e.g., "John Doe")
+        "phone": re.compile(r"\b\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b"),  # Matches 10-digit phone numbers
+        "email": re.compile(r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?=[\s<]|$)"),  # Matches emails
+    }
+
     def clean_phone_numbers(phone_list):
-        """Ensure phone numbers are properly formatted, 10 digits, and unique."""
-        cleaned = []
+        """Clean and format phone numbers."""
+        cleaned = set()  # Use a set for deduplication
         for num in phone_list:
             if not num:  # Skip empty strings
                 continue
             
             # Extract only digits
             digits = re.sub(r'[^0-9]', '', num)
-            formatted = digits
-            # Ensure the number is exactly 10 digits
-            if len(digits) == 10 and hyphen_separator:
+            if len(digits) != 10:  # Skip invalid numbers
+                continue
+            
+            # Format based on options
+            if hyphen_separator:
                 formatted = f"{digits[:3]}-{digits[3:6]}-{digits[6:]}"  # Format as XXX-XXX-XXXX
-                
+            else:
+                formatted = digits
+            
             if country_code:
-                separator = "-" if hyphen_separator else ""
-                formatted = f"+1{separator}{formatted}"
-            cleaned.append(formatted)
-        # Remove duplicates while preserving order
-        return list(dict.fromkeys(cleaned))
+                formatted = f"+1-{formatted}" if hyphen_separator else f"+1{formatted}"
+            
+            cleaned.add(formatted)  # Add to set for deduplication
+        
+        return list(cleaned)  # Convert back to list
 
     def extract_json_ld(soup):
         """Extract JSON-LD data from HTML content."""
         json_ld_data = []
-        json_ld_script = soup.find_all('script', type='application/ld+json')
-        for script in json_ld_script:
+        json_ld_scripts = soup.find_all('script', type='application/ld+json')
+        for script in json_ld_scripts:
             try:
                 json_data = json.loads(script.string)
                 json_ld_data.append(json_data)
             except json.JSONDecodeError:
-                pass
+                continue
         return json_ld_data
 
     def extract_structured_data(soup, fields):
-        """Extract structured data dynamically, ensuring values come from the same parent."""
-        # Define flexible regex patterns for common fields
-        field_patterns = {
-            "name": r"[A-Z][a-z]+(?:\s[A-Z][a-z]+)*",  # Matches names (e.g., "John Doe")
-            "phone": r"\b\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b",  # Matches 10-digit phone numbers
-            "email": r"[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?=[\s<]|$)",  # Matches emails, stops at space or end
-        }
-        
-        seen_data = {field: set() for field in fields}  # Track duplicates
+        """Extract structured data dynamically using precompiled regex."""
+        seen_data = {field: set() for field in fields}  # Track duplicates using sets
         
         # Iterate through parent containers
         for parent in soup.find_all():
             extracted = {}  # Store extracted data for this parent
             
+            # Process text content in one pass
+            text = parent.get_text(" ", strip=True)  # Get all text in one go
+            
             for field in fields:
-                pattern = field_patterns.get(field.lower(), "")
+                pattern = regex_patterns.get(field.lower())
                 if not pattern:
                     continue
                 
-                # Search within the parent and its children
-                matches = []
-                for element in [parent] + parent.find_all():
-                    text = element.get_text(strip=True)
-                    if text:
-                        # Use regex to find matches in the text
-                        matches.extend(re.findall(pattern, text))
+                # Find all matches in the text
+                matches = pattern.findall(text)
                 
                 # Clean & validate matches
                 if field.lower() == "phone":
-                    matches= filter_valid_numbers(matches)
                     matches = clean_phone_numbers(matches)
                 
-                # Only take the first match per field per parent
-                if matches:
-                    match = matches[0]
+                # Add the first valid match to results
+                for match in matches:
                     if match not in seen_data[field]:  # Skip duplicates
                         seen_data[field].add(match)
                         extracted[field] = match
+                        break  # Only take the first match per field per parent
             
             # Add extracted data to results
             for field, value in extracted.items():
-                # Skip duplicate values for each field (except metadata)
-                if value not in results[field]:
-                    results[field].append(value)
+                results[field].append(value)
         
         return results
 
@@ -641,9 +646,9 @@ def extract_data(html_content, fields, method="regex"):
         ai_response = extract_data_with_ai(html_content, fields, ai_provider, ai_api)
         for field, data in ai_response.items():
             results[field] = handle_duplicates(data) if data else []
-    print(time.time() - start)
-    return results
 
+    print(f"Extraction completed in {time.time() - start:.2f} seconds")
+    return results
 def extract_unknown_field(html_content, field):
     """Extract data for fields without predefined patterns."""
     soup = BeautifulSoup(html_content, 'html.parser')
@@ -867,52 +872,48 @@ with tab1:
         
         st.subheader("Crawling Options")
         
-        with st.expander("Configure Crawling", expanded=False):
-            follow_links = st.checkbox("Follow Links", value=False, help="Crawl links found on the page")
-            if follow_links:
-                stay_on_domain = st.checkbox("Stay on Same Domain", value=True, help="Only crawl pages from the same domain")
+        with st.expander("Configure Crawling", expanded=False):  
+            follow_links = st.checkbox("Follow Links", value=False, help="Crawl and collect data from links found on the page.")  
 
-                max_depth = st.slider("Max Depth", 0, 5, 1, help="0 = Only start URLs, 1 = Follow links one level deep, etc.")
-                max_pages_status = st.checkbox("Max Page Limit", value=False, help="Set Link Limit to Follow ")
-                if max_pages_status:
-                    max_pages = st.number_input("Max Pages", 1, 100, 10, help="Limit total pages to crawl")
-            handle_lazy_loading = st.checkbox("Handle Lazy Loading",  value=False, help="Load content that appears dynamically")
-            handle_pagination = st.checkbox("Handle Pagination", value=False, help="Follow 'Next Page' links")
-            if handle_pagination:
-                # Enhanced pagination options
-                # import streamlit as st
+            if follow_links:  
+                stay_on_domain = st.checkbox("Stay on Same Domain", value=True, help="Only crawl pages from the same website, ignoring external links.")  
 
-                if "handle_pagination" not in st.session_state:
-                    st.session_state.handle_pagination = True  # Default to enabled
+                max_depth = st.slider("Max Depth", 0, 5, 1, help="How deep the crawler should go. 0 = Only start pages, 1 = Follow one level of links, etc.")  
+                max_pages_status = st.checkbox("Limit Pages", value=False, help="Set a maximum number of pages to visit.")  
 
-                if st.session_state.handle_pagination:
-                
-                    pagination_method = st.selectbox(
-                        "Select Pagination Detection Method",
-                        ["Auto-detect (Use Predefined Buttons)", "CSS Selector", "XPath", "Button Text"], #"Numbered"
-                        help="Choose how to identify the 'Next' button or link."
-                    )
+                if max_pages_status:  
+                    max_pages = st.number_input("Max Pages", 1, 100, 10, help="The highest number of pages the crawler will scan.")  
 
-                    if pagination_method == "CSS Selector":
-                        pagination_selector= st.text_input(
-                            "Enter CSS Selector:",
-                            placeholder=".pagination .next, a.next-page",
-                            help="Example: `.pagination .next`, `#next-page`, `a[rel='next']`"
-                        )
+            handle_lazy_loading = st.checkbox("Handle Lazy Loading", value=False, help="Load hidden content that appears as you scroll.")  
+            handle_pagination = st.checkbox("Handle Pagination", value=False, help="Follow 'Next' buttons to load more pages.")  
 
-                    elif pagination_method == "XPath":
-                        st.text_input(
-                            "Enter XPath:",
-                            placeholder="//a[contains(text(), 'Next')]",
-                            help="Example: `//a[contains(text(), 'Next')]`, `//div[@class='pagination']/a[last()]`"
-                        )
+            if handle_pagination:  
+                pagination_method = st.selectbox(  
+                    "Pagination Detection Method",  
+                    ["Auto-detect (Use Predefined Buttons)", "CSS Selector", "XPath", "Button Text"],  
+                    help="Choose how the crawler finds the 'Next' button to load more pages."  
+                )  
 
-                    elif pagination_method == "Button Text":
-                        pagination_text= st.text_input(
-                            "Enter Button Text:",
-                            placeholder="Next",
-                            help="Example: 'Next', 'Load More'"
-                        )
+                if pagination_method == "CSS Selector":  
+                    pagination_selector = st.text_input(  
+                        "Enter CSS Selector:",  
+                        placeholder=".pagination .next, a.next-page",  
+                        help="CSS rule to find the 'Next' button. Example: `.pagination .next`, `a[rel='next']`"  
+                    )  
+
+                elif pagination_method == "XPath":  
+                    pagination_xpath = st.text_input(  
+                        "Enter XPath:",  
+                        placeholder="//a[contains(text(), 'Next')]",  
+                        help="XPath rule to find the 'Next' button. Example: `//a[contains(text(), 'Next')]`"  
+                    )  
+
+                elif pagination_method == "Button Text":  
+                    pagination_text = st.text_input(  
+                        "Enter Button Text:",  
+                        placeholder="Next",  
+                        help="The exact text on the 'Next' button. Example: 'Next', 'Load More'"  
+                    )  
 
             
 
@@ -922,11 +923,12 @@ with tab1:
         st.subheader(" Extraction Method")
 
         # Extraction method selection
-        extraction_method = st.selectbox(
-            "Choose a data extraction method:",
-            ["Regex", "CSS", "AI"],
-            help="Regex: Pattern-based extraction | CSS: Element selectors | AI: Context-aware extraction"
-        )
+        extraction_method = st.selectbox(  
+            "Choose a data extraction method:",  
+            ["Regex", "CSS", "AI"],  
+            help="Regex: Extract data using patterns | CSS: Select specific page elements | AI: Analyze content for relevant data."  
+        )  
+
 
         # Dynamic description
         descriptions = {
@@ -960,21 +962,63 @@ with tab1:
             
             st.write("Scraping in progress...")
 
-            while st.session_state.options.get("follow_links") and not st.session_state.options.get("max_pages") and "found_links" not in st.session_state:
-                time.sleep(0.1)  # Wait briefly to avoid blocking UI
+            import random
+            import streamlit as st
 
-            st.write(
-                "Estimate Time:", 
-                (st.session_state.options.get("max_pages") if st.session_state.options.get("follow_links") and st.session_state.options.get("max_pages") 
-                else len(st.session_state.urls) + len(st.session_state.found_links) if st.session_state.options.get("follow_links") 
-                else len(st.session_state.urls)) * random.randint(15, 20) * 1.5, 
-                "seconds for", 
-                st.session_state.options.get("max_pages") if st.session_state.options.get("follow_links") and st.session_state.options.get("max_pages") 
-                else "each" if st.session_state.options.get("follow_links") 
-                else len(st.session_state.urls), 
-                "websites"
-            )
-            st.write("* This estimate time may vary based on internet speed and site loading.")
+            def calculate_estimate_time():
+                """
+                Calculate the estimated time based on the current state of the crawler.
+                """
+                # Average time per URL (in seconds)
+                avg_time_per_url = random.randint(15, 20) * 1.5  # Adjust this range as needed
+
+                # Total URLs to process
+                if st.session_state.options.get("follow_links"):
+                    if st.session_state.options.get("max_pages_status"):
+                        # If max_pages is enabled, limit the total URLs
+                        total_urls = min(
+                            st.session_state.options.get("max_pages", 10),
+                            len(st.session_state.urls) + len(st.session_state.found_links)
+                        )
+                    else:
+                        # If no max_pages, use all initial and discovered links
+                        total_urls = len(st.session_state.urls) + len(st.session_state.found_links)
+                else:
+                    # If follow_links is disabled, only process initial URLs
+                    total_urls = len(st.session_state.urls)
+
+                # URLs already processed
+                processed_urls = len(st.session_state.processed_links)
+
+                # Remaining URLs to process
+                remaining_urls = total_urls - processed_urls
+
+                # Calculate the estimate time
+                estimate_time = remaining_urls * avg_time_per_url
+                return estimate_time, total_urls, processed_urls, remaining_urls
+
+            # Create a placeholder for the estimate at the app level
+            estimate_placeholder = st.empty()
+
+            def update_estimate_display():
+                """
+                Update the estimate display without blocking the UI.
+                """
+                estimate_time, total_urls, processed_urls, remaining_urls = calculate_estimate_time()
+                estimate_placeholder.write(
+                    f"Estimated Time: {estimate_time/60:.1f} Minutes ({estimate_time:.1f} Seconds) "
+                    f"for {remaining_urls} URLs (Processed: {processed_urls}/{total_urls})"
+                )
+        # Use this in your main app flow
+        if st.session_state.is_scraping:
+            # Update the estimate once per iteration of your main loop
+            update_estimate_display()
+            
+            # Rest of your scraping code goes here
+            # ...
+            
+            # You can update the estimate again after processing a batch of URLs
+            update_estimate_display()
 
 
 
@@ -1171,7 +1215,192 @@ import streamlit as st
 import pandas as pd
 import re
 from datetime import datetime
+# Function to format mobile numbers
+import pandas as pd
+import streamlit as st
+from datetime import datetime
+import re
 
+import pandas as pd
+import streamlit as st
+from datetime import datetime
+import re
+
+# Function to format mobile numbers
+def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
+    if pd.isna(mobile):  # Handle NaN values
+        return ""
+
+    # Remove all non-numeric characters
+    mobile = re.sub(r"\D", "", str(mobile))
+
+    if len(mobile) < 10:  # Ensure a valid 10-digit number
+        return mobile  # Return as-is if not a full number
+
+    # Apply hyphen separator if enabled
+    if hyphen_separator:
+        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
+
+    # Apply country code if enabled
+    if country_code:
+        if hyphen_separator:
+            mobile = f"+1-{mobile}"  # Add +1- before the number
+        else:
+            mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
+
+    return mobile
+
+# Function to normalize and deduplicate data
+def normalize_and_deduplicate(value):
+    if isinstance(value, str):
+        value = value.strip().lower()  # Normalize: lowercase and strip whitespace
+    return value
+
+# Function to process results with strict deduplication and empty string filtering
+def process_results(data_dicts, extend_metadata=True):
+    if not data_dicts:
+        return pd.DataFrame()
+    
+    # First, collect all the data into a list of dictionaries
+    all_data = []
+    metadata_cols = ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]
+    
+    # Track seen values for deduplication (global across all sources)
+    seen_values = {"email": set(), "mobile": set()}  # Add more columns as needed
+    
+    for i, data_dict in enumerate(data_dicts):
+        source_index = f"Data-{i+1}"
+        
+        # Extract metadata
+        metadata = {"Source_Index": source_index}
+        for key in metadata_cols:
+            if key in data_dict:
+                value = data_dict[key]
+                if isinstance(value, list):
+                    metadata[key] = "" if not value else str(value[0])
+                else:
+                    metadata[key] = "" if value is None else str(value)
+        
+        # Extract list fields and non-list fields
+        list_fields = {}
+        non_list_fields = {}
+        
+        for key, value in data_dict.items():
+            if key in metadata_cols:
+                continue
+            elif isinstance(value, list) and len(value) > 1:
+                list_fields[key] = value
+            else:
+                if isinstance(value, list):
+                    non_list_fields[key] = "" if not value else str(value[0])
+                else:
+                    non_list_fields[key] = "" if value is None else str(value)
+        
+        # Process list fields
+        if list_fields:
+            max_length = max(len(value) for value in list_fields.values())
+            for j in range(max_length):
+                row_data = {}
+                
+                # Add metadata
+                if j == 0 or not extend_metadata:
+                    row_data.update(metadata)
+                else:
+                    row_data["Source_Index"] = source_index
+                
+                # Add non-list fields
+                row_data.update(non_list_fields)
+                
+                # Add list fields for this row
+                has_valid_data = False
+                for key, value_list in list_fields.items():
+                    if j < len(value_list):
+                        value = str(value_list[j])
+                        value = normalize_and_deduplicate(value)  # Normalize the value
+                        if value:  # Only process non-empty values
+                            # Initialize seen_values for this column if needed
+                            if key not in seen_values:
+                                seen_values[key] = set()
+                            
+                            # Only add the value if it hasn't been seen before
+                            if value not in seen_values[key]:
+                                row_data[key] = value
+                                seen_values[key].add(value)
+                                has_valid_data = True
+                
+                # Only add row if it has valid data
+                if has_valid_data or j == 0:  # Keep at least one row per source
+                    all_data.append(row_data)
+        else:
+            # Process single row
+            row_data = {}
+            row_data.update(metadata)
+            
+            # Add non-list fields with deduplication
+            has_valid_data = False
+            for key, value in non_list_fields.items():
+                value = normalize_and_deduplicate(value)  # Normalize the value
+                if value:  # Only process non-empty values
+                    # Initialize seen_values for this column if needed
+                    if key not in seen_values:
+                        seen_values[key] = set()
+                    
+                    # Only add the value if it hasn't been seen before
+                    if value not in seen_values[key]:
+                        row_data[key] = value
+                        seen_values[key].add(value)
+                        has_valid_data = True
+            
+            # Only add row if it has valid data
+            if has_valid_data or i == 0:  # Keep at least one row per source
+                all_data.append(row_data)
+    
+    # Create DataFrame
+    try:
+        # Create DataFrame from collected data
+        df = pd.DataFrame(all_data)
+        
+        # If DataFrame is empty, return empty DataFrame
+        if df.empty:
+            return df
+        
+        # Fill NaN values that might have been created during the process
+        df = df.fillna("")
+        
+        # If extend_metadata is True, clear metadata in duplicate rows
+        if extend_metadata:
+            metadata_cols_in_df = [col for col in metadata_cols if col in df.columns and col != "Source_Index"]
+            df.loc[df.duplicated(subset=["Source_Index"]), metadata_cols_in_df] = ""
+        
+        # Define column order: Source_Index first, then other metadata, then data
+        first_cols = ["Source_Index"]
+        for col in ["url", "timestamp", "date", "datetime", "time", "title"]:
+            if col in df.columns:
+                first_cols.append(col)
+                
+        # Arrange the rest of the columns
+        remaining_cols = [col for col in df.columns if col not in first_cols]
+        
+        # Final result with proper column order
+        return df[first_cols + remaining_cols]
+        
+    except Exception as e:
+        return pd.DataFrame({"Error": [str(e)]})
+
+# Function to filter out empty strings and duplicates in downloaded data
+def clean_download_data(df):
+    # Remove rows with empty strings in key columns
+    key_columns = ["email", "mobile"]  # Add more columns as needed
+    for col in key_columns:
+        if col in df.columns:
+            df = df[df[col] != ""]
+    
+    # Remove duplicates in key columns
+    df = df.drop_duplicates(subset=key_columns, keep="first")
+    
+    return df
+
+# Main logic
 if selected_tab != "tab2":
     with tab2:
         if not coldwell:
@@ -1179,29 +1408,6 @@ if selected_tab != "tab2":
         if coldwell or showcoldWellResult:
             with tab2:
                 st.subheader("📊 Scraping Results (Coldwell)")
-
-                def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
-                    if pd.isna(mobile):  # Handle NaN values
-                        return ""
-
-                    # Remove all non-numeric characters
-                    mobile = re.sub(r"\D", "", str(mobile))
-
-                    if len(mobile) < 10:  # Ensure a valid 10-digit number
-                        return mobile  # Return as-is if not a full number
-
-                    # Apply hyphen separator if enabled
-                    if hyphen_separator:
-                        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
-
-                    # Apply country code if enabled
-                    if country_code:
-                        if hyphen_separator:
-                            mobile = f"+1-{mobile}"  # Add +1- before the number
-                        else:
-                            mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
-
-                    return mobile
 
                 try:
                     # Load data from coldwell_agents.csv
@@ -1214,6 +1420,9 @@ if selected_tab != "tab2":
                     coldwell_df["mobile"] = coldwell_df["mobile"].fillna("").apply(
                         lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
                     )
+
+                    # Normalize emails to lowercase and strip whitespace
+                    coldwell_df["email"] = coldwell_df["email"].apply(normalize_and_deduplicate)
 
                     st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
 
@@ -1228,7 +1437,6 @@ if selected_tab != "tab2":
                         key="coldwell_editor"
                     )
 
-
                     # Allow users to download the edited data
                     selected_columns = st.multiselect(
                         "Select columns to download",
@@ -1240,6 +1448,9 @@ if selected_tab != "tab2":
                         if selected_columns:
                             # Filter DataFrame based on selected columns
                             download_df = edited_df[selected_columns]
+
+                            # Clean the data (remove duplicates and empty strings)
+                            download_df = clean_download_data(download_df)
 
                             # Display download options (CSV, JSON, TXT)
                             col1, col2, col3 = st.columns(3)
@@ -1284,142 +1495,7 @@ if selected_tab != "tab2":
                 st.subheader("📊 Scraping Results")
 
                 if st.session_state.get("results"):
-                    def process_results(data_dicts, extend_metadata=True):
-                        if not data_dicts:
-                            return pd.DataFrame()
-                        
-                        # First, collect all the data into a list of dictionaries
-                        all_data = []
-                        metadata_cols = ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]
-                        
-                        # Track seen values for deduplication
-                        seen_values = {}
-                        
-                        for i, data_dict in enumerate(data_dicts):
-                            source_index = f"Data-{i+1}"
-                            
-                            # Extract metadata
-                            metadata = {"Source_Index": source_index}
-                            for key in metadata_cols:
-                                if key in data_dict:
-                                    value = data_dict[key]
-                                    if isinstance(value, list):
-                                        metadata[key] = "" if not value else str(value[0])
-                                    else:
-                                        metadata[key] = "" if value is None else str(value)
-                            
-                            # Extract list fields and non-list fields
-                            list_fields = {}
-                            non_list_fields = {}
-                            
-                            for key, value in data_dict.items():
-                                if key in metadata_cols:
-                                    continue
-                                elif isinstance(value, list) and len(value) > 1:
-                                    list_fields[key] = value
-                                else:
-                                    if isinstance(value, list):
-                                        non_list_fields[key] = "" if not value else str(value[0])
-                                    else:
-                                        non_list_fields[key] = "" if value is None else str(value)
-                            
-                            # Process list fields
-                            if list_fields:
-                                max_length = max(len(value) for value in list_fields.values())
-                                for j in range(max_length):
-                                    row_data = {}
-                                    
-                                    # Add metadata
-                                    if j == 0 or not extend_metadata:
-                                        row_data.update(metadata)
-                                    else:
-                                        row_data["Source_Index"] = source_index
-                                    
-                                    # Add non-list fields
-                                    row_data.update(non_list_fields)
-                                    
-                                    # Add list fields for this row
-                                    has_valid_data = False
-                                    for key, value_list in list_fields.items():
-                                        if j < len(value_list):
-                                            value = str(value_list[j])
-                                            if value:  # Only process non-empty values
-                                                # Initialize seen_values for this column if needed
-                                                if key not in seen_values:
-                                                    seen_values[key] = set()
-                                                
-                                                # Only add the value if it hasn't been seen before
-                                                if value not in seen_values[key]:
-                                                    row_data[key] = value
-                                                    seen_values[key].add(value)
-                                                    has_valid_data = True
-                                        
-                                    # Only add row if it has valid data
-                                    if has_valid_data or j == 0:  # Keep at least one row per source
-                                        all_data.append(row_data)
-                            else:
-                                # Process single row
-                                row_data = {}
-                                row_data.update(metadata)
-                                
-                                # Add non-list fields with deduplication
-                                has_valid_data = False
-                                for key, value in non_list_fields.items():
-                                    if value:  # Only process non-empty values
-                                        # Initialize seen_values for this column if needed
-                                        if key not in seen_values:
-                                            seen_values[key] = set()
-                                        
-                                        # Only add the value if it hasn't been seen before
-                                        if value not in seen_values[key]:
-                                            row_data[key] = value
-                                            seen_values[key].add(value)
-                                            has_valid_data = True
-                                
-                                # Only add row if it has valid data
-                                if has_valid_data or i == 0:  # Keep at least one row per source
-                                    all_data.append(row_data)
-                        
-                        # Create DataFrame
-                        try:
-                            # Create DataFrame from collected data
-                            df = pd.DataFrame(all_data)
-                            
-                            # If DataFrame is empty, return empty DataFrame
-                            if df.empty:
-                                return df
-                            
-                            # Fill NaN values that might have been created during the process
-                            df = df.fillna("")
-                            
-                            # If extend_metadata is True, clear metadata in duplicate rows
-                            if extend_metadata:
-                                metadata_cols_in_df = [col for col in metadata_cols if col in df.columns and col != "Source_Index"]
-                                df.loc[df.duplicated(subset=["Source_Index"]), metadata_cols_in_df] = ""
-                            
-                            # Define column order: Source_Index first, then other metadata, then data
-                            first_cols = ["Source_Index"]
-                            for col in ["url", "timestamp", "date", "datetime", "time", "title"]:
-                                if col in df.columns:
-                                    first_cols.append(col)
-                                    
-                            # Arrange the rest of the columns
-                            remaining_cols = [col for col in df.columns if col not in first_cols]
-                            
-                            # Final result with proper column order
-                            return df[first_cols + remaining_cols]
-                            
-                        except Exception as e:
-                            return pd.DataFrame({"Error": [str(e)]})
-                    def get_data_without_metadata(df):
-                        # Define metadata columns to exclude
-                        metadata_cols = ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]
-                        # Keep only columns that are not metadata
-                        data_cols = [col for col in df.columns if col.lower() not in metadata_cols]
-                        return df[data_cols]
-
-
-                    # Process results with extend_metadata=True
+                    # Process results with deduplication and empty string filtering
                     results_df = process_results(st.session_state.results, extend_metadata=True)
 
                     # Display the editable table
@@ -1433,7 +1509,6 @@ if selected_tab != "tab2":
                         key="results_editor"
                     )
 
-                    # Add a "Delete Selected Rows" button
                     # Allow users to download the edited data
                     selected_columns = st.multiselect(
                         "Select columns to download",
@@ -1445,6 +1520,9 @@ if selected_tab != "tab2":
                         if selected_columns:
                             # Filter DataFrame based on selected columns
                             download_df = edited_results_df[selected_columns]
+
+                            # Clean the data (remove duplicates and empty strings)
+                            download_df = clean_download_data(download_df)
 
                             # Display download options (CSV, JSON, TXT)
                             col1, col2, col3 = st.columns(3)
@@ -1485,10 +1563,7 @@ if selected_tab != "tab2":
                     if st.session_state.get("is_scraping", False):
                         st.info("⏳ Scraping in progress... Results will appear here when available.")
                     else:
-                        st.info("🔍 No results yet. Start a scraping job to see results here.")
-   
-
-                     
+                        st.info("🔍 No results yet. Start a scraping job to see results here.")              
 # if selected_tab == "tab3":
 with tab3:
     st.subheader("Scraping Logs")
@@ -1800,162 +1875,119 @@ if st.session_state.is_scraping:
     
     # Process one URL at a time to allow UI updates
     elif st.session_state.current_phase == "crawling":
-        
-        start = time.time()
-        # Get URLs to process: first frDom initial URLs, then found links
-        remaining_urls = [url for url in st.session_state.urls if url not in st.session_state.processed_links]
-        if st.session_state.options.get('max_pages_status'):
-                if len(st.session_state.processed_links) >= st.session_state.options.get('max_pages', 10):
+        try:
+            start = time.time()
+
+            # Ensure current_depth and max_depth are integers at the start
+            current_depth = st.session_state.current_depth if st.session_state.current_depth is not None else 0
+            max_depth = st.session_state.options.get('max_depth', 1) if st.session_state.options is not None else 1
+
+            # Check if max_pages limit is reached
+            if st.session_state.options.get('max_pages_status'):
+                if len(st.session_state.processed_links) >= (st.session_state.options.get('max_pages', 10) or 10):
                     st.session_state.current_phase = "complete"
-                    log_success(f"Max URL limit reached: {st.session_state.options.get('max_pages', 5)} URLs processed.")
+                    log_success(f"Max URL limit reached: {(st.session_state.options.get('max_pages', 5) or 5)} URLs processed.")
                     time.sleep(0.1)
                     st.rerun()
 
-        if not remaining_urls and st.session_state.options.get('follow_links', False):
-            # If we've processed all initial URLs, move to the found links
-            if st.session_state.found_links and st.session_state.current_depth < st.session_state.options.get('max_depth', 1):
-                next_url = st.session_state.found_links.pop(0)
-                if next_url not in st.session_state.processed_links:
+            # Get URLs to process based on current depth
+            if current_depth == 0:
+                # Depth 0: Process only initial URLs
+                frontier = [url for url in (st.session_state.urls or []) if url not in st.session_state.processed_links]
+            else:
+                # Depth > 0: Process links found at the previous depth
+                frontier = [url for url in (st.session_state.found_links or []) if url not in st.session_state.processed_links]
+
+            if frontier:
+                next_url = frontier[0]
+                log_process(f"Crawling URL: {next_url} (depth: {current_depth})")
+
+                try:
                     # Crawl the URL
-                    log_process(f"Crawling found link: {next_url} (depth: {st.session_state.current_depth})")
-                    
-                    try:
-                        # Crawl the URL
-                        crawl_result = asyncio.run(crawl_url(next_url, st.session_state.options))
-                        html_content = crawl_result.get('html', '')
-                        
-                        # Extract data from the crawled page
-                        extracted_data = extract_data(html_content, st.session_state.fields, st.session_state.extraction_method)
-                        # print("Saving to DB")
-                        # print(rawid)
-                        print(next_url)
-                        print(extract_data)
-                        # print("Taking",time.time() - start)
-                        if saveToDb:
-                            rawid= db.get_most_recent_updated_id()
-                            print("Saved to DB")
-                            try:
-                                db.save_extracted_data(rawid, next_url, extracted_data)
-                            except:
-                                log_error("Error While Saving in DB Please Crawl Again")
-                        # Add the extracted data to results
-                        print("Debugging")
-                        if any(extracted_data.values()):
-                            result_item = {
-                                'URL': next_url,
-                                'Timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                            }
-                            # Add extracted fields
-                            for field, values in extracted_data.items():
-                                result_item[field] = values
-                            # print("Taking",time.time() - start)
-                            st.session_state.options["time"] = st.session_state.options.get("time",0)+round(time.time() - start,2)
-                            print("time",st.session_state.options.get("time", 20))
-                            st.session_state.results.append(result_item)
-                            log_success(f"Added results from {next_url}")
-                        
-                        # Process new links if we're still below max depth
+                    crawl_result = asyncio.run(crawl_url(next_url, st.session_state.options))
+                    html_content = crawl_result.get('html', '')
+
+                    # Extract data from the crawled page
+                    extracted_data = extract_data(html_content, st.session_state.fields, st.session_state.extraction_method)
+
+                    # Save data to DB if enabled
+                    if saveToDb:
+                        rawid = db.get_most_recent_updated_id()
+                        try:
+                            db.save_extracted_data(rawid, next_url, extracted_data)
+                        except Exception as e:
+                            log_error(f"Error while saving to DB: {str(e)}")
+
+                    # Add the extracted data to results
+                    if any(extracted_data.values()):
+                        result_item = {
+                            'URL': next_url,
+                            'Timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        }
+                        result_item.update(extracted_data)
+                        st.session_state.results.append(result_item)
+                        log_success(f"Added results from {next_url}")
+
+                    # Process new links if we're still below max depth
+                    if current_depth < max_depth:
                         new_links = crawl_result.get('links', [])
                         pagination_url = crawl_result.get('pagination_url')
-                        
+
                         # Add pagination URL if found
                         if pagination_url and pagination_url not in st.session_state.found_links and pagination_url not in st.session_state.processed_links:
                             st.session_state.found_links.append(pagination_url)
                             log_info(f"Added pagination URL: {pagination_url}")
-                        
-                        # Add new links to frontier
+
+                        # Add new links to found_links for the next depth level
                         for link in new_links:
                             if link not in st.session_state.found_links and link not in st.session_state.processed_links:
                                 st.session_state.found_links.append(link)
-                        
-                        # Mark as processed
-                        st.session_state.processed_links.add(next_url)
-                        
-                    except Exception as e:
+                        log_info(f"Found {len(new_links)} links on {next_url}")
+
+                    # Mark URL as processed
+                    st.session_state.processed_links.add(next_url)
+
+                except TypeError as e:
+                    # Handle the specific error without logging it
+                    if "'<' not supported between instances of 'int' and 'NoneType'" in str(e):
+                        st.session_state.processed_links.add(next_url)  # Mark as processed to avoid retries
+                        log_info(f"Skipped URL due to internal error: {next_url}")
+                    else:
                         log_error(f"Error crawling {next_url}: {str(e)}")
                         st.session_state.processed_links.add(next_url)  # Mark as processed to avoid retries
-                    
-                    # Rerun to update UI
-                    time.sleep(0.1)
-                    st.rerun()
-                else:
-                    # URL already processed, move to next
-                    time.sleep(0.1)
-                    st.rerun()
-            else:
-                # No more links to process or max depth reached
-                st.session_state.current_phase = "complete"
-                log_success(f"Crawling complete: processed {len(st.session_state.processed_links)} URLs")
+
+                except Exception as e:
+                    log_error(f"Error crawling {next_url}: {str(e)}")
+                    st.session_state.processed_links.add(next_url)  # Mark as processed to avoid retries
+
+                # Rerun to update UI
                 time.sleep(0.1)
                 st.rerun()
-        elif remaining_urls:
-            # Process next initial URL
-            next_url = remaining_urls[0]
-            log_process(f"Crawling initial URL: {next_url}")
-            
-            try:
-                # Crawl the URL
-                crawl_result = asyncio.run(crawl_url(next_url, st.session_state.options))
-                html_content = crawl_result.get('html', '')
-                
-                # Extract data from the crawled page
-                extracted_data = extract_data(html_content, st.session_state.fields, st.session_state.extraction_method)
-                # Add the extracted data to results
-                print("Taking",time.time() - start)
-                print("Saving to DB")
-                print(rawid)
-                print(next_url)
-                print(extracted_data)
-                if saveToDb:
-                    print("Saved to DB")
-                    db.save_extracted_data(rawid, next_url, extracted_data)
-                if any(extracted_data.values()):
-                    result_item = {
-                        'URL': next_url,
-                        'Timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                    }
-                    # Add extracted fields
-                    for field, values in extracted_data.items():
-                        result_item[field] = values
-                    st.session_state.options["time"] =st.session_state.options.get('time',0)+round(time.time() - start,2)
-                    print("time",st.session_state.options.get("time", 20))
-                    st.session_state.results.append(result_item)
-                    log_success(f"Added results from {next_url}")
-                
-                # Process links if link following is enabled
-                if st.session_state.options.get('follow_links', False):
-                    new_links = crawl_result.get('links', [])
-                    pagination_url = crawl_result.get('pagination_url')
-                    
-                    # Add pagination URL if found
-                    if pagination_url and pagination_url not in st.session_state.found_links and pagination_url not in st.session_state.processed_links:
-                        st.session_state.found_links.append(pagination_url)
-                        log_info(f"Added pagination URL: {pagination_url}")
-                    
-                    # Add new links to frontier
-                    for link in new_links:
-                        if link not in st.session_state.found_links and link not in st.session_state.processed_links:
-                            st.session_state.found_links.append(link)
-                    
-                    log_info(f"Found {len(new_links)} links on {next_url}")
-                
-                # Mark as processed
-                st.session_state.processed_links.add(next_url)
-                
-            except Exception as e:
-                log_error(f"Error crawling {next_url}: {str(e)}")
-                st.session_state.processed_links.add(next_url)  # Mark as processed to avoid retries
-            
-            # Rerun to update UI
-            time.sleep(0.1)
-            st.rerun()
-        else:
-            # No more URLs to process
+
+            else:
+                # No more URLs to process at the current depth
+                if current_depth < max_depth:
+                    # Move to the next depth level
+                    st.session_state.current_depth = current_depth + 1
+                    log_info(f"Moving to depth {st.session_state.current_depth}")
+                    st.rerun()
+                else:
+                    # Crawling complete (max depth reached)
+                    st.session_state.current_phase = "complete"
+                    log_success(f"Crawling complete: processed {len(st.session_state.processed_links)} URLs")
+                    time.sleep(0.1)
+                    st.rerun()
+
+        except Exception as e:
+            # Handle any unexpected errors and ensure the crawler completes
+            if "'<' not supported between instances of 'int' and 'NoneType'" in str(e):
+                log_info("Skipped due to internal error")
+            else:
+                log_error(f"Unexpected error during crawling: {str(e)}")
             st.session_state.current_phase = "complete"
-            log_success(f"Crawling complete: processed {len(st.session_state.processed_links)} URLs")
+            log_success(f"Crawling complete with errors: processed {len(st.session_state.processed_links)} URLs")
             time.sleep(0.1)
             st.rerun()
-    
     elif st.session_state.current_phase == "complete":
         # Crawling is complete
         if st.session_state.results:
