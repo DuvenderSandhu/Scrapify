@@ -645,7 +645,7 @@ def extract_data(html_content, fields, method="regex"):
     elif method.lower() == "ai":
         ai_response = extract_data_with_ai(html_content, fields, ai_provider, ai_api)
         for field, data in ai_response.items():
-            results[field] = handle_duplicates(data) if data else []
+            results[field] = data if data else []
 
     print(f"Extraction completed in {time.time() - start:.2f} seconds")
     return results
