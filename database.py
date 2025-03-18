@@ -3,6 +3,7 @@ import mysql.connector
 from mysql.connector import Error
 from datetime import datetime
 from utils import generate_unique_id
+import json
 import os
 
 class Database:
@@ -20,11 +21,10 @@ class Database:
         """Establish a connection to MySQL database."""
         try:
             conn = mysql.connector.connect(
-                host="mysql-e613014-moviefordsandhu-195f.c.aivencloud.com",
-                user="avnadmin",
-                password="AVNS_J8TyM_YEio9Cfp3rYck",
-                database="defaultdb",
-                port=21010
+                host="localhost",#"mysql-e613014-moviefordsandhu-195f.c.aivencloud.com",
+                user="scrapper",#avnadmin",
+                password="nDbyL3jrSwmdkakn" ,  #"AVNS_J8TyM_AYEio9Cfp3rYck",
+                database="scrapper",#"defaultdb"
             )
             if conn.is_connected():
                 print("Connected to MySQL database!")
@@ -41,7 +41,8 @@ class Database:
             url TEXT NOT NULL,
             html LONGTEXT NOT NULL,
             timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-            scrape_id VARCHAR(50)
+            scrape_id VARCHAR(50),
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
         );
         """
 
@@ -92,16 +93,33 @@ class Database:
 
         return item_id
 
+    def get_most_recent_updated_id(self):
+        """Get the ID of the most recently updated row from the raw_html table."""
+        query = """
+        SELECT id
+        FROM raw_html
+        ORDER BY updated_at DESC
+        LIMIT 1
+        """
+        
+        with self.connection.cursor() as cursor:
+            cursor.execute(query)
+            result = cursor.fetchone()
+
+        # Return the ID if there's a result, otherwise return None
+        return result[0] if result else None
+
+
     def save_extracted_data(self, raw_id, url, extracted_data):
         """Save extracted data linked to raw HTML in MySQL."""
         item_id = generate_unique_id()
         scrape_id = st.session_state.get('scrape_id', 'unknown')
-
+        json_data = json.dumps(extracted_data)
         query = """
         INSERT INTO extracted_data (id, raw_id, url, data, scrape_id)
         VALUES (%s, %s, %s, %s, %s)
         """
-        values = (item_id, raw_id, url, str(extracted_data), scrape_id)
+        values = (item_id, raw_id, url, json_data, scrape_id)
 
         with self.connection.cursor() as cursor:
             cursor.execute(query, values)
@@ -193,5 +211,5 @@ class Database:
             self.connection.close()
             st.info("Database connection closed.")
 
-# db= Database("fd")
-db=""
+db= Database("fd")
+# db=""

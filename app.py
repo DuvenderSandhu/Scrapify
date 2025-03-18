@@ -6,6 +6,8 @@ import numpy as np
 import time
 import random
 import threading
+from streamlit.components.v1 import html
+from phone import filter_valid_numbers
 import spacy
 # from flask import Flask
 import resend 
@@ -14,7 +16,7 @@ import asyncio
 nlp = spacy.load("en_core_web_sm")
 import re
 from bs4 import BeautifulSoup
-# from database import db
+from database import db
 import json
 from dotenv import load_dotenv
 from log import log_process,log_error,log_warning,log_success,log_info,add_log
@@ -30,7 +32,9 @@ max_depth= 0
 max_pages=1
 stay_on_domain=""
 coldwell=False
+max_pages_status=None
 handle_lazy_loading=None
+start=""
 # app = Flask(__name__)
 # Page configuration
 st.set_page_config(
@@ -257,7 +261,7 @@ def normalize_url(url, base_url):
 
 # Crawler functions
 async def crawl_url(url, options):
-   
+    print("Crawling Now")
     """Simulate crawling a URL with configurable options"""
     log_process(f"Crawling URL: {url}")
     domain = extract_domain(url)
@@ -299,7 +303,8 @@ async def crawl_url(url, options):
     return {
         'html': html_content,
         'links': links,
-        'pagination_url': pagination_url
+        'pagination_url': pagination_url,
+        'timeTaken':time.time() - start
     }
 
 
@@ -533,6 +538,8 @@ from bs4 import BeautifulSoup
 
 def extract_data(html_content, fields, method="regex"):
     """Extract structured data from HTML without hardcoding assumptions."""
+    print("Extracting Now")
+    #start = time.time()
     results = {field: [] for field in fields}  # Maintain old structure
     country_code = st.session_state.options.get('country_code', False)
     hyphen_separator = st.session_state.options.get('hyphen_separator', False)
@@ -600,6 +607,7 @@ def extract_data(html_content, fields, method="regex"):
                 
                 # Clean & validate matches
                 if field.lower() == "phone":
+                    matches= filter_valid_numbers(matches)
                     matches = clean_phone_numbers(matches)
                 
                 # Only take the first match per field per parent
@@ -633,7 +641,7 @@ def extract_data(html_content, fields, method="regex"):
         ai_response = extract_data_with_ai(html_content, fields, ai_provider, ai_api)
         for field, data in ai_response.items():
             results[field] = handle_duplicates(data) if data else []
-    
+    print(time.time() - start)
     return results
 
 def extract_unknown_field(html_content, field):
@@ -773,6 +781,7 @@ with open('email.txt', 'r') as file:
 tab1, tab2, tab3 = st.tabs(["Setup & Controls", "Results", "Logs"])
 ai_provider=""
 ai_api=""
+saveToDb=False
 
 def addEmail():
     data_to_write=  st.session_state["emails"]
@@ -788,7 +797,7 @@ with tab1:
     
     with col1:
         st.subheader("Configure Scraping Job")
-        
+        saveToDb= st.toggle("Save to DB")
         # URL Input
         url_input = st.text_area(
             "Enter URLs to scrape (one per line):",
@@ -853,6 +862,9 @@ with tab1:
         country_code = st.checkbox("Add country code (+1) to phone numbers (e.g., +1234567890)", value=True)
         if hyphen_separator and country_code:
             st.info("Phone Number will be interpreted as +1-123-456-7890") 
+        
+
+        
         st.subheader("Crawling Options")
         
         with st.expander("Configure Crawling", expanded=False):
@@ -861,7 +873,9 @@ with tab1:
                 stay_on_domain = st.checkbox("Stay on Same Domain", value=True, help="Only crawl pages from the same domain")
 
                 max_depth = st.slider("Max Depth", 0, 5, 1, help="0 = Only start URLs, 1 = Follow links one level deep, etc.")
-                max_pages = st.number_input("Max Pages", 1, 100, 10, help="Limit total pages to crawl")
+                max_pages_status = st.checkbox("Max Page Limit", value=False, help="Set Link Limit to Follow ")
+                if max_pages_status:
+                    max_pages = st.number_input("Max Pages", 1, 100, 10, help="Limit total pages to crawl")
             handle_lazy_loading = st.checkbox("Handle Lazy Loading",  value=False, help="Load content that appears dynamically")
             handle_pagination = st.checkbox("Handle Pagination", value=False, help="Follow 'Next Page' links")
             if handle_pagination:
@@ -945,6 +959,70 @@ with tab1:
                 st.rerun()
             
             st.write("Scraping in progress...")
+
+            while st.session_state.options.get("follow_links") and not st.session_state.options.get("max_pages") and "found_links" not in st.session_state:
+                time.sleep(0.1)  # Wait briefly to avoid blocking UI
+
+            st.write(
+                "Estimate Time:", 
+                (st.session_state.options.get("max_pages") if st.session_state.options.get("follow_links") and st.session_state.options.get("max_pages") 
+                else len(st.session_state.urls) + len(st.session_state.found_links) if st.session_state.options.get("follow_links") 
+                else len(st.session_state.urls)) * random.randint(15, 20), 
+                "seconds for", 
+                st.session_state.options.get("max_pages") if st.session_state.options.get("follow_links") and st.session_state.options.get("max_pages") 
+                else "each" if st.session_state.options.get("follow_links") 
+                else len(st.session_state.urls), 
+                "websites"
+            )
+            st.write("* This estimate time may vary based on internet speed and site loading.")
+
+
+
+
+            my_html = """
+            <script>
+            function startTimer(display) {
+                var seconds = 0;
+                setInterval(function () {
+                    var minutes = parseInt(seconds / 60, 10);
+                    var remainingSeconds = parseInt(seconds % 60, 10);
+
+                    minutes = minutes < 10 ? "0" + minutes : minutes;
+                    remainingSeconds = remainingSeconds < 10 ? "0" + remainingSeconds : remainingSeconds;
+
+                    display.textContent = minutes + ":" + remainingSeconds;
+                    
+                    if (seconds < 1000) {
+                        seconds++;
+                    }
+                }, 1000);
+            }
+
+            window.onload = function () {
+                var display = document.querySelector('#time');
+                startTimer(display);
+            };
+            </script>
+
+            <style>
+            body, html {
+                margin: 0;
+                padding: 0;
+                height: auto;
+                overflow: hidden;
+            }
+            .timer-container {
+                line-height: 1;
+                font-family: monospace;
+                font-size: 1.2em;
+                color: #0066cc;
+            }
+            </style>
+
+            <div class="timer-container"><span id="time">00:00</span></div>
+            """
+
+            html(my_html, height=20)
             # progress = (len(st.session_state.processed_links) / max(1, len(st.session_state.urls) + len(st.session_state.found_links))) * 100
             if coldwell:
                 try:
@@ -961,7 +1039,21 @@ with tab1:
             else:
                 progress = (len(st.session_state.processed_links) / max(1, len(st.session_state.urls) + len(st.session_state.found_links))) * 100
             st.progress(min(100, progress) / 100)
-            
+            # if "start_time" not in st.session_state or "start_time" in st.session_state:
+            st.session_state.start_time = time.time()
+
+            # # Placeholder for updating the timer
+            timer_placeholder = st.empty()
+
+            # while True:
+            #     elapsed_time = time.time() - st.session_state.start_time
+            #     timer_placeholder.info(f"⏳ Time Elapsed: {elapsed_time:.2f} seconds")
+                
+            #     time.sleep(1)  # Wait 1 second before updating
+
+            #     # Optional: Add a condition to break the loop after a certain time (e.g., 60 seconds)
+            #     if elapsed_time >= 60:
+            #         break
             # Current phase display
             phases = ["initializing", "crawling", "extracting", "processing", "complete"]
             current_phase_index = phases.index(st.session_state.current_phase) if st.session_state.current_phase in phases else 0
@@ -1021,13 +1113,15 @@ with tab1:
                     options = {
                         'follow_links': follow_links if follow_links else None,
                         'max_depth': max_depth if max_depth else None,
-                        'max_pages': max_pages if follow_links else len(urls),
+                        'max_pages_status':max_pages_status if max_pages_status else False,
+                        'max_pages': max_pages if max_pages_status else len(urls),
                         'stay_on_domain': stay_on_domain if stay_on_domain else None,
                         'handle_pagination': handle_pagination if handle_pagination else None,
                         'handle_lazy_loading': handle_lazy_loading,
                         'pagination_method': pagination_method if handle_pagination else None,
                         'hyphen_separator':hyphen_separator if hyphen_separator else False,
-                        'country_code' :country_code if country_code else False
+                        'country_code' :country_code if country_code else False,
+                        'saveToDb':saveToDb if saveToDb else False
                     }
                     
                     # Add method-specific pagination options
@@ -1074,76 +1168,90 @@ with tab1:
                     st.info("Task Started You will be notified after completion by email")
                 else:    
                     st.info("Task Complete Go to Result Tab to See Result")
+                    st.info("Took " + str(st.session_state.options.get("time", 20)) + " Seconds to Crawl and Extract Websites")
+
+import streamlit as st
+import pandas as pd
+import re
+from datetime import datetime
+
+import streamlit as st
+import pandas as pd
+import re
+from datetime import datetime
+
 if selected_tab != "tab2":
     with tab2:
         if not coldwell:
-            showcoldWellResult=st.toggle("View Coldwell Task Results", key="result-coldwell" ,help=f"Toggle between Coldwell task results and other quick tasks.")
+            showcoldWellResult = st.toggle("View Coldwell Task Results", key="result-coldwell", help="Toggle between Coldwell task results and other quick tasks.")
         if coldwell or showcoldWellResult:
             with tab2:
                 st.subheader("📊 Scraping Results (Coldwell)")
-                def format_mobile_number(mobile, country_code, hyphen_separator):
-                    digits = "".join(filter(str.isdigit, str(mobile)))  # Remove non-numeric characters
-                    if len(digits) == 10:
-                        formatted = f"{digits[:3]}-{digits[3:6]}-{digits[6:]}" if hyphen_separator else digits
-                        if country_code:
-                            formatted = f"+1{'-' if hyphen_separator else ''}{formatted}"
-                        return formatted
-                    return mobile  # Return as is if it's not a 10-digit number
+
+                def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
+                    if pd.isna(mobile):  # Handle NaN values
+                        return ""
+
+                    # Remove all non-numeric characters
+                    mobile = re.sub(r"\D", "", str(mobile))
+
+                    if len(mobile) < 10:  # Ensure a valid 10-digit number
+                        return mobile  # Return as-is if not a full number
+
+                    # Apply hyphen separator if enabled
+                    if hyphen_separator:
+                        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
+
+                    # Apply country code if enabled
+                    if country_code:
+                        if hyphen_separator:
+                            mobile = f"+1-{mobile}"  # Add +1- before the number
+                        else:
+                            mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
+
+                    return mobile
 
                 try:
                     # Load data from coldwell_agents.csv
                     coldwell_df = pd.read_csv("data/coldwell_agents.csv")
-                    def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
-                        if pd.isna(mobile):  # Handle NaN values
-                            return ""
 
-                        # Remove all non-numeric characters
-                        mobile = re.sub(r"\D", "", str(mobile))
-
-                        if len(mobile) < 10:  # Ensure a valid 10-digit number
-                            return mobile  # Return as-is if not a full number
-
-                        # Apply hyphen separator if enabled
-                        if hyphen_separator:
-                            mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
-
-                        # Apply country code if enabled
-                        if country_code:
-                            if hyphen_separator:
-                                mobile = f"+1-{mobile}"  # Add +1- before the number
-                            else:
-                                mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
-
-                        return mobile
-                    
                     # Select only required columns
                     coldwell_df = coldwell_df[["name", "office", "email", "mobile"]]
-                    # Add country code if enabled
 
-                    # Display first 50 rows
+                    # Format mobile numbers
                     coldwell_df["mobile"] = coldwell_df["mobile"].fillna("").apply(
-            lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
-        )
-                    st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
-                    st.dataframe(coldwell_df.head(50), use_container_width=True)
+                        lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
+                    )
 
+                    st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
+
+                    # Display the editable table
+                    st.write("Edit or delete cells/rows in the table below:")
+
+                    # Use st.data_editor to make the table editable
+                    edited_df = st.data_editor(
+                        coldwell_df.head(50),
+                        use_container_width=True,
+                        num_rows="dynamic",  # Allow adding/deleting rows
+                        key="coldwell_editor"
+                    )
+
+
+                    # Allow users to download the edited data
                     selected_columns = st.multiselect(
-                            "Select columns to download",
-                            options=coldwell_df.columns,
-                            default=coldwell_df.columns
-                        )
-                    # 📥 Download Buttons (CSV, JSON)
+                        "Select columns to download",
+                        options=edited_df.columns,
+                        default=edited_df.columns
+                    )
+
                     if st.button("📥 Download Data", use_container_width=True):
-                        # Allow user to select columns for download
-                        
-                        
                         if selected_columns:
                             # Filter DataFrame based on selected columns
-                            download_df = coldwell_df[selected_columns]
-                            
-                            # Display download options (CSV, JSON)
+                            download_df = edited_df[selected_columns]
+
+                            # Display download options (CSV, JSON, TXT)
                             col1, col2, col3 = st.columns(3)
-                            
+
                             # CSV Download
                             with col1:
                                 csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
@@ -1153,7 +1261,7 @@ if selected_tab != "tab2":
                                     file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                                     mime="text/csv",
                                 )
-                            
+
                             # JSON Download
                             with col2:
                                 json_str = download_df.to_json(orient="records", indent=2)
@@ -1164,45 +1272,57 @@ if selected_tab != "tab2":
                                     mime="application/json",
                                 )
 
-                            # TXT
+                            # TXT Download
                             with col3:
-                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
                                 st.download_button(
-                                    label="📥 Download TXT (Comma Seperated)",
-                                    data=csv_data,
+                                    label="📥 Download TXT (Tab Separated)",
+                                    data=txt_data,
                                     file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                                     mime="text/txt",
                                 )
                         else:
                             st.warning("⚠️ Please select at least one column to download.")
-                
+
                 except FileNotFoundError:
                     st.error("Data is being fetched: 100 agents are being loaded. Please check back shortly!")
         else:
             # Original logic for other URLs
             with tab2:
                 st.subheader("📊 Scraping Results")
-                
+
                 if st.session_state.get("results"):
                     def process_results(data_dicts, extend_metadata=True):
                         if not data_dicts:
                             return pd.DataFrame()
                         
+                        # First, collect all the data into a list of dictionaries
                         all_data = []
+                        metadata_cols = ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]
+                        
+                        # Track seen values for deduplication
+                        seen_values = {}
                         
                         for i, data_dict in enumerate(data_dicts):
-                            # Define metadata fields explicitly
-                            metadata = {"Source_Index": f"Data-{i+1}"}
-                            list_fields = {}
-                            non_list_fields = {}
+                            source_index = f"Data-{i+1}"
                             
-                            # Separate fields into metadata, list fields, and non-list fields
-                            for key, value in data_dict.items():
-                                if key in ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]:
+                            # Extract metadata
+                            metadata = {"Source_Index": source_index}
+                            for key in metadata_cols:
+                                if key in data_dict:
+                                    value = data_dict[key]
                                     if isinstance(value, list):
                                         metadata[key] = "" if not value else str(value[0])
                                     else:
                                         metadata[key] = "" if value is None else str(value)
+                            
+                            # Extract list fields and non-list fields
+                            list_fields = {}
+                            non_list_fields = {}
+                            
+                            for key, value in data_dict.items():
+                                if key in metadata_cols:
+                                    continue
                                 elif isinstance(value, list) and len(value) > 1:
                                     list_fields[key] = value
                                 else:
@@ -1211,72 +1331,94 @@ if selected_tab != "tab2":
                                     else:
                                         non_list_fields[key] = "" if value is None else str(value)
                             
-                            # Special handling for email - only include in the first row
-                            email_value = None
-                            if "email" in non_list_fields:
-                                email_value = non_list_fields.pop("email")
-                            
-                            # If there are list fields, expand them into rows
+                            # Process list fields
                             if list_fields:
                                 max_length = max(len(value) for value in list_fields.values())
                                 for j in range(max_length):
-                                    row = metadata.copy() if j == 0 or not extend_metadata else {"Source_Index": f"Data-{i+1}"}
+                                    row_data = {}
                                     
-                                    # Add non-list fields (excluding email)
-                                    row.update(non_list_fields)
+                                    # Add metadata
+                                    if j == 0 or not extend_metadata:
+                                        row_data.update(metadata)
+                                    else:
+                                        row_data["Source_Index"] = source_index
                                     
-                                    # Add email only to the first row
-                                    if j == 0 and email_value is not None:
-                                        row["email"] = email_value
-                                    elif "email" not in row:
-                                        row["email"] = ""
+                                    # Add non-list fields
+                                    row_data.update(non_list_fields)
                                     
+                                    # Add list fields for this row
+                                    has_valid_data = False
                                     for key, value_list in list_fields.items():
-                                        row[key] = str(value_list[j]) if j < len(value_list) else ""
-                                    all_data.append(row)
+                                        if j < len(value_list):
+                                            value = str(value_list[j])
+                                            if value:  # Only process non-empty values
+                                                # Initialize seen_values for this column if needed
+                                                if key not in seen_values:
+                                                    seen_values[key] = set()
+                                                
+                                                # Only add the value if it hasn't been seen before
+                                                if value not in seen_values[key]:
+                                                    row_data[key] = value
+                                                    seen_values[key].add(value)
+                                                    has_valid_data = True
+                                        
+                                    # Only add row if it has valid data
+                                    if has_valid_data or j == 0:  # Keep at least one row per source
+                                        all_data.append(row_data)
                             else:
-                                row = metadata.copy()
-                                row.update(non_list_fields)
+                                # Process single row
+                                row_data = {}
+                                row_data.update(metadata)
                                 
-                                # Add email back to the row
-                                if email_value is not None:
-                                    row["email"] = email_value
-                                    
-                                all_data.append(row)
+                                # Add non-list fields with deduplication
+                                has_valid_data = False
+                                for key, value in non_list_fields.items():
+                                    if value:  # Only process non-empty values
+                                        # Initialize seen_values for this column if needed
+                                        if key not in seen_values:
+                                            seen_values[key] = set()
+                                        
+                                        # Only add the value if it hasn't been seen before
+                                        if value not in seen_values[key]:
+                                            row_data[key] = value
+                                            seen_values[key].add(value)
+                                            has_valid_data = True
+                                
+                                # Only add row if it has valid data
+                                if has_valid_data or i == 0:  # Keep at least one row per source
+                                    all_data.append(row_data)
                         
                         # Create DataFrame
                         try:
+                            # Create DataFrame from collected data
                             df = pd.DataFrame(all_data)
+                            
+                            # If DataFrame is empty, return empty DataFrame
+                            if df.empty:
+                                return df
+                            
+                            # Fill NaN values that might have been created during the process
+                            df = df.fillna("")
                             
                             # If extend_metadata is True, clear metadata in duplicate rows
                             if extend_metadata:
-                                metadata_cols = ["url", "timestamp", "date", "datetime", "time", "title"]
-                                df.loc[df.duplicated(subset=["Source_Index"]), [col for col in metadata_cols if col in df.columns]] = ""
+                                metadata_cols_in_df = [col for col in metadata_cols if col in df.columns and col != "Source_Index"]
+                                df.loc[df.duplicated(subset=["Source_Index"]), metadata_cols_in_df] = ""
                             
-                            # Define column order: Source_Index first, then others
+                            # Define column order: Source_Index first, then other metadata, then data
                             first_cols = ["Source_Index"]
-                            if "url" in df.columns:
-                                first_cols.append("url")
-                            if "timestamp" in df.columns:
-                                first_cols.append("timestamp")
-                            other_priority = ["date", "datetime", "time", "title"]
-                            for col in other_priority:
-                                if col in df.columns and col not in first_cols:
+                            for col in ["url", "timestamp", "date", "datetime", "time", "title"]:
+                                if col in df.columns:
                                     first_cols.append(col)
                                     
-                            # Make sure email is prioritized in column ordering
+                            # Arrange the rest of the columns
                             remaining_cols = [col for col in df.columns if col not in first_cols]
-                            if "email" in remaining_cols:
-                                remaining_cols.remove("email")
-                                remaining_cols.append("email")
-                                
-                            df = df[first_cols + remaining_cols]
+                            
+                            # Final result with proper column order
+                            return df[first_cols + remaining_cols]
                             
                         except Exception as e:
                             return pd.DataFrame({"Error": [str(e)]})
-                        
-                        return df
-
                     def get_data_without_metadata(df):
                         # Define metadata columns to exclude
                         metadata_cols = ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]
@@ -1284,73 +1426,77 @@ if selected_tab != "tab2":
                         data_cols = [col for col in df.columns if col.lower() not in metadata_cols]
                         return df[data_cols]
 
+
                     # Process results with extend_metadata=True
                     results_df = process_results(st.session_state.results, extend_metadata=True)
 
-                    # Display the full DataFrame in Streamlit
-                    st.dataframe(results_df, use_container_width=True)
+                    # Display the editable table
+                    st.write("Edit or delete cells/rows in the table below:")
 
-                    # Prepare data for download (exclude metadata)
-                    download_df = get_data_without_metadata(results_df)
+                    # Use st.data_editor to make the table editable
+                    edited_results_df = st.data_editor(
+                        results_df,
+                        use_container_width=True,
+                        num_rows="dynamic",  # Allow adding/deleting rows
+                        key="results_editor"
+                    )
 
-                    # 📥 Download Buttons (CSV, JSON, TXT)
-                    col1, col2, col3 = st.columns(3)
-
+                    # Add a "Delete Selected Rows" button
+                    # Allow users to download the edited data
                     selected_columns = st.multiselect(
-                                            "Select columns to download",
-                                            options=results_df.columns,
-                                            default=results_df.columns
-                                        )
-                    # 📥 Download Buttons (CSV, JSON)
+                        "Select columns to download",
+                        options=edited_results_df.columns,
+                        default=edited_results_df.columns
+                    )
+
                     if st.button("📥 Download Data", use_container_width=True):
-                        # Allow user to select columns for download
-                        
-                        
                         if selected_columns:
                             # Filter DataFrame based on selected columns
-                            download_df = results_df[selected_columns]
-                            
-                            # Display download options (CSV, JSON)
+                            download_df = edited_results_df[selected_columns]
+
+                            # Display download options (CSV, JSON, TXT)
                             col1, col2, col3 = st.columns(3)
-                            
+
                             # CSV Download
                             with col1:
                                 csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
                                 st.download_button(
                                     label="📥 Download CSV",
                                     data=csv_data,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                    file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                                     mime="text/csv",
                                 )
-                            
+
                             # JSON Download
                             with col2:
                                 json_str = download_df.to_json(orient="records", indent=2)
                                 st.download_button(
                                     label="📥 Download JSON",
                                     data=json_str,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                    file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
                                     mime="application/json",
                                 )
 
-                            # TXT
+                            # TXT Download
                             with col3:
-                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
                                 st.download_button(
-                                    label="📥 Download TXT (Comma Seperated)",
-                                    data=csv_data,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                    label="📥 Download TXT (Tab Separated)",
+                                    data=txt_data,
+                                    file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                                     mime="text/txt",
                                 )
                         else:
                             st.warning("⚠️ Please select at least one column to download.")
-                
+
                 else:
                     if st.session_state.get("is_scraping", False):
                         st.info("⏳ Scraping in progress... Results will appear here when available.")
                     else:
                         st.info("🔍 No results yet. Start a scraping job to see results here.")
+   
 
+                     
 # if selected_tab == "tab3":
 with tab3:
     st.subheader("Scraping Logs")
@@ -1646,12 +1792,15 @@ if selected_tab == "tab2":
                         st.info("⏳ Scraping in progress... Results will appear here when available.")
                     else:
                         st.info("🔍 No results yet. Start a scraping job to see results here.")
+    
     # if selected_tab == "tab3":
 
 # Main scraping process (runs when is_scraping is True)
 if st.session_state.is_scraping:
+    
     # Initialize the crawl frontier with starting URLs if we're just beginning
     if st.session_state.current_phase == "initializing":
+        start = time.time()
         frontier = st.session_state.urls.copy()
         st.session_state.found_links = []
         st.session_state.current_phase = "crawling"
@@ -1659,13 +1808,17 @@ if st.session_state.is_scraping:
     
     # Process one URL at a time to allow UI updates
     elif st.session_state.current_phase == "crawling":
+        
+        start = time.time()
         # Get URLs to process: first frDom initial URLs, then found links
         remaining_urls = [url for url in st.session_state.urls if url not in st.session_state.processed_links]
-        if len(st.session_state.processed_links) >= st.session_state.options.get('max_pages', 1):
-            st.session_state.current_phase = "complete"
-            log_success(f"Max URL limit reached: {st.session_state.options.get('max_pages', 1)} URLs processed.")
-            time.sleep(0.1)
-            st.rerun()
+        if st.session_state.options.get('max_pages_status'):
+                if len(st.session_state.processed_links) >= st.session_state.options.get('max_pages', 10):
+                    st.session_state.current_phase = "complete"
+                    log_success(f"Max URL limit reached: {st.session_state.options.get('max_pages', 5)} URLs processed.")
+                    time.sleep(0.1)
+                    st.rerun()
+
         if not remaining_urls and st.session_state.options.get('follow_links', False):
             # If we've processed all initial URLs, move to the found links
             if st.session_state.found_links and st.session_state.current_depth < st.session_state.options.get('max_depth', 1):
@@ -1681,9 +1834,20 @@ if st.session_state.is_scraping:
                         
                         # Extract data from the crawled page
                         extracted_data = extract_data(html_content, st.session_state.fields, st.session_state.extraction_method)
-                        # db.save_extracted_data(rawid, next_url, extracted_data)
+                        # print("Saving to DB")
+                        # print(rawid)
+                        print(next_url)
+                        print(extract_data)
+                        # print("Taking",time.time() - start)
+                        if saveToDb:
+                            rawid= db.get_most_recent_updated_id()
+                            print("Saved to DB")
+                            try:
+                                db.save_extracted_data(rawid, next_url, extracted_data)
+                            except:
+                                log_error("Error While Saving in DB Please Crawl Again")
                         # Add the extracted data to results
-                        
+                        print("Debugging")
                         if any(extracted_data.values()):
                             result_item = {
                                 'URL': next_url,
@@ -1692,7 +1856,9 @@ if st.session_state.is_scraping:
                             # Add extracted fields
                             for field, values in extracted_data.items():
                                 result_item[field] = values
-                            
+                            # print("Taking",time.time() - start)
+                            st.session_state.options["time"] = st.session_state.options.get("time",0)+round(time.time() - start,2)
+                            print("time",st.session_state.options.get("time", 20))
                             st.session_state.results.append(result_item)
                             log_success(f"Added results from {next_url}")
                         
@@ -1743,6 +1909,14 @@ if st.session_state.is_scraping:
                 # Extract data from the crawled page
                 extracted_data = extract_data(html_content, st.session_state.fields, st.session_state.extraction_method)
                 # Add the extracted data to results
+                print("Taking",time.time() - start)
+                print("Saving to DB")
+                print(rawid)
+                print(next_url)
+                print(extracted_data)
+                if saveToDb:
+                    print("Saved to DB")
+                    db.save_extracted_data(rawid, next_url, extracted_data)
                 if any(extracted_data.values()):
                     result_item = {
                         'URL': next_url,
@@ -1751,7 +1925,8 @@ if st.session_state.is_scraping:
                     # Add extracted fields
                     for field, values in extracted_data.items():
                         result_item[field] = values
-                    
+                    st.session_state.options["time"] =st.session_state.options.get('time',0)+round(time.time() - start,2)
+                    print("time",st.session_state.options.get("time", 20))
                     st.session_state.results.append(result_item)
                     log_success(f"Added results from {next_url}")
                 

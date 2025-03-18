@@ -6,19 +6,40 @@ from log import log_info, log_success, log_error, log_warning  # Import logging 
 from database import db
 from assets import selected_user_agent,http_headers,random_zigzag_move
 import random
+from fake_useragent import UserAgent
+ua_platform= ['desktop','mobile','tablet']
+ua_os= ["Windows", "Linux", "Ubuntu", "Chrome OS", "Mac OS X", "Android", "iOS"]
+
+
 import spacy
 rawid = ""
-def random_sleep():
-    time.sleep(random.uniform(1, 5)) 
+async def random_sleep(min_delay=1, max_delay=3):
+    """Sleep for a random amount of time between min_delay and max_delay seconds."""
+    delay = random.uniform(min_delay, max_delay)
+    await asyncio.sleep(delay)
+
+async def random_zigzag_move(page, start_x, start_y, end_x, end_y):
+    """Simulate a human-like zigzag mouse movement."""
+    steps = random.randint(5, 10)
+    x_step = (end_x - start_x) / steps
+    y_step = (end_y - start_y) / steps
+
+    for i in range(steps):
+        x = start_x + x_step * i
+        y = start_y + y_step * i
+        await page.mouse.move(x + random.randint(-50, 50), y + random.randint(-50, 50))
+        await random_sleep(0.1, 0.3)
 
 async def get_html(url: str, button: str = None, options: dict = None, loader: str = None) -> str:
     """
     Fetch HTML content by navigating to a URL and extracting a strictly meaningful container.
     """
+    ua = UserAgent(os=random.choice(ua_os),platforms=random.choice(ua_platform))
+    print("ua",ua.random)
     options = options or {}
     max_pages = options.get('max_pages', 1)
     handle_lazy_loading = options.get('handle_lazy_loading', False)
-    numbered= options.get('pagination_method',False)=="Numbered"
+    numbered = options.get('pagination_method', False) == "Numbered"
     handle_pagination = options.get('handle_pagination', False)
     js_timeout = options.get('js_timeout', 10000)           # Reduced JS timeout (ms)
     navigation_timeout = options.get('navigation_timeout', 30000)  # Reduced navigation timeout (ms)
@@ -29,7 +50,7 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
 
     async with async_playwright() as p:
         browser = await p.chromium.launch(
-            headless=True,
+            headless=False,
             args=['--disable-web-security', '--disable-features=IsolateOrigins,site-per-process']
         )
         log_info("Launched headless Chromium browser with args: --disable-web-security")
@@ -42,7 +63,7 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
             # Create a fresh context and page for each attempt.
             context = await browser.new_context(
                 viewport={"width": 1920, "height": 1080},
-                user_agent=selected_user_agent,
+                user_agent=ua.random,
                 ignore_https_errors=True,
                 java_script_enabled=True
             )
@@ -50,15 +71,15 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
             print(http_headers)
             # await page.set_extra_http_headers(http_headers)
             page.set_default_timeout(navigation_timeout)
-            random_sleep()
+            await random_sleep()
             # page.on("dialog", lambda dialog: asyncio.create_task(dialog.dismiss()))
             start_x, start_y = 100, 100
-            
+            await page.mouse.move(start_x, start_y)
             # End position (e.g., somewhere in the middle of the page)
             end_x, end_y = 600, 600
 
             # Perform the human-like zigzag mouse movement
-            # await random_zigzag_move(page, start_x, start_y, end_x, end_y)
+            await random_zigzag_move(page, start_x, start_y, end_x, end_y)
             try:
                 log_info(f"Navigating to {url} with timeout {navigation_timeout}ms")
                 nav_start = time.time()
@@ -84,7 +105,7 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
                 if handle_pagination and button:
                     await handle_pagination_with_backoff(page, button, loader, max_pages)
                 if handle_pagination and numbered:
-                    await handle_numbered_pagination_with_backoff(page,url)
+                    await handle_numbered_pagination_with_backoff(page, url)
                 if handle_lazy_loading:
                     await handle_lazy_loading_with_limits(page)
                 
@@ -99,7 +120,9 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
                     reduction = ((raw_size - filtered_size) / raw_size * 100)
                     log_info(f"Filtered content size: {filtered_size} bytes (reduction: {reduction:.1f}%)")
                     global rawid
-                    # rawid = db.save_raw_html(url, filtered_html)
+                    if options.get('saveToDb', False):
+                        print("Saving Raw")
+                        rawid = await db.save_raw_html(url, filtered_html)
                     await context.close()
                     log_info(f"Fetch completed in {time.time() - start_time:.2f}s")
                     await browser.close()
@@ -118,7 +141,6 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
         log_info("Browser closed")
         log_error(f"All {retry_attempts + 1} attempts failed for {url}")
         return ""
-
 import asyncio
 import json
 import csv
@@ -273,10 +295,10 @@ async def scrape_agent_data(url: str, options: dict = None, json_file=None, csv_
             ]
         )
         log_info("Launched headless Chromium browser with optimized memory settings")
-        
+        print("user agent ua",ua.random)
         context = await browser.new_context(
             viewport={"width": 1920, "height": 1080},
-            user_agent=options.get('user_agent', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'),
+            user_agent=ua.random,
             ignore_https_errors=True,
             java_script_enabled=True
         )
