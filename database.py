@@ -59,7 +59,13 @@ class Database:
             FOREIGN KEY (raw_id) REFERENCES raw_html(id) ON DELETE CASCADE
         );
         """
-
+        create_api_key_table= """
+                            CREATE TABLE IF NOT EXISTS api_keys (
+                        id VARCHAR(50) PRIMARY KEY,
+                        provider VARCHAR(50) UNIQUE NOT NULL,
+                        api_key TEXT NOT NULL,
+                        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+                    );"""
         create_cron_schedule_table = """
         CREATE TABLE IF NOT EXISTS cron_schedule (
             id VARCHAR(50) PRIMARY KEY,
@@ -73,10 +79,44 @@ class Database:
         """
 
         with self.connection.cursor() as cursor:
+            cursor.execute(create_api_key_table)
             cursor.execute(create_raw_html_table)
             cursor.execute(create_extracted_data_table)
             cursor.execute(create_cron_schedule_table)
             self.connection.commit()
+    def save_or_update_api_key(self, provider, key):
+        """Insert or update an API key for a provider."""
+        query = """
+        INSERT INTO api_keys (id, provider, api_key)
+        VALUES (%s, %s, %s)
+        ON DUPLICATE KEY UPDATE api_key = VALUES(api_key)
+        """
+        key_id = generate_unique_id()
+        values = (key_id, provider, key)
+        with self.connection.cursor() as cursor:
+            cursor.execute(query, values)
+            self.connection.commit()
+
+    def save_api_key(self, provider, key):
+        """Store or update an API key."""
+        query = """
+        INSERT INTO api_keys (id, provider, api_key)
+        VALUES (%s, %s, %s)
+        ON DUPLICATE KEY UPDATE api_key = VALUES(api_key)
+        """
+        key_id = generate_unique_id()
+        values = (key_id, provider, key)
+        with self.connection.cursor() as cursor:
+            cursor.execute(query, values)
+            self.connection.commit()
+    def get_api_key(self, provider):
+        """Retrieve an API key for a provider."""
+        query = "SELECT api_key FROM api_keys WHERE provider = %s"
+        with self.connection.cursor() as cursor:
+            cursor.execute(query, (provider,))
+            result = cursor.fetchone()
+        return result[0] if result else None
+
 
     def save_raw_html(self, url, html_content):
         """Save raw HTML content from a URL into MySQL."""
@@ -110,48 +150,75 @@ class Database:
 
         # Return the ID if there's a result, otherwise return None
         return result[0] if result else None
+    def clear_all_data(self):
+        """Remove all data from the extracted_data table."""
+        query = "TRUNCATE TABLE extracted_data"  # or "DELETE FROM extracted_data"
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query)
+                self.connection.commit()
+            return True
+        except Exception as e:
+            self.connection.rollback()
+            raise Exception(f"Failed to clear data: {str(e)}")
+        return False
 
+    from datetime import datetime
 
     def save_extracted_data(self, raw_id, url, extracted_data):
-        """Save extracted data linked to raw HTML in MySQL."""
+        """Save extracted data linked to raw HTML in MySQL with explicit timestamp."""
         item_id = generate_unique_id()
         scrape_id = st.session_state.get('scrape_id', 'unknown')
         json_data = json.dumps(extracted_data)
+        current_timestamp = datetime.now()  # Explicitly set timestamp
         query = """
-        INSERT INTO extracted_data (id, raw_id, url, data, scrape_id)
-        VALUES (%s, %s, %s, %s, %s)
+        INSERT INTO extracted_data (id, raw_id, url, data, scrape_id, timestamp)
+        VALUES (%s, %s, %s, %s, %s, %s)
         """
-        values = (item_id, raw_id, url, json_data, scrape_id)
+        values = (item_id, raw_id, url, json_data, scrape_id, current_timestamp)
 
-        with self.connection.cursor() as cursor:
-            cursor.execute(query, values)
-            self.connection.commit()
+        try:
+            with self.connection.cursor() as cursor:
+                cursor.execute(query, values)
+                self.connection.commit()
+        except Exception as e:
+            self.connection.rollback()
+            raise Exception(f"Failed to save data: {str(e)}")
 
         return item_id
-
     def get_all_data(self):
-        """Retrieve all extracted data from MySQL."""
-        query = "SELECT url, data, timestamp FROM extracted_data"
+        """Retrieve all extracted data from MySQL, sorted by timestamp descending."""
+        query = "SELECT url, data, timestamp FROM extracted_data ORDER BY timestamp DESC"
         results = []
 
-        with self.connection.cursor(dictionary=True) as cursor:
-            cursor.execute(query)
-            rows = cursor.fetchall()
+        try:
+            with self.connection.cursor(dictionary=True) as cursor:
+                cursor.execute(query)
+                rows = cursor.fetchall()
 
-            for row in rows:
-                base_info = {
-                    'URL': row['url'],
-                    'Timestamp': row['timestamp']
-                }
+                for row in rows:
+                    base_info = {
+                        'URL': row['url'],
+                        'Timestamp': row['timestamp']  # Should be a datetime object from MySQL
+                    }
 
-                extracted_data = eval(row['data']) if isinstance(row['data'], str) else row['data']
-                for key, value in extracted_data.items():
-                    base_info[key] = ', '.join(value) if isinstance(value, list) else value
+                    # Safely parse JSON data
+                    extracted_data = json.loads(row['data']) if isinstance(row['data'], str) else row['data']
+                    for key, value in extracted_data.items():
+                        base_info[key] = ', '.join(value) if isinstance(value, list) else value
 
-                results.append(base_info)
+                    results.append(base_info)
+
+        except Exception as e:
+            raise Exception(f"Failed to fetch data: {str(e)}")
 
         return results
-
+    def delete_data(self, url):
+        """Delete a record from the database based on URL."""
+        query = "DELETE FROM extracted_data WHERE url = %s"
+        with self.connection.cursor() as cursor:
+            cursor.execute(query, (url,))
+            self.connection.commit()
     def save_cron_schedule(self, job_name, website,schedule_time, status='active',data=""):
         """Save a cron schedule into MySQL."""
         job_id = generate_unique_id()

@@ -122,7 +122,7 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
                     global rawid
                     if options.get('saveToDb', False):
                         print("Saving Raw")
-                        rawid = await db.save_raw_html(url, filtered_html)
+                        rawid =  db.save_raw_html(url, filtered_html)
                     await context.close()
                     log_info(f"Fetch completed in {time.time() - start_time:.2f}s")
                     await browser.close()

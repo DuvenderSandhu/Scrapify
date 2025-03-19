@@ -195,7 +195,7 @@ selected_tab = query_params.get("tab", False)
 
 
 tab_names = ["Setup & Controls", "Results", "Logs"]
-tab_ids = ["tab1", "tab2", "tab3"]
+tab_ids = ["tab1", "tab2", "tab3","tab4"]
 # default_tab_index = tab_ids.index(selected_tab) if selected_tab in tab_ids else 0
 
 # Create tabs and set the default active tab based on URL parameter
@@ -261,8 +261,8 @@ def normalize_url(url, base_url):
 
 # Crawler functions
 async def crawl_url(url, options):
-    print("Crawling Now")
     """Simulate crawling a URL with configurable options"""
+    print("Crawling Now")
     log_process(f"Crawling URL: {url}")
     domain = extract_domain(url)
     log_info(f"Connecting to {domain}")
@@ -303,8 +303,7 @@ async def crawl_url(url, options):
     return {
         'html': html_content,
         'links': links,
-        'pagination_url': pagination_url,
-        'timeTaken':time.time() - start
+        'pagination_url': pagination_url
     }
 
 
@@ -644,8 +643,12 @@ def extract_data(html_content, fields, method="regex"):
             results[field] = find_elements_by_selector(html_content, field)
     elif method.lower() == "ai":
         ai_response = extract_data_with_ai(html_content, fields, ai_provider, ai_api)
-        for field, data in ai_response.items():
-            results[field] = data if data else []
+        print(ai_response)
+        if ai_response.get('status',False)==401:
+            log_error("Check your Api Key or Model")
+        else:
+            for field, data in ai_response.items():
+                results[field] = data if data else []
 
     print(f"Extraction completed in {time.time() - start:.2f} seconds")
     return results
@@ -783,7 +786,7 @@ with open('email.txt', 'r') as file:
     content = file.read()
     emails= content
 # Create tabs for different sections
-tab1, tab2, tab3 = st.tabs(["Setup & Controls", "Results", "Logs"])
+tab1, tab2, tab3,tab4 = st.tabs(["Setup & Controls", "Results", "Logs","Database"])
 ai_provider=""
 ai_api=""
 saveToDb=False
@@ -920,15 +923,14 @@ with tab1:
         # Extraction Method
 
 
-        st.subheader(" Extraction Method")
+        st.subheader("Extraction Method")
 
         # Extraction method selection
-        extraction_method = st.selectbox(  
-            "Choose a data extraction method:",  
-            ["Regex", "CSS", "AI"],  
-            help="Regex: Extract data using patterns | CSS: Select specific page elements | AI: Analyze content for relevant data."  
-        )  
-
+        extraction_method = st.selectbox(
+            "Choose a data extraction method:",
+            ["Regex", "CSS", "AI"],
+            help="Regex: Extract data using patterns | CSS: Select specific page elements | AI: Analyze content for relevant data."
+        )
 
         # Dynamic description
         descriptions = {
@@ -941,8 +943,31 @@ with tab1:
         # AI options (only shown if AI is selected)
         if extraction_method == "AI":
             st.session_state.extraction_method = "ai"
+            
             ai_provider = st.selectbox("Select AI Model", ["OpenAI", "Gemini", "DeepSeek", "Groq"])
-            ai_api = st.text_area("Enter AI API Key", placeholder="sk-...")
+            
+            # Fetch API key from database
+            stored_api_key = db.get_api_key(ai_provider)
+            
+            # Display the stored API key (masked for security)
+            ai_api = st.text_area("Enter AI API Key", 
+                                value=stored_api_key if stored_api_key else "", 
+                                placeholder="sk-...", 
+                                help="Your API key is securely stored.")
+            
+            # Button to save/update API key
+            if st.button("Save API Key"):
+                if ai_api:
+                    if ai_api== stored_api_key:
+                        db.save_or_update_api_key(ai_provider, ai_api)
+                        st.success(f"API key for {ai_provider} updated successfully!")
+                        
+                    else:
+                        db.save_api_key(ai_provider, ai_api)
+                        st.success(f"API key for {ai_provider} saved successfully!")
+                else:
+                    st.warning("Please enter a valid API key.")
+
         # elif extraction_method =="CSS":
         #     st.session_state.extraction_method = "CSS"
         #     st.rerun()
@@ -1735,11 +1760,122 @@ with tab3:
             icons = {"INFO": "ℹ️", "SUCCESS": "✅", "WARNING": "⚠️", "ERROR": "❌", "PROCESS": "🔄"}
             st.markdown(f"[{log['timestamp']}] {icons.get(log['level'], '')} {log['message']}")
 
+with tab4:
+    st.header("Database")
+    st.write("Browse, search, and manage your saved data below (newest first).")
+
+    # Fetch all saved data
+    all_data = db.get_all_data()
+
+    if all_data:
+        # Convert to DataFrame and ensure Timestamp is datetime
+        df = pd.DataFrame(all_data)
+        df['Timestamp'] = pd.to_datetime(df['Timestamp'])  # Convert to datetime if not already
+        summary_df = df[["URL", "Timestamp"]]
+
+        # Search functionality
+        search_term = st.text_input("Search by URL or Timestamp", "", placeholder="Type to filter...")
+        if search_term:
+            summary_df = summary_df[
+                summary_df["URL"].str.contains(search_term, case=False, na=False) |
+                summary_df["Timestamp"].astype(str).str.contains(search_term, case=False, na=False)
+            ]
+
+        # Pagination
+        entries_per_page = 10
+        total_entries = len(summary_df)
+        total_pages = (total_entries + entries_per_page - 1) // entries_per_page
+
+        if total_entries > 0:
+            page_number = st.number_input(
+                "Page", min_value=1, max_value=max(1, total_pages), value=1, step=1
+            )
+            start_idx = (page_number - 1) * entries_per_page
+            end_idx = min(start_idx + entries_per_page, total_entries)
+            paginated_df = summary_df.iloc[start_idx:end_idx]
+
+            st.write(f"Showing {start_idx + 1} - {end_idx} of {total_entries} entries")
+            st.dataframe(paginated_df, use_container_width=True, height=300)  # Scrollable table
+
+            # Select a URL from the paginated list
+            selected_url = st.selectbox(
+                "Pick a URL to see details",
+                options=[""] + paginated_df["URL"].tolist(),
+                index=0
+            )
+
+            if selected_url:
+                # Show details for the selected URL
+                selected_data = next(item for item in all_data if item["URL"] == selected_url)
+                detailed_df = pd.DataFrame([selected_data])
+                detailed_df['Timestamp'] = pd.to_datetime(detailed_df['Timestamp'])  # Ensure datetime
+
+                st.subheader(f"Details for {selected_url}")
+                st.dataframe(detailed_df, use_container_width=True, height=200)  # Scrollable details
+
+                # Action buttons and download options
+                col1, col2 = st.columns([1, 3])  # Adjust column widths
+                with col1:
+                    if st.button("🗑️ Delete", key="delete", help="Remove this data"):
+                        db.delete_data(selected_url)
+                        st.success(f"Deleted {selected_url}")
+                        st.rerun()  # Refresh page
+
+                with col2:
+                    # Column selection for download
+                    selected_columns = st.multiselect(
+                        "Choose columns to download",
+                        options=detailed_df.columns,
+                        default=detailed_df.columns,
+                        key="column_select"
+                    )
+
+                    if selected_columns and st.button("📥 Download", key="download_btn", help="Save selected data"):
+                        download_df = detailed_df[selected_columns]
+                        col_d1, col_d2, col_d3 = st.columns(3)
+
+                        # CSV Download
+                        with col_d1:
+                            csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                            st.download_button(
+                                label="CSV",
+                                data=csv_data,
+                                file_name=f"{selected_url}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                mime="text/csv",
+                                use_container_width=True
+                            )
+
+                        # JSON Download
+                        with col_d2:
+                            json_data = download_df.to_json(orient="records", indent=2)
+                            st.download_button(
+                                label="JSON",
+                                data=json_data,
+                                file_name=f"{selected_url}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                mime="application/json",
+                                use_container_width=True
+                            )
+
+                        # TXT (Comma Separated) Download
+                        with col_d3:
+                            txt_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                            st.download_button(
+                                label="TXT",
+                                data=txt_data,
+                                file_name=f"{selected_url}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                mime="text/plain",
+                                use_container_width=True
+                            )
+        else:
+            st.warning("No matching entries found for your search.")
+    else:
+        st.info("No data found. Save some data to see it here!")
+
 if selected_tab == "tab2":
     print(selected_tab)
     with tab2:
         if True:
-            showcoldWellResult=st.toggle("View Coldwell Task Results", help=f"Toggle between Coldwell task results and other quick tasks.",value=True)
+            showcoldWellResult = st.toggle("View Coldwell Task Results", help=f"Toggle between Coldwell task results and other quick tasks.", value=True)
         if coldwell or showcoldWellResult:
             with tab2:
                 st.subheader("📊 Scraping Results (Coldwell)")
@@ -1780,25 +1916,26 @@ if selected_tab == "tab2":
                     
                     # Select only required columns
                     coldwell_df = coldwell_df[["name", "office", "email", "mobile"]]
-                    # Add country code if enabled
-
-                    # Display first 50 rows
+                    
+                    # Format mobile numbers
                     coldwell_df["mobile"] = coldwell_df["mobile"].fillna("").apply(
-            lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
-        )
+                        lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
+                    )
+
+                    # Deduplicate based on unique fields (e.g., name, email, mobile)
+                    coldwell_df = coldwell_df.drop_duplicates(subset=["name", "email", "mobile"])
+
                     st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
                     st.dataframe(coldwell_df.head(50), use_container_width=True)
 
                     selected_columns = st.multiselect(
-                            "Select columns to download",
-                            options=coldwell_df.columns,
-                            default=coldwell_df.columns
-                        )
+                        "Select columns to download",
+                        options=coldwell_df.columns,
+                        default=coldwell_df.columns
+                    )
+                    
                     # 📥 Download Buttons (CSV, JSON)
                     if st.button("📥 Download Data", use_container_width=True):
-                        # Allow user to select columns for download
-                        
-                        
                         if selected_columns:
                             # Filter DataFrame based on selected columns
                             download_df = coldwell_df[selected_columns]
@@ -1949,6 +2086,9 @@ if selected_tab == "tab2":
                     # Process results with extend_metadata=True
                     results_df = process_results(st.session_state.results, extend_metadata=True)
 
+                    # Deduplicate results based on unique fields (e.g., email, name, url)
+                    results_df = results_df.drop_duplicates(subset=["email", "name", "url"])  # Adjust fields as needed
+
                     # Display the full DataFrame in Streamlit
                     st.dataframe(results_df, use_container_width=True)
 
@@ -1959,15 +2099,12 @@ if selected_tab == "tab2":
                     col1, col2, col3 = st.columns(3)
 
                     selected_columns = st.multiselect(
-                                            "Select columns to download",
-                                            options=results_df.columns,
-                                            default=results_df.columns
-                                        )
-                    # 📥 Download Buttons (CSV, JSON)
+                        "Select columns to download",
+                        options=results_df.columns,
+                        default=results_df.columns
+                    )
+                    
                     if st.button("📥 Download Data", use_container_width=True):
-                        # Allow user to select columns for download
-                        
-                        
                         if selected_columns:
                             # Filter DataFrame based on selected columns
                             download_df = results_df[selected_columns]
@@ -2012,8 +2149,6 @@ if selected_tab == "tab2":
                         st.info("⏳ Scraping in progress... Results will appear here when available.")
                     else:
                         st.info("🔍 No results yet. Start a scraping job to see results here.")
-    
-    # if selected_tab == "tab3":
 
 # Main scraping process (runs when is_scraping is True)
 if st.session_state.is_scraping:
@@ -2068,6 +2203,7 @@ if st.session_state.is_scraping:
                         rawid = db.get_most_recent_updated_id()
                         try:
                             db.save_extracted_data(rawid, next_url, extracted_data)
+                            log_success("Data Saved to DB")
                         except Exception as e:
                             log_error(f"Error while saving to DB: {str(e)}")
 

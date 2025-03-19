@@ -138,25 +138,29 @@ def extract_data_with_ai(html_content, field,ai="groq",api=""):
  from the following text: data should have duplicate data data should be in this format seperated by ',' response should be very professional like if email all should be in lower if contact number is should be put country code +1 and give them without seperator like - or space it should be +18923827373 \n\n{cleaned_text} be 100% you don't generate any thing from your site like if email it should be 100% exist there think of its surity first"""
     # print("aiPrompt",ai_prompt)
     print("ai Lower",ai,ai.lower())
-    if ai.lower()=='groq':
-        print("groq here")
-        ai_result = call_groq_ai(ai_prompt,api)
-    elif ai.lower() == 'openai':
-        print("i am here")
-        ai_result = call_openai(ai_prompt,api)
-    elif ai.lower() == 'gemini':
-        ai_result = call_gemini(ai_prompt,api)
-    elif ai.lower()=='deepseek':
-        ai_result = call_deepseek(ai_prompt,api)
-    print(ai_result)
-    text=clean_html(ai_result)
-    cleaned_ai_response = json.loads(text.replace("```python", "").replace("```", "").strip())
-    print(cleaned_ai_response)
-    if cleaned_ai_response:
+    try:
+        if ai.lower()=='groq':
+            print("groq here")
+            ai_result = call_groq_ai(ai_prompt,api)
+        elif ai.lower() == 'openai':
+            print("i am here")
+            ai_result = call_openai(ai_prompt,api)
+        elif ai.lower() == 'gemini':
+            ai_result = call_gemini(ai_prompt,api)
+        elif ai.lower()=='deepseek':
+            ai_result = call_deepseek(ai_prompt,api)
+        print(ai_result)
+        text=clean_html(ai_result)
+        cleaned_ai_response = json.loads(text.replace("```python", "").replace("```", "").strip())
         print(cleaned_ai_response)
-        return cleaned_ai_response  # Convert AI response to list
+        if cleaned_ai_response:
+            print(cleaned_ai_response)
+            return cleaned_ai_response  # Convert AI response to list
+        return {data:f"No {field} found"}
+    except :
+        return {"status": 401, "data": "Error While Connecting to AI. Probably Invalid API Key"}
+
     
-    return {data:f"No {field} found"}
 
 
 
