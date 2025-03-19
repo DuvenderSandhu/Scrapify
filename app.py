@@ -2240,7 +2240,7 @@ if st.session_state.is_scraping:
                     # Handle the specific error without logging it
                     if "'<' not supported between instances of 'int' and 'NoneType'" in str(e):
                         st.session_state.processed_links.add(next_url)  # Mark as processed to avoid retries
-                        log_info(f"Skipped URL due to internal error: {next_url}")
+                        print(f"Skipped URL due to internal error: {next_url}")
                     else:
                         log_error(f"Error crawling {next_url}: {str(e)}")
                         st.session_state.processed_links.add(next_url)  # Mark as processed to avoid retries
@@ -2270,7 +2270,7 @@ if st.session_state.is_scraping:
         except Exception as e:
             # Handle any unexpected errors and ensure the crawler completes
             if "'<' not supported between instances of 'int' and 'NoneType'" in str(e):
-                log_info("Skipped due to internal error")
+                print("Skipped due to internal error")
             else:
                 log_error(f"Unexpected error during crawling: {str(e)}")
             st.session_state.current_phase = "complete"
