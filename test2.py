@@ -5,31 +5,32 @@ import csv
 import os
 from datetime import datetime
 from mainthread import startThread, stopThread, current_scraper_thread, scraper_stop_event
-from emailSender import send_email  # Ensure this function is defined elsewhere
+from emailSender import send_email
 
-# Constants
-BATCH_SIZE = 100  # Save data in batches of 100 agents
+# Constants - Optimized for better speed/reliability balance
+BATCH_SIZE = 100
 OUTPUT_FOLDER = "data"
 PROGRESS_FILE = f"{OUTPUT_FOLDER}/progress.json"
-CONCURRENT_REQUESTS = 20  # Increase concurrency for faster scraping
-RETRY_LIMIT = 3  # Retry failed requests up to 3 times
+CONCURRENT_REQUESTS = 10  # Reduced from 20 to avoid overloading
+RETRY_LIMIT = 3
+LOAD_MORE_TIMEOUT = 10000  # 10 seconds timeout for load more operations
+PAGE_STABILIZE_DELAY = 2000  # 2 seconds delay between loads
+MAX_LOAD_ATTEMPTS = 50  # Increased to ensure we get all agents
 
 # Ensure the output folder exists
 if not os.path.exists(OUTPUT_FOLDER):
     os.makedirs(OUTPUT_FOLDER)
 
-
 def reset_progress():
     """Reset progress.json to initial state."""
     progress_data = {
         "processed_agents": 0,
-        "total_estimated_agents": 200,  # Adjust based on website estimate
-        "estimated_time_remaining": "Calculating Estimate Time",
+        "total_estimated_agents": 200,
+        "estimated_time_remaining": "Calculating",
         "elapsed_time": 0
     }
     with open(PROGRESS_FILE, "w") as f:
         json.dump(progress_data, f)
-
 
 def clear_existing_files():
     """Remove existing JSON and CSV files."""
@@ -40,258 +41,343 @@ def clear_existing_files():
             os.remove(file)
             print(f"Cleared existing file: {file}")
 
+async def update_progress(processed, total, start_time):
+    """Update the progress file with current status."""
+    elapsed_seconds = (datetime.now() - start_time).total_seconds()
+    
+    # Calculate estimated time remaining
+    if processed > 0:
+        avg_time_per_agent = elapsed_seconds / processed
+        remaining_agents = total - processed
+        est_remaining_seconds = avg_time_per_agent * remaining_agents
+        est_remaining = f"{est_remaining_seconds:.0f} seconds"
+    else:
+        est_remaining = "Calculating"
+    
+    progress_data = {
+        "processed_agents": processed,
+        "total_estimated_agents": total,
+        "estimated_time_remaining": est_remaining,
+        "elapsed_time": elapsed_seconds
+    }
+    
+    with open(PROGRESS_FILE, "w") as f:
+        json.dump(progress_data, f)
 
-async def fetch_agent_details(context, agent_data, retry_count=0):
-    """Fetch agent details (e.g., email) concurrently with retries."""
+async def fetch_agent_details(page, agent_data, agent_url, retry_count=0):
+    """Fetch agent details from their individual page."""
+    if scraper_stop_event.is_set():
+        return
+        
     try:
-        # Assuming the email can be fetched directly from the agent's page
-        # Modify this logic based on how emails are fetched
-        email_element = await context.query_selector('a[href^="mailto:"]')
+        # Navigate to agent page
+        await page.goto(agent_url, timeout=30000)
+        
+        # Try to find email - adapt selectors based on actual website structure
+        email_element = await page.query_selector('a[href^="mailto:"]')
         if email_element:
             email = await email_element.get_attribute('href')
             agent_data["email"] = email.replace('mailto:', '')
-    except Exception as e:
-        if retry_count < RETRY_LIMIT:
-            print(f"Retrying ({retry_count + 1}/{RETRY_LIMIT}) for email fetch: {e}")
-            await asyncio.sleep(2 ** retry_count)  # Exponential backoff
-            await fetch_agent_details(context, agent_data, retry_count + 1)
         else:
-            print(f"Failed to fetch email for agent: {e}")
-
+            agent_data["email"] = "Not available"
+            
+    except Exception as e:
+        if retry_count < RETRY_LIMIT and not scraper_stop_event.is_set():
+            print(f"Retrying ({retry_count + 1}/{RETRY_LIMIT}) for {agent_data['name']}: {e}")
+            await asyncio.sleep(2 ** retry_count)  # Exponential backoff
+            await fetch_agent_details(page, agent_data, agent_url, retry_count + 1)
+        else:
+            print(f"Failed to fetch details for {agent_data['name']}: {e}")
+            agent_data["email"] = "Failed to retrieve"
 
 async def load_all_agents(page):
-    """Keep clicking 'Load More' until all agents are loaded or no new agents are added."""
+    """Load all agents with improved reliability and speed."""
     print("Starting to load all agents...")
-    click_count = 0
-    max_attempts = 30  # Maximum number of attempts to click "Load More"
-
-    # Wait for the page to fully load
+    
+    # Initial wait for page to load
     await page.wait_for_selector('.agent-info', state="visible", timeout=60000)
-
-    # Get initial count of agents
-    initial_agents = await page.query_selector_all('.agent-info')
-    print(f"Initial agent count: {len(initial_agents)}")
-
-    while click_count < max_attempts:
-        # Check if the "Load More" button exists and is visible
-        load_more_button = await page.query_selector('#show-more-agents')  # Update selector if needed
+    
+    click_count = 0
+    prev_count = 0
+    same_count_streak = 0
+    
+    while click_count < MAX_LOAD_ATTEMPTS:
+        if scraper_stop_event.is_set():
+            break
+            
+        # Get current count of agents
+        agent_elements = await page.query_selector_all('.agent-info')
+        current_count = len(agent_elements)
+        print(f"Current agent count: {current_count}")
+        
+        # Check for load more button
+        load_more_button = await page.query_selector('#show-more-agents')
         if not load_more_button or not await load_more_button.is_visible():
             print("No 'Load More' button found or not visible. All agents loaded.")
             break
-
-        # Click the "Load More" button
-        print(f"Clicking 'Load More' button (Attempt {click_count + 1})...")
-        await load_more_button.click()
-
-        # Wait for new content to load
+            
+        # Check if count has stabilized
+        if current_count == prev_count:
+            same_count_streak += 1
+            if same_count_streak >= 3:  # If count hasn't changed for 3 attempts, we're done
+                print("Agent count stable for 3 attempts. Assuming all loaded.")
+                break
+        else:
+            same_count_streak = 0
+            
+        # Click the button
         try:
-            # Wait for the loading spinner to appear and then disappear (if applicable)
-            await page.wait_for_selector('#progress', state="visible", timeout=5000)
-            await page.wait_for_selector('#progress', state="hidden", timeout=15000)
+            await load_more_button.click(timeout=LOAD_MORE_TIMEOUT)
+            print(f"Clicked 'Load More' button (Attempt {click_count + 1})...")
+            
+            # Wait for new content to load with reduced timeouts
+            try:
+                await page.wait_for_selector('#progress', state="visible", timeout=3000)
+                await page.wait_for_selector('#progress', state="hidden", timeout=10000)
+            except:
+                # It's ok if we don't see the spinner - continue anyway
+                pass
+                
+            # Small delay to let page stabilize
+            await page.wait_for_timeout(PAGE_STABILIZE_DELAY)
+            
         except Exception as e:
-            print(f"No loading spinner found or timeout waiting for spinner: {e}")
-
-        # Wait additional time for content to load and stabilize
-        await page.wait_for_timeout(5000)  # Adjust this delay as needed
-
-        # Get current count of agents
-        current_agents = await page.query_selector_all('.agent-info')
-        print(f"Current agent count after click {click_count + 1}: {len(current_agents)}")
-
-        # If the agent count hasn't increased, stop clicking
-        if len(current_agents) == len(initial_agents):
-            print("No new agents loaded. Stopping.")
-            break
-
-        initial_agents = current_agents
+            print(f"Error clicking load more: {e}")
+            await page.wait_for_timeout(3000)  # Wait a bit and try again
+            
+        prev_count = current_count
         click_count += 1
+        
+        # Re-evaluate agent elements after loading
+        agent_elements = await page.query_selector_all('.agent-info')
+        print(f"Loaded {len(agent_elements)} agents so far")
+        
+    # Return the final count
+    final_elements = await page.query_selector_all('.agent-info')
+    print(f"All agents loaded. Total: {len(final_elements)}")
+    return len(final_elements)
 
-    # Collect and return all agent data
-    all_agents = await collect_all_agent_data(page)
-    print(f"All agents loaded. Total agent count: {len(all_agents)}")
-    return all_agents
-
-
-async def collect_all_agent_data(page):
-    """Collect data for all the loaded agents."""
-    print("Collecting data for all loaded agents...")
+async def collect_all_agent_data(page, start_time, total_estimated):
+    """Collect basic data for all loaded agents."""
+    print("Collecting basic data for all agents...")
     all_agents = []
-
-    # Wait for agent list to be fully loaded
-    await page.wait_for_selector('.agent-info', state="visible")
-
-    # Get all agent items
-    agent_items = await page.query_selector_all('.agent-info')
-    print(f"Found {len(agent_items)} total agents to process")
-
-    for agent_index, agent_item in enumerate(agent_items):
+    
+    # Get all agent elements
+    agent_elements = await page.query_selector_all('.agent-info')
+    total_count = len(agent_elements)
+    
+    for idx, agent_item in enumerate(agent_elements):
+        if scraper_stop_event.is_set():
+            break
+            
         try:
-            # Extract agent name
+            # Extract name
             name_element = await agent_item.query_selector('[itemprop="name"]')
-            agent_name = (await name_element.inner_text()).strip() if name_element else "N/A"
-
-            # Extract agent mobile
+            agent_name = await name_element.inner_text() if name_element else "Unknown"
+            
+            # Extract mobile
             mobile_element = await agent_item.query_selector('.agent-list-cell-phone a')
-            mobile = (await mobile_element.inner_text()).strip() if mobile_element else "N/A"
-
-            current_agent = {
-                "name": agent_name,
-                "mobile": mobile,
-                "email": "N/A"  # Email will be fetched later
+            mobile = await mobile_element.inner_text() if mobile_element else "N/A"
+            
+            # Try to get agent profile URL
+            profile_element = await agent_item.query_selector('a.agent-name-link')
+            profile_url = await profile_element.get_attribute('href') if profile_element else None
+            
+            agent_data = {
+                "name": agent_name.strip(),
+                "mobile": mobile.strip(),
+                "email": "Pending",
+                "profile_url": profile_url
             }
-
-            print(f"  Agent {agent_index + 1}/{len(agent_items)}: {current_agent['name']}")
-            all_agents.append(current_agent)
-
+            
+            all_agents.append(agent_data)
+            
+            # Update progress every 5 agents
+            if idx % 5 == 0:
+                await update_progress(idx, total_count, start_time)
+                print(f"Processed {idx}/{total_count} agents")
+                
         except Exception as e:
-            print(f"  Error processing agent {agent_index + 1}: {e}")
-
+            print(f"Error processing agent {idx+1}: {e}")
+            
     return all_agents
 
-
-async def fetch_email_for_agents(context, agents):
-    """Fetch email addresses for all agents concurrently."""
+async def fetch_emails_concurrently(browser, agents, start_time):
+    """Fetch email addresses concurrently with better resource management."""
     print(f"Fetching email addresses for {len(agents)} agents...")
+    
+    # Create a pool of contexts/pages for concurrent use
+    contexts = []
     semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
-
-    async def fetch_with_semaphore(agent):
+    
+    # Create the contexts upfront
+    for _ in range(CONCURRENT_REQUESTS):
+        context = await browser.new_context(viewport={'width': 1280, 'height': 800})
+        page = await context.new_page()
+        contexts.append((context, page))
+    
+    async def fetch_with_semaphore(agent, idx):
+        if scraper_stop_event.is_set():
+            return
+            
         async with semaphore:
-            await fetch_agent_details(context, agent)
-            print(f"Fetched details for: {agent['name']}")
-
-    tasks = [fetch_with_semaphore(agent) for agent in agents]
+            # Get an available context/page
+            context, page = contexts[idx % CONCURRENT_REQUESTS]
+            
+            if agent.get("profile_url"):
+                await fetch_agent_details(page, agent, agent["profile_url"])
+                print(f"Fetched details for: {agent['name']}")
+            else:
+                agent["email"] = "No profile URL found"
+                
+            # Update progress
+            processed = sum(1 for a in agents if a["email"] != "Pending")
+            if processed % 5 == 0:
+                await update_progress(processed, len(agents), start_time)
+    
+    # Create and run tasks
+    tasks = []
+    for idx, agent in enumerate(agents):
+        if agent.get("profile_url"):
+            task = asyncio.create_task(fetch_with_semaphore(agent, idx))
+            tasks.append(task)
+    
+    # Wait for all tasks to complete
     await asyncio.gather(*tasks)
+    
+    # Close all contexts
+    for context, _ in contexts:
+        await context.close()
+        
     print("Email fetching completed")
-
+    return agents
 
 def save_data(agents, fields_to_extract=None):
-    """Save the agent data to files, only keeping the specified fields."""
+    """Save the agent data to files."""
+    if not agents:
+        print("No agents to save")
+        return
+        
     json_file = f"{OUTPUT_FOLDER}/c21_agents.json"
     csv_file = f"{OUTPUT_FOLDER}/c21_agents.csv"
-
-    # Ensure the output directory exists
-    if not os.path.exists(OUTPUT_FOLDER):
-        os.makedirs(OUTPUT_FOLDER)
-        print(f"Created directory: {OUTPUT_FOLDER}")
-
-    # Filter agents to only include specified fields
+    
+    # Determine fields to save
     if fields_to_extract:
-        filtered_agents = [
-            {key: agent[key] for key in fields_to_extract if key in agent}
-            for agent in agents
-        ]
+        filtered_agents = []
+        for agent in agents:
+            filtered_agent = {}
+            for field in fields_to_extract:
+                filtered_agent[field] = agent.get(field, "N/A")
+            filtered_agents.append(filtered_agent)
     else:
-        filtered_agents = agents  # Save all fields if no specific fields are provided
-
-    # Save to JSON file
+        filtered_agents = agents
+    
+    # Save to JSON
     with open(json_file, 'w', encoding='utf-8') as f:
-        json.dump(filtered_agents, f, indent=4, ensure_ascii=False)
-    print(f"Saved JSON data to {json_file}")
-
-    # Save to CSV file
-    if filtered_agents:  # Make sure we have agents to save
+        json.dump(filtered_agents, f, indent=2, ensure_ascii=False)
+    
+    # Save to CSV
+    if filtered_agents:
         fieldnames = fields_to_extract if fields_to_extract else filtered_agents[0].keys()
         with open(csv_file, 'w', newline='', encoding='utf-8') as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
             for agent in filtered_agents:
-                writer.writerow({field: agent[field] for field in fieldnames})
-        print(f"Saved CSV data to {csv_file}")
-
+                writer.writerow({field: agent.get(field, "N/A") for field in fieldnames})
+    
+    print(f"Saved data to {json_file} and {csv_file}")
 
 async def _run_scraper(url, fields_to_extract=None):
-    """The actual scraping function that runs in the background."""
+    """Main scraper function with improved error handling and performance."""
     start_time = datetime.now()
-
-    # Clear existing files and reset progress
+    
+    # Initialize files
     clear_existing_files()
     reset_progress()
-
+    
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)  # Use headless=False for debugging
-        context = await browser.new_context(viewport={'width': 1280, 'height': 800})
-        page = await context.new_page()
-
+        # Launch browser with more optimized settings
+        browser = await p.chromium.launch(
+            headless=True,
+            args=['--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage']
+        )
+        
+        # Create main context
+        context = await browser.new_context(
+            viewport={'width': 1280, 'height': 800},
+            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        )
+        
+        # Add error handling for the entire process
         try:
+            page = await context.new_page()
+            
+            # Set longer navigation timeout for initial load
             print(f"Navigating to {url}")
-            await page.goto(url, wait_until="domcontentloaded", timeout=60000)  # Increased timeout
-
-            # First load all agents by repeatedly clicking "Load More"
+            await page.goto(url, wait_until="domcontentloaded", timeout=60000)
+            
+            # Load all agents first
             total_agents = await load_all_agents(page)
-
-            # Update progress with accurate total count
-            progress_data = {
-                "processed_agents": 0,
-                "total_estimated_agents": total_agents,
-                "estimated_time_remaining": "Calculating",
-                "elapsed_time": (datetime.now() - start_time).total_seconds()
-            }
-            with open(PROGRESS_FILE, "w") as f:
-                json.dump(progress_data, f)
-
-            # Now collect data for all agents
-            all_agents = await collect_all_agent_data(page)
-
-            # Fetch email addresses for all agents
-            await fetch_email_for_agents(context, all_agents)
-
-            # Save all data
-            save_data(all_agents, fields_to_extract)
-
+            await update_progress(0, total_agents, start_time)
+            
+            # Collect basic data
+            agents_with_basic_data = await collect_all_agent_data(page, start_time, total_agents)
+            
+            # Now fetch the emails concurrently
+            complete_agents = await fetch_emails_concurrently(browser, agents_with_basic_data, start_time)
+            
+            # Save the data
+            save_data(complete_agents, fields_to_extract)
+            
             # Final progress update
-            progress_data = {
-                "processed_agents": len(all_agents),
-                "total_estimated_agents": total_agents,
-                "estimated_time_remaining": 0,
-                "elapsed_time": (datetime.now() - start_time).total_seconds()
-            }
-            with open(PROGRESS_FILE, "w") as f:
-                json.dump(progress_data, f)
-
-            # Send completion email
-            send_email()
-            print(f"Scraping completed. Found {len(all_agents)} agents.")
-
+            await update_progress(len(complete_agents), total_agents, start_time)
+            
+            # Send email notification about completion
+            try:
+                send_email()
+                print("Completion email sent")
+            except Exception as email_err:
+                print(f"Failed to send email: {email_err}")
+                
+            print(f"Scraping completed in {(datetime.now() - start_time).total_seconds()} seconds")
+            
         except Exception as e:
-            print(f"Main error: {e}")
-
+            print(f"Critical error in scraper: {e}")
+            
         finally:
+            # Clean up
+            await context.close()
             await browser.close()
-            print("Browser closed. Scraping completed")
+            print("Resources released. Scraper finished.")
 
-
-def get_c21_agents( fields_to_extract=None):
+def get_c21_agents(fields_to_extract=None):
     """
-    Start the C21 agent scraper in the background and return immediately.
-    This is the function that users will call directly.
-
+    Start the C21 agent scraper in the background.
+    
     Args:
-        url (str): The URL to scrape.
-        fields_to_extract (list): List of fields to extract and save (e.g., ['email', 'mobile', 'name']).
+        fields_to_extract (list): List of fields to extract (e.g., ['email', 'name']).
                                  If None, all fields will be saved.
     """
-    # Stop the previous scraper thread if it's running
-    url="https://www.c21atwood.com/realestate/agents/group/agents/"
+    url = "https://www.c21atwood.com/realestate/agents/group/agents/"
+    
+    # Stop any existing scraper
     if current_scraper_thread and current_scraper_thread.is_alive():
         print("Stopping previous scraper thread...")
         stopThread()
-        print("Stopped previous scraper thread...")
-
-    # Define a function to run in the background thread
+        print("Previous scraper thread stopped")
+    
+    # Define background thread function
     def background_scraper():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         loop.run_until_complete(_run_scraper(url, fields_to_extract))
-
-    # Start the background thread
+    
+    # Start the thread
     startThread(background_scraper)
-
-    print("C21 agent scraper started in the background.")
-    return "C21 agent scraper has started running in the background. Data will be saved to the 'data' folder once all agents are loaded."
-
+    
+    return "C21 agent scraper started in the background. Data will be saved to the 'data' folder. Progress can be monitored in data/progress.json"
 
 # Example usage
 if __name__ == "__main__":
-    target_url = "https://www.c21atwood.com/realestate/agents/group/agents/"
-    result = get_c21_agents(target_url, fields_to_extract=['email', 'name'])
-    print(result)  # This will immediately print the message while scraping continues in background
+    result = get_c21_agents(fields_to_extract=['name', 'email', 'mobile'])
+    print(result)

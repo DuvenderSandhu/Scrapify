@@ -16,7 +16,7 @@ def send_email():
     receiver_email = emails.split(",")
     password = "pfqq rmsr vngz pkys"  # Or app-specific password for Gmail
     subject = "Scraping Completed – Download Your Data"
-    html_body = "<p>Hello,</p><p>Your scraping from <strong>Coldwell Banker Homes</strong> has been completed.</p><p>You can download your data from the link below:</p><p><a href='https://e07f-2405-201-7003-5074-8ef5-8932-c6db-350.ngrok-free.app/?tab=tab2'>Visit Site</a> and Go to <b>Result Tab</b></p><p>Thank you.</p>"
+    html_body = "<p>Hello,</p><p>Your scraping has been completed.</p><p>You can download your data from the link below:</p><p><a href='http://100.42.181.89:8502/?tab=tab2'>Visit Site</a> and Go to <b>Result Tab</b> and Choose Your Website</p><p>Thank you.</p>"
 
     # Create the email content
     message = MIMEText(html_body, "html")
