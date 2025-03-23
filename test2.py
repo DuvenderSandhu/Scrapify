@@ -3,6 +3,8 @@ from playwright.async_api import async_playwright
 import json
 import csv
 import os
+import smtplib
+from email.mime.text import MIMEText
 from datetime import datetime
 from mainthread import startThread, stopThread, current_scraper_thread, scraper_stop_event
 from emailSender import send_email
@@ -11,11 +13,11 @@ from emailSender import send_email
 BATCH_SIZE = 100
 OUTPUT_FOLDER = "data"
 PROGRESS_FILE = f"{OUTPUT_FOLDER}/progress.json"
-CONCURRENT_REQUESTS = 10  # Reduced from 20 to avoid overloading
+CONCURRENT_REQUESTS = 10
 RETRY_LIMIT = 3
-LOAD_MORE_TIMEOUT = 10000  # 10 seconds timeout for load more operations
-PAGE_STABILIZE_DELAY = 2000  # 2 seconds delay between loads
-MAX_LOAD_ATTEMPTS = 50  # Increased to ensure we get all agents
+LOAD_MORE_TIMEOUT = 10000
+PAGE_STABILIZE_DELAY = 2000
+MAX_LOAD_ATTEMPTS = 50
 
 # Ensure the output folder exists
 if not os.path.exists(OUTPUT_FOLDER):
@@ -40,6 +42,14 @@ def clear_existing_files():
         if os.path.exists(file):
             os.remove(file)
             print(f"Cleared existing file: {file}")
+
+def send_email_notification(message_html):
+    """Custom email sender that uses the provided send_email function."""
+    try:
+        send_email(message_html)
+        print("Email notification sent successfully")
+    except Exception as e:
+        print(f"Failed to send email notification: {e}")
 
 async def update_progress(processed, total, start_time):
     """Update the progress file with current status."""
@@ -73,11 +83,20 @@ async def fetch_agent_details(page, agent_data, agent_url, retry_count=0):
         # Navigate to agent page
         await page.goto(agent_url, timeout=30000)
         
-        # Try to find email - adapt selectors based on actual website structure
+        # Try to find email
         email_element = await page.query_selector('a[href^="mailto:"]')
         if email_element:
             email = await email_element.get_attribute('href')
             agent_data["email"] = email.replace('mailto:', '')
+            
+            # If email is "pending" or similar, stop the process and send notification
+            if "pending" in agent_data["email"].lower():
+                message = f"<p>Alert: Agent {agent_data['name']} has a pending email status.</p><p>Email does not exist for this agent. Please do not request email for this agent.</p>"
+                send_email_notification(message)
+                # Set the stop event to terminate the scraper
+                scraper_stop_event.set()
+                print(f"Found pending email for {agent_data['name']}. Stopping the process.")
+                return
         else:
             agent_data["email"] = "Not available"
             
@@ -206,6 +225,12 @@ async def fetch_emails_concurrently(browser, agents, start_time):
     """Fetch email addresses concurrently with better resource management."""
     print(f"Fetching email addresses for {len(agents)} agents...")
     
+    # Filter out agents without a profile_url
+    agents_with_url = [agent for agent in agents if agent.get("profile_url")]
+    if not agents_with_url:
+        print("No agents with profile URLs found. Skipping email fetching.")
+        return agents
+    
     # Create a pool of contexts/pages for concurrent use
     contexts = []
     semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
@@ -227,6 +252,10 @@ async def fetch_emails_concurrently(browser, agents, start_time):
             if agent.get("profile_url"):
                 await fetch_agent_details(page, agent, agent["profile_url"])
                 print(f"Fetched details for: {agent['name']}")
+                
+                # Check if scraper should stop after this agent
+                if scraper_stop_event.is_set():
+                    return
             else:
                 agent["email"] = "No profile URL found"
                 
@@ -237,19 +266,35 @@ async def fetch_emails_concurrently(browser, agents, start_time):
     
     # Create and run tasks
     tasks = []
-    for idx, agent in enumerate(agents):
-        if agent.get("profile_url"):
-            task = asyncio.create_task(fetch_with_semaphore(agent, idx))
-            tasks.append(task)
+    for idx, agent in enumerate(agents_with_url):
+        task = asyncio.create_task(fetch_with_semaphore(agent, idx))
+        tasks.append(task)
     
-    # Wait for all tasks to complete
-    await asyncio.gather(*tasks)
+    # If no tasks were created, return early
+    if not tasks:
+        print("No tasks to run. Skipping email fetching.")
+        return agents
+    
+    # Wait for tasks to complete (but don't wait forever if stopped)
+    try:
+        completed_tasks, pending_tasks = await asyncio.wait(
+            tasks, 
+            return_when=asyncio.FIRST_COMPLETED if scraper_stop_event.is_set() else asyncio.ALL_COMPLETED
+        )
+    except Exception as e:
+        print(f"Error during task execution: {e}")
+        return agents
+    
+    # If we stopped early, cancel pending tasks
+    if scraper_stop_event.is_set():
+        for task in pending_tasks:
+            task.cancel()
     
     # Close all contexts
     for context, _ in contexts:
         await context.close()
         
-    print("Email fetching completed")
+    print("Email fetching completed or stopped")
     return agents
 
 def save_data(agents, fields_to_extract=None):
@@ -257,20 +302,23 @@ def save_data(agents, fields_to_extract=None):
     if not agents:
         print("No agents to save")
         return
-        
+    
+    # Filter out agents with incomplete data if stopped early
+    completed_agents = [agent for agent in agents if agent["email"] != "Pending"]
+    
     json_file = f"{OUTPUT_FOLDER}/c21_agents.json"
     csv_file = f"{OUTPUT_FOLDER}/c21_agents.csv"
     
     # Determine fields to save
     if fields_to_extract:
         filtered_agents = []
-        for agent in agents:
+        for agent in completed_agents:
             filtered_agent = {}
             for field in fields_to_extract:
                 filtered_agent[field] = agent.get(field, "N/A")
             filtered_agents.append(filtered_agent)
     else:
-        filtered_agents = agents
+        filtered_agents = completed_agents
     
     # Save to JSON
     with open(json_file, 'w', encoding='utf-8') as f:
@@ -285,7 +333,7 @@ def save_data(agents, fields_to_extract=None):
             for agent in filtered_agents:
                 writer.writerow({field: agent.get(field, "N/A") for field in fieldnames})
     
-    print(f"Saved data to {json_file} and {csv_file}")
+    print(f"Saved data for {len(filtered_agents)} agents to {json_file} and {csv_file}")
 
 async def _run_scraper(url, fields_to_extract=None):
     """Main scraper function with improved error handling and performance."""
@@ -296,7 +344,7 @@ async def _run_scraper(url, fields_to_extract=None):
     reset_progress()
     
     async with async_playwright() as p:
-        # Launch browser with more optimized settings
+        # Launch browser with optimized settings
         browser = await p.chromium.launch(
             headless=True,
             args=['--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage']
@@ -323,23 +371,29 @@ async def _run_scraper(url, fields_to_extract=None):
             # Collect basic data
             agents_with_basic_data = await collect_all_agent_data(page, start_time, total_agents)
             
-            # Now fetch the emails concurrently
+            # Fetch the emails concurrently
             complete_agents = await fetch_emails_concurrently(browser, agents_with_basic_data, start_time)
             
-            # Save the data
+            # Save the data (even if we stopped early)
             save_data(complete_agents, fields_to_extract)
-            
+            send_email()
+            print("Standard completion email sent")
             # Final progress update
-            await update_progress(len(complete_agents), total_agents, start_time)
+            completed_count = sum(1 for a in complete_agents if a["email"] != "Pending")
+            await update_progress(completed_count, total_agents, start_time)
             
-            # Send email notification about completion
-            try:
-                send_email()
-                print("Completion email sent")
-            except Exception as email_err:
-                print(f"Failed to send email: {email_err}")
+            # Send appropriate completion email
+            if scraper_stop_event.is_set():
+                print("Scraping was stopped early due to pending email detection")
+            else:
+                try:
+                    send_email()
+                    print("Standard completion email sent")
+                except Exception as email_err:
+                    print(f"Failed to send email: {email_err}")
                 
-            print(f"Scraping completed in {(datetime.now() - start_time).total_seconds()} seconds")
+            elapsed_time = (datetime.now() - start_time).total_seconds()
+            print(f"Scraping {'completed' if not scraper_stop_event.is_set() else 'stopped'} in {elapsed_time} seconds")
             
         except Exception as e:
             print(f"Critical error in scraper: {e}")
@@ -358,6 +412,12 @@ def get_c21_agents(fields_to_extract=None):
         fields_to_extract (list): List of fields to extract (e.g., ['email', 'name']).
                                  If None, all fields will be saved.
     """
+    # Check if 'email' is in the fields_to_extract
+    if fields_to_extract and 'email' in fields_to_extract:
+        message = "<p>Hello,</p><p>No Email was found on the provided website. Please check the details and try without Email.</p>"
+        send_email(message)
+        return "Email notification sent. The scraping process was not started because emails do not exist on the website."
+
     url = "https://www.c21atwood.com/realestate/agents/group/agents/"
     
     # Stop any existing scraper
@@ -375,9 +435,14 @@ def get_c21_agents(fields_to_extract=None):
     # Start the thread
     startThread(background_scraper)
     
-    return "C21 agent scraper started in the background. Data will be saved to the 'data' folder. Progress can be monitored in data/progress.json"
+    return "C21 agent scraper started in the background. It will stop and notify you if pending emails are found."
 
 # Example usage
 if __name__ == "__main__":
+    # If the user requests the 'email' field
     result = get_c21_agents(fields_to_extract=['name', 'email', 'mobile'])
+    print(result)
+    
+    # If the user does not request the 'email' field
+    result = get_c21_agents(fields_to_extract=['name', 'mobile'])
     print(result)

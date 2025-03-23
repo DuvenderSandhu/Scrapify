@@ -1,7 +1,7 @@
 import smtplib
 from email.mime.text import MIMEText
 
-def send_email():
+def send_email(messageHTML: str="<p>Hello,</p><p>Your scraping has been completed.</p><p>You can download your data from the link below:</p><p><a href='http://100.42.181.89:8502/?tab=tab2'>Visit Site</a> and Go to <b>Result Tab</b> and Choose Your Website</p><p>Thank you.</p>") -> None:
     """
     Function to send an email using Gmail's SMTP server. 
     All parameters are hardcoded within the function.
@@ -15,8 +15,8 @@ def send_email():
     sender_email = "factorypricescrapper@gmail.com"
     receiver_email = emails.split(",")
     password = "pfqq rmsr vngz pkys"  # Or app-specific password for Gmail
-    subject = "Scraping Completed – Download Your Data"
-    html_body = "<p>Hello,</p><p>Your scraping has been completed.</p><p>You can download your data from the link below:</p><p><a href='http://100.42.181.89:8502/?tab=tab2'>Visit Site</a> and Go to <b>Result Tab</b> and Choose Your Website</p><p>Thank you.</p>"
+    subject = "Scraping Status – Web Scrapper"
+    html_body = messageHTML
 
     # Create the email content
     message = MIMEText(html_body, "html")
