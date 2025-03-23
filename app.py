@@ -28,6 +28,9 @@ from crawler import rawid
 from crawler import get_html_sync
 from scraper import find_elements_by_selector,extract_data_with_ai
 from test import get_all_data
+from test2 import get_c21_agents
+from test3 import get_compass_agents
+from test4 import get_remax_all_data
 max_depth= 0 
 max_pages=1
 stay_on_domain=""
@@ -236,7 +239,7 @@ REGEX_PATTERNS = {
 }
 
 # Logging functions
-
+selected_option=""
 # Utility functions
 def validate_url(url):
     """Validate if a string is a proper URL"""
@@ -274,14 +277,28 @@ async def crawl_url(url, options):
     button= options.get('pagination_selector', False) or options.get('pagination_xpath', False) or options.get('pagination_text', False) or options.get('pagination_text_match', False) or options.get('pagination_confidence', False)
     print("button",button)
     html_content =""#await get_all_data(url) # await get_html_sync(url,button,options)
-    if coldwell:
+    if selected_option and not st.session_state.fields:
         try:
-            html_content=await get_all_data(url)
-            print("Pring Here")
+            if selected_option=="C21":
+                html_content=await get_c21_agents(fields_to_extract=fields_to_extract)#await get_all_data(url)
+                print("Pring Here")
+            elif selected_option=="Compass":
+                html_content=await get_compass_agents(fields_to_extract=fields_to_extract)#await get_all_data(url)
+                print("Pring Here")
+            elif selected_option=="Coldwell":
+                html_content=await get_all_data(fields_to_extract=fields_to_extract)
+                print("Pring Here")
+            elif selected_option=="Remax":
+                html_content=await get_remax_all_data(fields_to_extract=fields_to_extract)#await get_compass_agents()#await get_all_data(url)
+                print("Pring Here")
+
+            
+            
             
         except : 
             print("Eror Occured")
     else :
+        print("Here")
         html_content=await get_html_sync(url,button,options)
     # print("html",html_content)
     # Extract links if link following is enabled
@@ -756,6 +773,24 @@ def simulate_ai_extraction(html_content, field):
 # Main application layout
 st.title("🕸️ Advanced Web Scraper")
 st.markdown("Crawl websites with intelligent extraction and comprehensive link following")
+with st.expander("ℹ️ How to Use This Tool", expanded=False):
+    st.markdown("""
+    ### 🛠 How to Use This Tool
+
+    There are **two ways** to scrape data:
+
+    1️⃣ **Enter URLs Manually**  
+       - Paste one or more website URLs in the text area.  
+       - Use the "Enter field to extract" input to specify what data you need (e.g., Email, Phone, Name).  
+       - Click "➕ Add Field" to save each entry.  
+
+    2️⃣ **Select a Predefined Website**  
+       - Choose a website (e.g., C21, Coldwell, Remax, Compass) from the provided options.  
+       - Select the checkboxes for the data you want to extract (e.g., Name, Email, Mobile).  
+
+    ⚠️ **Important:** You must either enter URLs or select a website before proceeding. If both are provided, the Automatic Scraping will take priority.
+    """)
+
 def show_temp_alert(message, seconds=3):
     """Displays a temporary alert only once per session, without blocking UI."""
     if "alert_shown" in st.session_state and st.session_state["alert_shown"]:
@@ -789,6 +824,9 @@ with open('email.txt', 'r') as file:
 tab1, tab2, tab3,tab4 = st.tabs(["Setup & Controls", "Results", "Logs","Database"])
 ai_provider=""
 ai_api=""
+url_input=""
+fields_to_extract=[]
+selected_website=""
 saveToDb=False
 
 def addEmail():
@@ -805,174 +843,205 @@ with tab1:
     
     with col1:
         st.subheader("Configure Scraping Job")
-        saveToDb= st.toggle("Save to DB")
+        
         # URL Input
-        url_input = st.text_area(
-            "Enter URLs to scrape (one per line):",
-            placeholder="https://example.com\nhttps://anothersite.com",
-            height=100
-        )
-        if url_input.find("coldwellbankerhomes")>=0:
-            coldwell= st.toggle("Extract Complete Data from ColdWellBankerHome (100% Accurate)")
-            if coldwell:
-                emails = st.text_input("Enter Email to Notify:", 
-                                    key="emails", 
-                                    placeholder="johndoe@gmail.com,sales@gmail.com", 
-                                    value=emails,
-                                    on_change=addEmail
-                                    )
         
-        # Field Configuration
-        st.subheader("🔍 Data Extraction")
+        automatic,manual=st.tabs(["Automatic Scraping","Manual Scraping"])
+        with manual:
+            saveToDb= st.toggle("Save to DB")
+            # URL Input
+            url_input = st.text_area(
+                "Enter URLs to scrape (one per line):",
+                placeholder="https://example.com\nhttps://anothersite.com",
+                height=100,
+                help="Provide URLs to scrape or select a website below. You must choose one."
+                )
+            # Data Extraction Section
+            st.subheader("🔍 Data Extraction")
+            if "fields" not in st.session_state:
+                st.session_state.fields = []
 
-        # Initialize session state for fields if not already set
-        if "fields" not in st.session_state:
-            st.session_state.fields = []
+            def add_field():
+                if st.session_state.field_input.strip():
+                    field = st.session_state.field_input.strip()
+                    if field not in st.session_state.fields:
+                        st.session_state.fields.append(field)
+                        st.success(f"Added: {field}")
+                    st.session_state.field_input = ""
 
-        # Function to add field and clear input
-        def add_field():
-            if st.session_state.field_input.strip():  
-                field = st.session_state.field_input.strip()
-                if field not in st.session_state.fields:
-                    st.session_state.fields.append(field)
-                    st.success(f"Added: {field}")
-                st.session_state.field_input = ""  # Clear input box
-                # st.rerun()
+            # Field Input for Manual Extraction
+            field_input = st.text_input("Enter field to extract:",
+                                        key="field_input",
+                                        placeholder="e.g., Email, Phone, #agent_name, .agent_email",
+                                        on_change=add_field)
 
-        # Input field with enter-to-add functionality
-        field_input = st.text_input("Enter field to extract:", 
-                                    key="field_input", 
-                                    placeholder="e.g., Email, Phone, #agent_name, .agent_email", 
-                                    on_change=add_field)
+            if st.session_state.get("extraction_method") == "CSS":
+                st.info("Use valid CSS selectors (class or ID) to target elements from website (e.g., #user-email-id, .user-number) not Email, Phone.")
 
-        # Add button
-        # st.session_state.extraction_method
-        if st.session_state.extraction_method =="CSS":
+            if st.button("➕ Add Field", use_container_width=True):
+                add_field()
 
-            st.info("Use valid CSS selectors (class or ID) to target elements from website (e.g., #user-email-id, .user-number) not Email, Phone.")
-        if st.button("➕ Add Field", use_container_width=True):
-            add_field()
+            # Display Added Fields
+            if st.session_state.fields:
+                st.write("**Fields to extract:**")
+                for field in st.session_state.fields:
+                    colu1, colu2 = st.columns([4, 1])
+                    colu1.write(f"**{field}**")
+                    if colu2.button("Delete", key=f"remove_{field}", help=f"Remove {field}"):
+                        st.session_state.fields.remove(field)
+                        st.warning(f"Removed: {field}")
+                        st.rerun()
+            else:
+                st.info("No fields added yet. Add fields to extract data.")
+            # Advanced Crawling Options
+            hyphen_separator = st.checkbox("Format phone numbers with hyphens (e.g., 123-456-7890)", value=False)
+            country_code = st.checkbox("Add country code (+1) to phone numbers (e.g., +1234567890)", value=True)
+            if hyphen_separator and country_code:
+                st.info("Phone Number will be interpreted as +1-123-456-7890") 
+            
 
-        # Display added fields with remove option
-        if st.session_state.fields:
-            st.write("**Fields to extract:**")
-            for field in st.session_state.fields:
-                colu1, colu2 = st.columns([4, 1])
-                colu1.write(f"**{field}**")
-                if colu2.button("Delete", key=f"remove_{field}", help=f"Remove {field}"):
-                    st.session_state.fields.remove(field)
-                    st.warning(f"Removed: {field}")
-                    st.rerun()
-        else:
-            st.info("No fields added yet. Add fields to extract data.")    
-        # Advanced Crawling Options
-        hyphen_separator = st.checkbox("Format phone numbers with hyphens (e.g., 123-456-7890)", value=False)
-        country_code = st.checkbox("Add country code (+1) to phone numbers (e.g., +1234567890)", value=True)
-        if hyphen_separator and country_code:
-            st.info("Phone Number will be interpreted as +1-123-456-7890") 
-        
+            
+            st.subheader("Crawling Options")
+            
+            with st.expander("Configure Crawling", expanded=False):  
+                follow_links = st.checkbox("Follow Links", value=False, help="Crawl and collect data from links found on the page.")  
 
-        
-        st.subheader("Crawling Options")
-        
-        with st.expander("Configure Crawling", expanded=False):  
-            follow_links = st.checkbox("Follow Links", value=False, help="Crawl and collect data from links found on the page.")  
+                if follow_links:  
+                    stay_on_domain = st.checkbox("Stay on Same Domain", value=True, help="Only crawl pages from the same website, ignoring external links.")  
 
-            if follow_links:  
-                stay_on_domain = st.checkbox("Stay on Same Domain", value=True, help="Only crawl pages from the same website, ignoring external links.")  
+                    max_depth = st.slider("Max Depth", 0, 5, 1, help="How deep the crawler should go. 0 = Only start pages, 1 = Follow one level of links, etc.")  
+                    max_pages_status = st.checkbox("Limit Pages", value=False, help="Set a maximum number of pages to visit.")  
 
-                max_depth = st.slider("Max Depth", 0, 5, 1, help="How deep the crawler should go. 0 = Only start pages, 1 = Follow one level of links, etc.")  
-                max_pages_status = st.checkbox("Limit Pages", value=False, help="Set a maximum number of pages to visit.")  
+                    if max_pages_status:  
+                        max_pages = st.number_input("Max Pages", 1, 100, 10, help="The highest number of pages the crawler will scan.")  
 
-                if max_pages_status:  
-                    max_pages = st.number_input("Max Pages", 1, 100, 10, help="The highest number of pages the crawler will scan.")  
+                handle_lazy_loading = st.checkbox("Handle Lazy Loading", value=False, help="Load hidden content that appears as you scroll.")  
+                handle_pagination = st.checkbox("Handle Pagination", value=False, help="Follow 'Next' buttons to load more pages.")  
 
-            handle_lazy_loading = st.checkbox("Handle Lazy Loading", value=False, help="Load hidden content that appears as you scroll.")  
-            handle_pagination = st.checkbox("Handle Pagination", value=False, help="Follow 'Next' buttons to load more pages.")  
-
-            if handle_pagination:  
-                pagination_method = st.selectbox(  
-                    "Pagination Detection Method",  
-                    ["Auto-detect (Use Predefined Buttons)", "CSS Selector", "XPath", "Button Text"],  
-                    help="Choose how the crawler finds the 'Next' button to load more pages."  
-                )  
-
-                if pagination_method == "CSS Selector":  
-                    pagination_selector = st.text_input(  
-                        "Enter CSS Selector:",  
-                        placeholder=".pagination .next, a.next-page",  
-                        help="CSS rule to find the 'Next' button. Example: `.pagination .next`, `a[rel='next']`"  
+                if handle_pagination:  
+                    pagination_method = st.selectbox(  
+                        "Pagination Detection Method",  
+                        ["Auto-detect (Use Predefined Buttons)", "CSS Selector", "XPath", "Button Text"],  
+                        help="Choose how the crawler finds the 'Next' button to load more pages."  
                     )  
 
-                elif pagination_method == "XPath":  
-                    pagination_xpath = st.text_input(  
-                        "Enter XPath:",  
-                        placeholder="//a[contains(text(), 'Next')]",  
-                        help="XPath rule to find the 'Next' button. Example: `//a[contains(text(), 'Next')]`"  
-                    )  
+                    if pagination_method == "CSS Selector":  
+                        pagination_selector = st.text_input(  
+                            "Enter CSS Selector:",  
+                            placeholder=".pagination .next, a.next-page",  
+                            help="CSS rule to find the 'Next' button. Example: `.pagination .next`, `a[rel='next']`"  
+                        )  
 
-                elif pagination_method == "Button Text":  
-                    pagination_text = st.text_input(  
-                        "Enter Button Text:",  
-                        placeholder="Next",  
-                        help="The exact text on the 'Next' button. Example: 'Next', 'Load More'"  
-                    )  
+                    elif pagination_method == "XPath":  
+                        pagination_xpath = st.text_input(  
+                            "Enter XPath:",  
+                            placeholder="//a[contains(text(), 'Next')]",  
+                            help="XPath rule to find the 'Next' button. Example: `//a[contains(text(), 'Next')]`"  
+                        )  
 
-            
+                    elif pagination_method == "Button Text":  
+                        pagination_text = st.text_input(  
+                            "Enter Button Text:",  
+                            placeholder="Next",  
+                            help="The exact text on the 'Next' button. Example: 'Next', 'Load More'"  
+                        )  
 
-        # Extraction Method
+                
+
+            # Extraction Method
 
 
-        st.subheader("Extraction Method")
+            st.subheader("Extraction Method")
 
-        # Extraction method selection
-        extraction_method = st.selectbox(
-            "Choose a data extraction method:",
-            ["Regex", "CSS", "AI"],
-            help="Regex: Extract data using patterns | CSS: Select specific page elements | AI: Analyze content for relevant data."
-        )
+            # Extraction method selection
+            extraction_method = st.selectbox(
+                "Choose a data extraction method:",
+                ["Regex", "CSS", "AI"],
+                help="Regex: Extract data using patterns | CSS: Select specific page elements | AI: Analyze content for relevant data."
+            )
 
-        # Dynamic description
-        descriptions = {
-            "Regex": "🔹 Extracts addresses, phone numbers, and emails using predefined patterns.",
-            "CSS": "🔹 Use CSS selectors (class or ID) to target elements (e.g., `#user-email-id`, `.user-number`).",
-            "AI": "🔹 Uses an AI model for intelligent data extraction."
-        }
-        st.info(descriptions[extraction_method])
+            # Dynamic description
+            descriptions = {
+                "Regex": "🔹 Extracts addresses, phone numbers, and emails using predefined patterns.",
+                "CSS": "🔹 Use CSS selectors (class or ID) to target elements (e.g., `#user-email-id`, `.user-number`).",
+                "AI": "🔹 Uses an AI model for intelligent data extraction."
+            }
+            st.info(descriptions[extraction_method])
 
-        # AI options (only shown if AI is selected)
-        if extraction_method == "AI":
-            st.session_state.extraction_method = "ai"
-            
-            ai_provider = st.selectbox("Select AI Model", ["OpenAI", "Gemini", "DeepSeek", "Groq"])
-            
-            # Fetch API key from database
-            stored_api_key = db.get_api_key(ai_provider)
-            
-            # Display the stored API key (masked for security)
-            ai_api = st.text_area("Enter AI API Key", 
-                                value=stored_api_key if stored_api_key else "", 
-                                placeholder="sk-...", 
-                                help="Your API key is securely stored.")
-            
-            # Button to save/update API key
-            if st.button("Save API Key"):
-                if ai_api:
-                    if ai_api== stored_api_key:
-                        db.save_or_update_api_key(ai_provider, ai_api)
-                        st.success(f"API key for {ai_provider} updated successfully!")
-                        
+            # AI options (only shown if AI is selected)
+            if extraction_method == "AI":
+                st.session_state.extraction_method = "ai"
+                
+                ai_provider = st.selectbox("Select AI Model", ["OpenAI", "Gemini", "DeepSeek", "Groq"])
+                
+                # Fetch API key from database
+                stored_api_key = db.get_api_key(ai_provider)
+                
+                # Display the stored API key (masked for security)
+                ai_api = st.text_area("Enter AI API Key", 
+                                    value=stored_api_key if stored_api_key else "", 
+                                    placeholder="sk-...", 
+                                    help="Your API key is securely stored.")
+                
+                # Button to save/update API key
+                if st.button("Save API Key"):
+                    if ai_api:
+                        if ai_api== stored_api_key:
+                            db.save_or_update_api_key(ai_provider, ai_api)
+                            st.success(f"API key for {ai_provider} updated successfully!")
+                            
+                        else:
+                            db.save_api_key(ai_provider, ai_api)
+                            st.success(f"API key for {ai_provider} saved successfully!")
                     else:
-                        db.save_api_key(ai_provider, ai_api)
-                        st.success(f"API key for {ai_provider} saved successfully!")
-                else:
-                    st.warning("Please enter a valid API key.")
+                        st.warning("Please enter a valid API key.")
 
-        # elif extraction_method =="CSS":
-        #     st.session_state.extraction_method = "CSS"
-        #     st.rerun()
-        # else :
-        #     st.session_state.extraction_method = "regex"
+            # elif extraction_method =="CSS":
+            #     st.session_state.extraction_method = "CSS"
+            #     st.rerun()
+            # else :
+            #     st.session_state.extraction_method = "regex"
+
+        with automatic:
+            # Website Selection
+            options = ["C21", "Coldwell", "Remax", "Compass"]
+            selected_option = st.radio(
+                "Choose a website to scrape:",
+                options,
+                help="Select a website if not providing URLs above. You must choose one option."
+            )
+            st.write(f"Selected website: {selected_option}")
+
+            # Field Selection for Predefined Websites
+            field_options = ["Email", "Mobile", "Email, Mobile, Name"]
+            selected_fields = [opt.lower() for opt in field_options[:-1] if st.checkbox(opt, value=False)]
+
+            # If the last option ("Email, Mobile, Name") is selected, override selection
+            if st.checkbox(field_options[-1], value=False):
+                selected_fields = ["email", "mobile", "name"]
+
+            fields_to_extract = selected_fields
+
+            # Email Notification Input
+            emails = st.text_input(
+                "Enter Email to Notify:",
+                key="emails",
+                placeholder="johndoe@gmail.com,sales@gmail.com",
+                value=emails if 'emails' in globals() else "",
+                on_change=addEmail if 'addEmail' in globals() else None
+            )
+
+            # Validation
+            if not url_input.strip() and selected_option is None:
+                st.warning("⚠️ Please either enter at least one URL or select a website to proceed.")
+            elif url_input.strip() and selected_option:
+                st.info("ℹ️ You’ve provided both URLs and a website. Automatic Scraping will take precedence unless specified otherwise.")
+
+            hyphen_separator = st.checkbox("Format phone numbers with hyphens (e.g., 123-456-7890)", key="duplicatehyphen" ,value=False)
+            country_code = st.checkbox("Add country code (+1) to phone numbers (e.g., +1234567890)",key="duplicatecountry", value=True)
+            if hyphen_separator and country_code:
+                st.info("Phone Number will be interpreted as +1-123-456-7890")
+
 
             
     with col2:
@@ -1140,15 +1209,41 @@ with tab1:
                 st.text(f"• Items extracted: {len(st.session_state.results)}")
         else:
             # Start button - only show if URLs and fields are provided
-            start_disabled = not (url_input.strip() and st.session_state.fields if not coldwell else True)
+            start_disabled = not (url_input.strip() and st.session_state.fields if not selected_option or not fields_to_extract or not emails else True)
             
             if st.button("▶️ Start Scraping", type="primary", use_container_width=True, disabled=start_disabled):
                 # Parse URLs
+                if not emails:
+                        st.error("Please enter Email For Notification")
+                        start_disabled= False
                 if coldwell:
                     if not emails:
                         st.error("Please enter Email For Notification")
                         start_disabled= False
-                    
+                if st.session_state.fields:
+                    selected_option=[]
+                if selected_option:
+                    st.session_state.fields=[]
+                    if fields_to_extract:
+                        st.error("Please Choose Field to Extract from Mobile , Email, Name")
+                        start_disabled= False
+                    if not emails:
+                        st.error("Please enter Email For Notification")
+                        url_input="https://www.google.com"
+                        start_disabled= False
+                    else:
+                        print("emails",emails)
+                        url_input="https://www.google.com"
+                        # if selected_option=="C21":
+                        # elif selected_option=="compass":
+                        #     urls=""
+                        # elif selected_option=="remax":
+                        #     urls=""
+                        # elif selected_option=="coldwell":
+                        #     urls=""
+                        start_disabled= True
+
+
 
 
                 urls = [url.strip() for url in url_input.split('\n') if validate_url(url.strip())]
@@ -1195,7 +1290,7 @@ with tab1:
                             options['pagination_text'] = pagination_text if pagination_text else None
                             # options['pagination_text_match'] = pagination_text_match if pagination_text_match else None
                         elif pagination_method == "AI-powered":
-                            options['pagination_confidence'] = pagination_confidence
+                            options['pagination_confidence'] = "pagination_confidence"
                     
                     # Store options in session state
                     st.session_state.options = options
@@ -1211,7 +1306,7 @@ with tab1:
             if start_disabled:
                 if not url_input.strip():
                     st.warning("Please enter at least one URL to scrape")
-                if not st.session_state.fields and not coldwell:
+                if not st.session_state.fields and not coldwell and not selected_option:
                     st.warning("Please add at least one field to extract")
             
             # Clear all button
@@ -1225,7 +1320,7 @@ with tab1:
                 log_info("All data cleared")
                 st.rerun()
             if st.session_state.current_phase == "complete":
-                if coldwell:
+                if selected_option and not st.session_state.fields:
                     st.info("Task Started You will be notified after completion by email")
                 else:    
                     st.info("Task Complete Go to Result Tab to See Result")
@@ -1426,114 +1521,142 @@ def clean_download_data(df):
     return df
 
 # Main logic
+import os
+import pandas as pd
+import streamlit as st
+import re
+from datetime import datetime
+
 if selected_tab != "tab2":
     with tab2:
+        # Define available website options
+        website_options = [
+            "C21",
+            "Coldwell",
+            "Remax",
+            "Compass"
+        ]
+        
+        # Assume 'coldwell' is a condition from elsewhere in your code; if not, we'll use the toggle alone
         if not coldwell:
-            showcoldWellResult = st.toggle("View Coldwell Task Results", key="result-coldwell", help="Toggle between Coldwell task results and other quick tasks.")
-        if coldwell or showcoldWellResult:
+            showResult = st.toggle("View Task Results", key=f"result-{selected_website.lower()}", help="Toggle between task results and other quick tasks.")
+        
+       
+        
+        if coldwell or showResult:
+             # Let user choose a website (moved outside conditional to always be visible)
+            selected_website = st.selectbox("Choose a website to view", website_options, index=1)  # Default to Coldwell
+            
+            # Construct the expected CSV filename based on the selected website
+            data_dir = "data/"
+            expected_file = f"{selected_website.lower()}_agents.csv"
+            file_path = os.path.join(data_dir, expected_file)
             with tab2:
-                st.subheader("📊 Scraping Results (Coldwell)")
+                st.subheader(f"📊 Scraping Results ({selected_website})")
 
                 def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
                     if pd.isna(mobile):  # Handle NaN values
                         return ""
-
                     # Remove all non-numeric characters
                     mobile = re.sub(r"\D", "", str(mobile))
-
                     if len(mobile) < 10:  # Ensure a valid 10-digit number
                         return mobile  # Return as-is if not a full number
-
                     # Apply hyphen separator if enabled
                     if hyphen_separator:
                         mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
-
                     # Apply country code if enabled
                     if country_code:
                         if hyphen_separator:
                             mobile = f"+1-{mobile}"  # Add +1- before the number
                         else:
                             mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
-
                     return mobile
 
                 try:
-                    # Load data from coldwell_agents.csv
-                    coldwell_df = pd.read_csv("data/coldwell_agents.csv")
+                    # Check if the file exists
+                    if not os.path.exists(file_path):
+                        st.error(f"Fetching data for {selected_website}. We'll show you 100 users once fetched. Please check back later.")
 
-                    # Select only required columns
-                    coldwell_df = coldwell_df[["name", "office", "email", "mobile"]]
+                    else:
+                        # Load data from the selected website's CSV file
+                        agents_df = pd.read_csv(file_path)
 
-                    # Format mobile numbers
-                    coldwell_df["mobile"] = coldwell_df["mobile"].fillna("").apply(
-                        lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
-                    )
-
-                    st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
-
-                    # Display the editable table
-                    st.write("Edit or delete cells/rows in the table below:")
-
-                    # Use st.data_editor to make the table editable
-                    edited_df = st.data_editor(
-                        coldwell_df.head(50),
-                        use_container_width=True,
-                        num_rows="dynamic",  # Allow adding/deleting rows
-                        key="coldwell_editor"
-                    )
-
-
-                    # Allow users to download the edited data
-                    selected_columns = st.multiselect(
-                        "Select columns to download",
-                        options=edited_df.columns,
-                        default=edited_df.columns
-                    )
-
-                    if st.button("📥 Download Data", use_container_width=True):
-                        if selected_columns:
-                            # Filter DataFrame based on selected columns
-                            download_df = edited_df[selected_columns]
-
-                            # Display download options (CSV, JSON, TXT)
-                            col1, col2, col3 = st.columns(3)
-
-                            # CSV Download
-                            with col1:
-                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                                st.download_button(
-                                    label="📥 Download CSV",
-                                    data=csv_data,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                                    mime="text/csv",
+                        # Dynamically identify mobile number columns
+                        mobile_columns = [col for col in agents_df.columns if 'mobile' in col.lower() or 'phone' in col.lower()]
+                        if mobile_columns:
+                            for col in mobile_columns:
+                                agents_df[col] = agents_df[col].fillna("").apply(
+                                    lambda x: format_mobile_number(x, country_code, hyphen_separator)
                                 )
 
-                            # JSON Download
-                            with col2:
-                                json_str = download_df.to_json(orient="records", indent=2)
-                                st.download_button(
-                                    label="📥 Download JSON",
-                                    data=json_str,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-                                    mime="application/json",
-                                )
+                        # Deduplicate based on all columns
+                        agents_df = agents_df.drop_duplicates()
 
-                            # TXT Download
-                            with col3:
-                                txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
-                                st.download_button(
-                                    label="📥 Download TXT (Tab Separated)",
-                                    data=txt_data,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                    mime="text/txt",
-                                )
-                        else:
-                            st.warning("⚠️ Please select at least one column to download.")
+                        st.info(f"This table displays only the first 50 agents from {selected_website}. The downloadable file will include all agents.")
+                        st.write("Edit or delete cells/rows in the table below:")
+
+                        # Use st.data_editor to make the table editable with dynamic columns
+                        edited_df = st.data_editor(
+                            agents_df.head(50),
+                            use_container_width=True,
+                            num_rows="dynamic",  # Allow adding/deleting rows
+                            key=f"{selected_website.lower()}_editor"
+                        )
+
+                        # Allow users to download the edited data
+                        selected_columns = st.multiselect(
+                            "Select columns to download",
+                            options=edited_df.columns,
+                            default=edited_df.columns.tolist()  # Default to all columns
+                        )
+
+                        if st.button("📥 Download Data", use_container_width=True):
+                            if selected_columns:
+                                # Filter DataFrame based on selected columns
+                                download_df = edited_df[selected_columns]
+
+                                # Display download options (CSV, JSON, TXT)
+                                col1, col2, col3 = st.columns(3)
+
+                                # CSV Download
+                                with col1:
+                                    csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                    st.download_button(
+                                        label="📥 Download CSV",
+                                        data=csv_data,
+                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                        mime="text/csv",
+                                    )
+
+                                # JSON Download
+                                with col2:
+                                    json_str = download_df.to_json(orient="records", indent=2)
+                                    st.download_button(
+                                        label="📥 Download JSON",
+                                        data=json_str,
+                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                        mime="application/json",
+                                    )
+
+                                # TXT Download
+                                with col3:
+                                    txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
+                                    st.download_button(
+                                        label="📥 Download TXT (Tab Separated)",
+                                        data=txt_data,
+                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                        mime="text/txt",
+                                    )
+                            else:
+                                st.warning("⚠️ Please select at least one column to download.")
 
                 except FileNotFoundError:
-                    st.error("Data is being fetched: 100 agents are being loaded. Please check back shortly!")
+                    st.error(f"Data is being fetched: 100 agents are being loaded for {selected_website}. Please check back shortly!")
+                except Exception as e:
+                    st.error(f"An error occurred while loading {expected_file}: {str(e)}")
+        
         else:
-            # Original logic for other URLs
+            # Original logic for other URLs (unchanged)
             with tab2:
                 st.subheader("📊 Scraping Results")
 
@@ -1665,13 +1788,13 @@ if selected_tab != "tab2":
                             
                         except Exception as e:
                             return pd.DataFrame({"Error": [str(e)]})
+                    
                     def get_data_without_metadata(df):
                         # Define metadata columns to exclude
                         metadata_cols = ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]
                         # Keep only columns that are not metadata
                         data_cols = [col for col in df.columns if col.lower() not in metadata_cols]
                         return df[data_cols]
-
 
                     # Process results with extend_metadata=True
                     results_df = process_results(st.session_state.results, extend_metadata=True)
@@ -1687,7 +1810,6 @@ if selected_tab != "tab2":
                         key="results_editor"
                     )
 
-                    # Add a "Delete Selected Rows" button
                     # Allow users to download the edited data
                     selected_columns = st.multiselect(
                         "Select columns to download",
@@ -1740,7 +1862,6 @@ if selected_tab != "tab2":
                         st.info("⏳ Scraping in progress... Results will appear here when available.")
                     else:
                         st.info("🔍 No results yet. Start a scraping job to see results here.")
-   
 
 # if selected_tab == "tab3":
 with tab3:
@@ -1871,285 +1992,142 @@ with tab4:
     else:
         st.info("No data found. Save some data to see it here!")
 
+import os
+import pandas as pd
+import streamlit as st
+import re
+from datetime import datetime
+
 if selected_tab == "tab2":
     print(selected_tab)
     with tab2:
         if True:
-            showcoldWellResult = st.toggle("View Coldwell Task Results", help=f"Toggle between Coldwell task results and other quick tasks.", value=True)
-        if coldwell or showcoldWellResult:
+            showResults = st.toggle("View Task Results", help="Toggle to view scraping results.", value=True)
+        
+        if showResults:
             with tab2:
-                st.subheader("📊 Scraping Results (Coldwell)")
-                def format_mobile_number(mobile, country_code, hyphen_separator):
-                    digits = "".join(filter(str.isdigit, str(mobile)))  # Remove non-numeric characters
-                    if len(digits) == 10:
-                        formatted = f"{digits[:3]}-{digits[3:6]}-{digits[6:]}" if hyphen_separator else digits
-                        if country_code:
-                            formatted = f"+1{'-' if hyphen_separator else ''}{formatted}"
-                        return formatted
-                    return mobile  # Return as is if it's not a 10-digit number
+                # Define available website options
+                website_options = [
+                    "C21",
+                    "Coldwell",
+                    "Remax",
+                    "Compass"
+                ]
+                
+                # Let user choose a website
+                selected_website = st.selectbox("Choose a website to view", website_options, index=0)
+                
+                # Construct the expected CSV filename based on the selected website
+                data_dir = "data/"
+                expected_file = f"{selected_website.lower()}_agents.csv"
+                file_path = os.path.join(data_dir, expected_file)
+                
+                st.subheader(f"📊 Scraping Results ({selected_website})")
+                
+                def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
+                    if pd.isna(mobile) or not str(mobile).strip():  # Handle NaN or empty values
+                        return ""
+                    # Remove all non-numeric characters
+                    mobile = re.sub(r"\D", "", str(mobile))
+                    if len(mobile) < 10:  # Ensure a valid 10-digit number
+                        return mobile  # Return as-is if not a full number
+                    # Apply hyphen separator if enabled
+                    if hyphen_separator:
+                        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
+                    # Apply country code if enabled
+                    if country_code:
+                        if hyphen_separator:
+                            mobile = f"+1-{mobile}"  # Add +1- before the number
+                        else:
+                            mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
+                    return mobile
 
                 try:
-                    # Load data from coldwell_agents.csv
-                    coldwell_df = pd.read_csv("data/coldwell_agents.csv")
-                    def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
-                        if pd.isna(mobile):  # Handle NaN values
-                            return ""
+                    # Check if the file exists
+                    if not os.path.exists(file_path):
+                        st.error(f"No data available for {selected_website}. Expected file {expected_file} not found.")
+                    else:
+                        # Load data from the selected website's CSV file
+                        agents_df = pd.read_csv(file_path)
+                        
+                        # Identify potential mobile number columns dynamically
+                        mobile_columns = [col for col in agents_df.columns if 'mobile' in col.lower() or 'phone' in col.lower()]
+                        if mobile_columns:
+                            for col in mobile_columns:
+                                agents_df[col] = agents_df[col].fillna("").apply(
+                                    lambda x: format_mobile_number(x, country_code=False, hyphen_separator=True)
+                                )
 
-                        # Remove all non-numeric characters
-                        mobile = re.sub(r"\D", "", str(mobile))
+                        # Define fixed metadata columns (if any exist in the CSV)
+                        metadata_cols = [col for col in agents_df.columns if col.lower() in ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]]
+                        data_cols = [col for col in agents_df.columns if col not in metadata_cols]
+                        
+                        # Deduplicate based on all columns (since we don’t know which are unique)
+                        agents_df = agents_df.drop_duplicates()
 
-                        if len(mobile) < 10:  # Ensure a valid 10-digit number
-                            return mobile  # Return as-is if not a full number
+                        st.info(f"This table displays only the first 50 entries from {selected_website}. The downloadable file will include all entries.")
+                        st.dataframe(agents_df.head(50), use_container_width=True)
 
-                        # Apply hyphen separator if enabled
-                        if hyphen_separator:
-                            mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
+                        # Allow user to select columns for download (dynamically based on CSV columns)
+                        selected_columns = st.multiselect(
+                            "Select columns to download",
+                            options=agents_df.columns,
+                            default=agents_df.columns.tolist()  # Default to all columns
+                        )
+                        
+                        # 📥 Download Buttons (CSV, JSON, TXT)
+                        if st.button("📥 Download Data", use_container_width=True):
+                            if selected_columns:
+                                # Filter DataFrame based on selected columns
+                                download_df = agents_df[selected_columns]
+                                
+                                col1, col2, col3 = st.columns(3)
+                                
+                                # CSV Download
+                                with col1:
+                                    csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                    st.download_button(
+                                        label="📥 Download CSV",
+                                        data=csv_data,
+                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                                        mime="text/csv",
+                                    )
+                                
+                                # JSON Download
+                                with col2:
+                                    json_str = download_df.to_json(orient="records", indent=2)
+                                    st.download_button(
+                                        label="📥 Download JSON",
+                                        data=json_str,
+                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                        mime="application/json",
+                                    )
 
-                        # Apply country code if enabled
-                        if country_code:
-                            if hyphen_separator:
-                                mobile = f"+1-{mobile}"  # Add +1- before the number
+                                # TXT
+                                with col3:
+                                    txt_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                    st.download_button(
+                                        label="📥 Download TXT (Comma Separated)",
+                                        data=txt_data,
+                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                        mime="text/plain",
+                                    )
                             else:
-                                mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
-
-                        return mobile
+                                st.warning("⚠️ Please select at least one column to download.")
                     
-                    # Select only required columns
-                    coldwell_df = coldwell_df[["name", "office", "email", "mobile"]]
-                    
-                    # Format mobile numbers
-                    coldwell_df["mobile"] = coldwell_df["mobile"].fillna("").apply(
-                        lambda x: format_mobile_number(x, country_code=country_code, hyphen_separator=hyphen_separator)
-                    )
-
-                    # Deduplicate based on unique fields (e.g., name, email, mobile)
-                    coldwell_df = coldwell_df.drop_duplicates(subset=["name", "email", "mobile"])
-
-                    st.info("This table displays only the first 50 agents. The downloadable file will include all agents.")
-                    st.dataframe(coldwell_df.head(50), use_container_width=True)
-
-                    selected_columns = st.multiselect(
-                        "Select columns to download",
-                        options=coldwell_df.columns,
-                        default=coldwell_df.columns
-                    )
-                    
-                    # 📥 Download Buttons (CSV, JSON)
-                    if st.button("📥 Download Data", use_container_width=True):
-                        if selected_columns:
-                            # Filter DataFrame based on selected columns
-                            download_df = coldwell_df[selected_columns]
-                            
-                            # Display download options (CSV, JSON)
-                            col1, col2, col3 = st.columns(3)
-                            
-                            # CSV Download
-                            with col1:
-                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                                st.download_button(
-                                    label="📥 Download CSV",
-                                    data=csv_data,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                                    mime="text/csv",
-                                )
-                            
-                            # JSON Download
-                            with col2:
-                                json_str = download_df.to_json(orient="records", indent=2)
-                                st.download_button(
-                                    label="📥 Download JSON",
-                                    data=json_str,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-                                    mime="application/json",
-                                )
-
-                            # TXT
-                            with col3:
-                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                                st.download_button(
-                                    label="📥 Download TXT (Comma Seperated)",
-                                    data=csv_data,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                    mime="text/txt",
-                                )
-                        else:
-                            st.warning("⚠️ Please select at least one column to download.")
-                
-                except FileNotFoundError:
-                    st.error("Data is being fetched: 100 agents are being loaded. Please check back shortly!")
+                except Exception as e:
+                    st.error(f"An error occurred while loading {expected_file}: {str(e)}")
+        
         else:
-            # Original logic for other URLs
             with tab2:
                 st.subheader("📊 Scraping Results")
-                
                 if st.session_state.get("results"):
-                    def process_results(data_dicts, extend_metadata=True):
-                        if not data_dicts:
-                            return pd.DataFrame()
-                        
-                        all_data = []
-                        
-                        for i, data_dict in enumerate(data_dicts):
-                            # Define metadata fields explicitly
-                            metadata = {"Source_Index": f"Data-{i+1}"}
-                            list_fields = {}
-                            non_list_fields = {}
-                            
-                            # Separate fields into metadata, list fields, and non-list fields
-                            for key, value in data_dict.items():
-                                if key in ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]:
-                                    if isinstance(value, list):
-                                        metadata[key] = "" if not value else str(value[0])
-                                    else:
-                                        metadata[key] = "" if value is None else str(value)
-                                elif isinstance(value, list) and len(value) > 1:
-                                    list_fields[key] = value
-                                else:
-                                    if isinstance(value, list):
-                                        non_list_fields[key] = "" if not value else str(value[0])
-                                    else:
-                                        non_list_fields[key] = "" if value is None else str(value)
-                            
-                            # Special handling for email - only include in the first row
-                            email_value = None
-                            if "email" in non_list_fields:
-                                email_value = non_list_fields.pop("email")
-                            
-                            # If there are list fields, expand them into rows
-                            if list_fields:
-                                max_length = max(len(value) for value in list_fields.values())
-                                for j in range(max_length):
-                                    row = metadata.copy() if j == 0 or not extend_metadata else {"Source_Index": f"Data-{i+1}"}
-                                    
-                                    # Add non-list fields (excluding email)
-                                    row.update(non_list_fields)
-                                    
-                                    # Add email only to the first row
-                                    if j == 0 and email_value is not None:
-                                        row["email"] = email_value
-                                    elif "email" not in row:
-                                        row["email"] = ""
-                                    
-                                    for key, value_list in list_fields.items():
-                                        row[key] = str(value_list[j]) if j < len(value_list) else ""
-                                    all_data.append(row)
-                            else:
-                                row = metadata.copy()
-                                row.update(non_list_fields)
-                                
-                                # Add email back to the row
-                                if email_value is not None:
-                                    row["email"] = email_value
-                                    
-                                all_data.append(row)
-                        
-                        # Create DataFrame
-                        try:
-                            df = pd.DataFrame(all_data)
-                            
-                            # If extend_metadata is True, clear metadata in duplicate rows
-                            if extend_metadata:
-                                metadata_cols = ["url", "timestamp", "date", "datetime", "time", "title"]
-                                df.loc[df.duplicated(subset=["Source_Index"]), [col for col in metadata_cols if col in df.columns]] = ""
-                            
-                            # Define column order: Source_Index first, then others
-                            first_cols = ["Source_Index"]
-                            if "url" in df.columns:
-                                first_cols.append("url")
-                            if "timestamp" in df.columns:
-                                first_cols.append("timestamp")
-                            other_priority = ["date", "datetime", "time", "title"]
-                            for col in other_priority:
-                                if col in df.columns and col not in first_cols:
-                                    first_cols.append(col)
-                                    
-                            # Make sure email is prioritized in column ordering
-                            remaining_cols = [col for col in df.columns if col not in first_cols]
-                            if "email" in remaining_cols:
-                                remaining_cols.remove("email")
-                                remaining_cols.append("email")
-                                
-                            df = df[first_cols + remaining_cols]
-                            
-                        except Exception as e:
-                            return pd.DataFrame({"Error": [str(e)]})
-                        
-                        return df
-
-                    def get_data_without_metadata(df):
-                        # Define metadata columns to exclude
-                        metadata_cols = ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]
-                        # Keep only columns that are not metadata
-                        data_cols = [col for col in df.columns if col.lower() not in metadata_cols]
-                        return df[data_cols]
-
-                    # Process results with extend_metadata=True
-                    results_df = process_results(st.session_state.results, extend_metadata=True)
-
-                    # Deduplicate results based on unique fields (e.g., email, name, url)
-                    results_df = results_df.drop_duplicates(subset=["email", "name", "url"])  # Adjust fields as needed
-
-                    # Display the full DataFrame in Streamlit
-                    st.dataframe(results_df, use_container_width=True)
-
-                    # Prepare data for download (exclude metadata)
-                    download_df = get_data_without_metadata(results_df)
-
-                    # 📥 Download Buttons (CSV, JSON, TXT)
-                    col1, col2, col3 = st.columns(3)
-
-                    selected_columns = st.multiselect(
-                        "Select columns to download",
-                        options=results_df.columns,
-                        default=results_df.columns
-                    )
-                    
-                    if st.button("📥 Download Data", use_container_width=True):
-                        if selected_columns:
-                            # Filter DataFrame based on selected columns
-                            download_df = results_df[selected_columns]
-                            
-                            # Display download options (CSV, JSON)
-                            col1, col2, col3 = st.columns(3)
-                            
-                            # CSV Download
-                            with col1:
-                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                                st.download_button(
-                                    label="📥 Download CSV",
-                                    data=csv_data,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                                    mime="text/csv",
-                                )
-                            
-                            # JSON Download
-                            with col2:
-                                json_str = download_df.to_json(orient="records", indent=2)
-                                st.download_button(
-                                    label="📥 Download JSON",
-                                    data=json_str,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-                                    mime="application/json",
-                                )
-
-                            # TXT
-                            with col3:
-                                csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                                st.download_button(
-                                    label="📥 Download TXT (Comma Seperated)",
-                                    data=csv_data,
-                                    file_name=f"coldwell_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                    mime="text/txt",
-                                )
-                        else:
-                            st.warning("⚠️ Please select at least one column to download.")
-                
+                    st.info("Displaying other scraping results...")
                 else:
                     if st.session_state.get("is_scraping", False):
                         st.info("⏳ Scraping in progress... Results will appear here when available.")
                     else:
                         st.info("🔍 No results yet. Start a scraping job to see results here.")
-
 # Main scraping process (runs when is_scraping is True)
 if st.session_state.is_scraping:
     

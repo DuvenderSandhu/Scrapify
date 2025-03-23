@@ -30,12 +30,39 @@ async def random_zigzag_move(page, start_x, start_y, end_x, end_y):
         await page.mouse.move(x + random.randint(-50, 50), y + random.randint(-50, 50))
         await random_sleep(0.1, 0.3)
 
+import asyncio
+import random
+import time
+from crawl4ai import AsyncWebCrawler,BrowserConfig  # Import AsyncWebCrawler
+from playwright.async_api import async_playwright
+from fake_useragent import UserAgent
+
+# Assuming ua_os, ua_platform, log_info, log_success, log_warning, log_error, random_sleep, random_zigzag_move, db are defined elsewhere
+
+import asyncio
+import random
+import time
+from crawl4ai import AsyncWebCrawler  # Import AsyncWebCrawler
+from playwright.async_api import async_playwright
+from fake_useragent import UserAgent
+
+# Assuming ua_os, ua_platform, log_info, log_success, log_warning, log_error, random_sleep, random_zigzag_move, db are defined elsewhere
+
+import asyncio
+import random
+import time
+from crawl4ai import AsyncWebCrawler  # Import AsyncWebCrawler
+from playwright.async_api import async_playwright
+from fake_useragent import UserAgent
+
+# Assuming ua_os, ua_platform, log_info, log_success, log_warning, log_error, random_sleep, random_zigzag_move, db are defined elsewhere
+
 async def get_html(url: str, button: str = None, options: dict = None, loader: str = None) -> str:
     """
-    Fetch HTML content by navigating to a URL and extracting a strictly meaningful container.
+    Fetch HTML content by navigating to a URL and extracting a strictly meaningful container using AsyncWebCrawler.
     """
-    ua = UserAgent(os=random.choice(ua_os),platforms=random.choice(ua_platform))
-    print("ua",ua.random)
+    ua = UserAgent(os=random.choice(ua_os), platforms=random.choice(ua_platform))
+    print("ua", ua.random)
     options = options or {}
     max_pages = options.get('max_pages', 1)
     handle_lazy_loading = options.get('handle_lazy_loading', False)
@@ -115,18 +142,28 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
                 
                 if raw_size > 500:
                     log_success(f"Extracted raw HTML: {raw_size} bytes")
-                    filtered_html = html_content #extract_relevant_container(html_content)
-                    filtered_size = len(filtered_html)
-                    reduction = ((raw_size - filtered_size) / raw_size * 100)
-                    log_info(f"Filtered content size: {filtered_size} bytes (reduction: {reduction:.1f}%)")
-                    global rawid
-                    if options.get('saveToDb', False):
-                        print("Saving Raw")
-                        rawid =  db.save_raw_html(url, filtered_html)
-                    await context.close()
-                    log_info(f"Fetch completed in {time.time() - start_time:.2f}s")
-                    await browser.close()
-                    return filtered_html
+                    # Use AsyncWebCrawler to extract meaningful content
+                    proxy_config = {
+                        "server": "http://proxy.example.com:8080",
+                        "username": "user",
+                        "password": "pass"
+                    }
+
+                    # browser_config = BrowserConfig(proxy_config=proxy_config)
+                    async with AsyncWebCrawler() as crawler:#config=browser_config
+                        result = await crawler.arun(url=url)  # Use arun to process the URL
+                        filtered_html = result.html  # Extract the markdown content
+                        filtered_size = len(filtered_html)
+                        reduction = ((raw_size - filtered_size) / raw_size * 100)
+                        log_info(f"Filtered content size: {filtered_size} bytes (reduction: {reduction:.1f}%)")
+                        global rawid
+                        if options.get('saveToDb', False):
+                            print("Saving Raw")
+                            rawid = db.save_raw_html(url, filtered_html)
+                        await context.close()
+                        log_info(f"Fetch completed in {time.time() - start_time:.2f}s")
+                        await browser.close()
+                        return filtered_html
                 else:
                     log_warning(f"Raw HTML too small ({raw_size} bytes), retrying")
                     await context.close()
@@ -141,6 +178,8 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
         log_info("Browser closed")
         log_error(f"All {retry_attempts + 1} attempts failed for {url}")
         return ""
+        
+             
 import asyncio
 import json
 import csv

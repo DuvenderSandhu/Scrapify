@@ -1,0 +1,6 @@
+2025-03-21 13:55:21,085 - INFO - Scraper started in the background.
+2025-03-21 13:55:21,087 - INFO - Created lock file with PID: 4336
+2025-03-21 13:55:21,093 - INFO - Reset progress file
+2025-03-21 13:55:21,094 - INFO - Removed lock file
+2025-03-21 13:55:21,094 - ERROR - Unhandled exception in scraper thread: signal only works in main thread of the main interpreter
+2025-03-21 14:02:44,173 - WARNING - pipe closed by peer or os.write(pipe, data) raised exception.
