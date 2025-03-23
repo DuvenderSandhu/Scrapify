@@ -160,7 +160,7 @@ async def _run_scraper(url, fields_to_extract):
     load_existing_data()  # Load any existing data to avoid duplicates from previous runs
 
     async with async_playwright() as p:
-        browser = await p.chromium.launch(headless=False)
+        browser = await p.chromium.launch(headless=True)
         context = await browser.new_context(viewport={'width': 1280, 'height': 800})
         page = await context.new_page()
         processed_agents = 0
