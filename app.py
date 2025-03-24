@@ -788,7 +788,7 @@ with st.expander("ℹ️ How to Use This Tool", expanded=False):
        - Choose a website (e.g., C21, Coldwell, Remax, Compass) from the provided options.  
        - Select the checkboxes for the data you want to extract (e.g., Name, Email, Mobile).  
 
-    ⚠️ **Important:** You must either enter URLs or select a website before proceeding. If both are provided, the Automatic Scraping will take priority.
+    ⚠️ **Important:** You must either enter URLs or select a website before proceeding. If both are provided, the Manual Scraping will take priority.
     """)
 
 def show_temp_alert(message, seconds=3):
@@ -828,7 +828,10 @@ url_input=""
 fields_to_extract=[]
 selected_website=""
 saveToDb=False
-
+country_code=False
+hyphen_separator=False
+import io
+import xlsxwriter
 def addEmail():
     data_to_write=  st.session_state["emails"]
     with open('email.txt', 'w') as file:
@@ -894,8 +897,8 @@ with tab1:
             else:
                 st.info("No fields added yet. Add fields to extract data.")
             # Advanced Crawling Options
-            hyphen_separator = st.checkbox("Format phone numbers with hyphens (e.g., 123-456-7890)", value=False)
-            country_code = st.checkbox("Add country code (+1) to phone numbers (e.g., +1234567890)", value=True)
+            hyphen_separator = st.checkbox("Format phone numbers with hyphens (e.g., 123-456-7890)", value=hyphen_separator)
+            country_code = st.checkbox("Add country code (+1) to phone numbers (e.g., +1234567890)", value=country_code)
             if hyphen_separator and country_code:
                 st.info("Phone Number will be interpreted as +1-123-456-7890") 
             
@@ -1018,7 +1021,7 @@ with tab1:
 
             # If the last option ("Email, Mobile, Name") is selected, override selection
             if st.checkbox(field_options[-1], value=False):
-                selected_fields = ["email", "mobile", "name"]
+                selected_fields = ["name", "phone", "email"]
 
             fields_to_extract = selected_fields
 
@@ -1035,10 +1038,10 @@ with tab1:
             if not url_input.strip() and selected_option is None:
                 st.warning("⚠️ Please either enter at least one URL or select a website to proceed.")
             elif url_input.strip() and selected_option:
-                st.info("ℹ️ You’ve provided both URLs and a website. Automatic Scraping will take precedence unless specified otherwise.")
+                st.info("ℹ️ You’ve provided both URLs and a website. Manual Scraping will take precedence unless specified otherwise.")
 
-            hyphen_separator = st.checkbox("Format phone numbers with hyphens (e.g., 123-456-7890)", key="duplicatehyphen" ,value=False)
-            country_code = st.checkbox("Add country code (+1) to phone numbers (e.g., +1234567890)",key="duplicatecountry", value=True)
+            hyphen_separator = st.checkbox("Format phone numbers with hyphens (e.g., 123-456-7890)", key="duplicatehyphen" ,value=hyphen_separator)
+            country_code = st.checkbox("Add country code (+1) to phone numbers (e.g., +1234567890)",key="duplicatecountry", value=country_code)
             if hyphen_separator and country_code:
                 st.info("Phone Number will be interpreted as +1-123-456-7890")
 
@@ -1297,7 +1300,7 @@ with tab1:
                     st.session_state.extraction_method = extraction_method
                     st.session_state.ai_provider= ai_provider or ""
                     st.session_state.ai_api= ai_api
-                    
+                    hyphen_separator=False
                     log_info(f"Crawling options configured")
                     st.rerun()
                 else:
@@ -1615,8 +1618,8 @@ if selected_tab != "tab2":
                                 # Filter DataFrame based on selected columns
                                 download_df = edited_df[selected_columns]
 
-                                # Display download options (CSV, JSON, TXT)
-                                col1, col2, col3 = st.columns(3)
+                                # Display download options (CSV, JSON, TXT, Excel)
+                                col1, col2, col3, col4 = st.columns(4)
 
                                 # CSV Download
                                 with col1:
@@ -1646,6 +1649,19 @@ if selected_tab != "tab2":
                                         data=txt_data,
                                         file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                                         mime="text/txt",
+                                    )
+                                    
+                                # Excel Download
+                                with col4:
+                                    buffer = io.BytesIO()
+                                    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+                                        download_df.to_excel(writer, index=False, sheet_name='Agents')
+                                    buffer.seek(0)
+                                    st.download_button(
+                                        label="📥 Download Excel",
+                                        data=buffer,
+                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                                     )
                             else:
                                 st.warning("⚠️ Please select at least one column to download.")
@@ -1822,8 +1838,8 @@ if selected_tab != "tab2":
                             # Filter DataFrame based on selected columns
                             download_df = edited_results_df[selected_columns]
 
-                            # Display download options (CSV, JSON, TXT)
-                            col1, col2, col3 = st.columns(3)
+                            # Display download options (CSV, JSON, TXT, Excel)
+                            col1, col2, col3, col4 = st.columns(4)
 
                             # CSV Download
                             with col1:
@@ -1854,6 +1870,19 @@ if selected_tab != "tab2":
                                     file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                                     mime="text/txt",
                                 )
+                                
+                            # Excel Download
+                            with col4:
+                                buffer = io.BytesIO()
+                                with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+                                    download_df.to_excel(writer, index=False, sheet_name='Results')
+                                buffer.seek(0)
+                                st.download_button(
+                                    label="📥 Download Excel",
+                                    data=buffer,
+                                    file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                )
                         else:
                             st.warning("⚠️ Please select at least one column to download.")
 
@@ -1862,7 +1891,6 @@ if selected_tab != "tab2":
                         st.info("⏳ Scraping in progress... Results will appear here when available.")
                     else:
                         st.info("🔍 No results yet. Start a scraping job to see results here.")
-
 # if selected_tab == "tab3":
 with tab3:
     st.subheader("Scraping Logs")
@@ -2045,7 +2073,7 @@ if selected_tab == "tab2":
                 try:
                     # Check if the file exists
                     if not os.path.exists(file_path):
-                        st.error(f"No data available for {selected_website}. Expected file {expected_file} not found.")
+                        st.error(f"No Data Found for {selected_website}.")
                     else:
                         # Load data from the selected website's CSV file
                         agents_df = pd.read_csv(file_path)
@@ -2112,6 +2140,18 @@ if selected_tab == "tab2":
                                         file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                                         mime="text/plain",
                                     )
+                                # Excel Download
+                                with col4:
+                                    buffer = io.BytesIO()
+                                    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
+                                        download_df.to_excel(writer, index=False, sheet_name='Agents')
+                                    buffer.seek(0)
+                                    st.download_button(
+                                        label="📥 Download Excel",
+                                        data=buffer,
+                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
+                                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                                    )
                             else:
                                 st.warning("⚠️ Please select at least one column to download.")
                     
@@ -2128,6 +2168,7 @@ if selected_tab == "tab2":
                         st.info("⏳ Scraping in progress... Results will appear here when available.")
                     else:
                         st.info("🔍 No results yet. Start a scraping job to see results here.")
+
 # Main scraping process (runs when is_scraping is True)
 if st.session_state.is_scraping:
     

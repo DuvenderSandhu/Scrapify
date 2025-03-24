@@ -220,7 +220,6 @@ async def collect_all_agent_data(page, start_time, total_estimated):
             print(f"Error processing agent {idx+1}: {e}")
             
     return all_agents
-
 async def fetch_emails_concurrently(browser, agents, start_time):
     """Fetch email addresses concurrently with better resource management."""
     print(f"Fetching email addresses for {len(agents)} agents...")
@@ -436,7 +435,6 @@ def get_c21_agents(fields_to_extract=None):
     startThread(background_scraper)
     
     return "C21 agent scraper started in the background. It will stop and notify you if pending emails are found."
-
 # Example usage
 if __name__ == "__main__":
     # If the user requests the 'email' field

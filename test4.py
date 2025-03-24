@@ -186,7 +186,7 @@ async def _run_scraper(url, fields_to_extract):
                 print(f"Failed to send email: {e}")
             print(f"Scraping completed. Processed {processed_agents} unique agents.")
 
-def get_remax_all_data(fields_to_extract=['email', 'name', 'phone']):
+def get_remax_all_data(fields_to_extract=[ 'name', 'phone']):
     """
     Start the Remax scraper in the background and return immediately.
     This is the function that users will call directly.
@@ -195,6 +195,11 @@ def get_remax_all_data(fields_to_extract=['email', 'name', 'phone']):
         fields_to_extract (list): List of fields to extract and save (e.g., ['email', 'name', 'phone']).
                                  If None, all fields will be saved.
     """
+    if fields_to_extract and 'email' in fields_to_extract:
+        message = "<p>Hello,</p><p>No Email was found on the provided website. Please check the details and try without Email.</p>"
+        send_email(message)
+        return "Email notification sent. The scraping process was not started because emails do not exist on the website."
+
     url = "https://www.remax.com/real-estate-agents"
     if current_scraper_thread and current_scraper_thread.is_alive():
         print("Stopping previous scraper thread...")

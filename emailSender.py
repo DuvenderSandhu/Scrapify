@@ -12,9 +12,9 @@ def send_email(messageHTML: str="<p>Hello,</p><p>Your scraping has been complete
         # Read the content of the file
         content = file.read()
         emails= content
-    sender_email = "factorypricescrapper@gmail.com"
+    sender_email = "androidwriters1@gmail.com"#"factorypricescrapper@gmail.com"
     receiver_email = emails.split(",")
-    password = "pfqq rmsr vngz pkys"  # Or app-specific password for Gmail
+    password = "cjuz tjzx zotj uvjz"#"pfqq rmsr vngz pkys"  # Or app-specific password for Gmail
     subject = "Scraping Status – Web Scrapper"
     html_body = messageHTML
 
