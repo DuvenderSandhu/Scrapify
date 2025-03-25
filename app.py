@@ -279,10 +279,13 @@ async def crawl_url(url, options):
     html_content =""#await get_all_data(url) # await get_html_sync(url,button,options)
     if selected_option and not st.session_state.fields:
         try:
+            print(selected_option)
             if selected_option=="C21":
                 html_content=await get_c21_agents(fields_to_extract=fields_to_extract)#await get_all_data(url)
                 print("Pring Here")
             elif selected_option=="Compass":
+                print("Compass Here")
+                print("fields_to_extract",fields_to_extract)
                 html_content=await get_compass_agents(fields_to_extract=fields_to_extract)#await get_all_data(url)
                 print("Pring Here")
             elif selected_option=="Coldwell":
@@ -1021,7 +1024,12 @@ with tab1:
 
             # If the last option ("Email, Mobile, Name") is selected, override selection
             if st.checkbox(field_options[-1], value=False):
-                selected_fields = ["name", "phone", "email"]
+                print(selected_website,"The selected fields are: ", selected_fields)
+                if selected_website=="C21":
+                    print("Website is C21")
+                    selected_fields = ["name", "mobile", "email"]
+                else:
+                    selected_fields = ["name", "phone", "email"]
 
             fields_to_extract = selected_fields
 
@@ -1642,15 +1650,16 @@ if selected_tab != "tab2":
                                     )
 
                                 # TXT Download
-                                with col3:
-                                    txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
-                                    st.download_button(
-                                        label="📥 Download TXT (Tab Separated)",
-                                        data=txt_data,
-                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                        mime="text/txt",
-                                    )
-                                    
+                                if len(fields_to_extract)==1 and 'email' in fields_to_extract:
+                                    with col3:
+                                        txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
+                                        st.download_button(
+                                            label="📥 Download TXT (Tab Separated)",
+                                            data=txt_data,
+                                            file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                            mime="text/txt",
+                                        )
+                                        
                                 # Excel Download
                                 with col4:
                                     buffer = io.BytesIO()
@@ -1862,15 +1871,16 @@ if selected_tab != "tab2":
                                 )
 
                             # TXT Download
-                            with col3:
-                                txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
-                                st.download_button(
-                                    label="📥 Download TXT (Tab Separated)",
-                                    data=txt_data,
-                                    file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                    mime="text/txt",
-                                )
-                                
+                            if len(fields_to_extract)==1 and 'email' in fields_to_extract:
+                                with col3:
+                                    txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
+                                    st.download_button(
+                                        label="📥 Download TXT (Tab Separated)",
+                                        data=txt_data,
+                                        file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                        mime="text/txt",
+                                    )
+                                    
                             # Excel Download
                             with col4:
                                 buffer = io.BytesIO()
