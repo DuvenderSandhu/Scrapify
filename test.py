@@ -1,24 +1,24 @@
 import asyncio
 from playwright.async_api import async_playwright
-import json
 import csv
 import os
 from datetime import datetime
 from mainthread import startThread, stopThread, current_scraper_thread, scraper_stop_event
+from emailSender import send_email
+import json
 
 # Configuration
-BATCH_SIZE = 50  # Reduced batch size for more frequent saves and memory management
+BATCH_SIZE = 50
 OUTPUT_FOLDER = "data"
 PROGRESS_FILE = f"{OUTPUT_FOLDER}/progress.json"
-CONCURRENT_REQUESTS = 5  # Reduced concurrency to be gentler on the server
-RETRY_LIMIT = 3  # Retry failed requests up to 3 times
-REQUEST_DELAY = 3  # Increased delay between requests
-PAGE_LOAD_TIMEOUT = 30000  # 30 seconds timeout for page loads
-RATE_LIMIT_DELAY = 1.5  # Additional delay between batches
+CONCURRENT_REQUESTS = 3
+RETRY_LIMIT = 3
+REQUEST_DELAY = 5
+PAGE_LOAD_TIMEOUT = 30000
+RATE_LIMIT_DELAY = 2
 
 # Ensure the output folder exists
-if not os.path.exists(OUTPUT_FOLDER):
-    os.makedirs(OUTPUT_FOLDER)
+os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
 def reset_progress():
     """Reset progress.json to initial state."""
@@ -33,21 +33,17 @@ def reset_progress():
         json.dump(progress_data, f)
 
 def clear_existing_files():
-    """Remove existing JSON and CSV files."""
-    json_file = f"{OUTPUT_FOLDER}/coldwell_agents.json"
+    """Remove existing CSV file."""
     csv_file = f"{OUTPUT_FOLDER}/coldwell_agents.csv"
-    for file in [json_file, csv_file]:
-        if os.path.exists(file):
-            os.remove(file)
-            print(f"Cleared existing file: {file}")
+    if os.path.exists(csv_file):
+        os.remove(csv_file)
+        print(f"Cleared existing file: {csv_file}")
 
 async def fetch_agent_details(context, agent_url, agent_data, retry_count=0):
     """Fetch agent details (e.g., email) with retries and rate limiting."""
     try:
         full_agent_url = f'https://www.coldwellbankerhomes.com{agent_url}' if agent_url.startswith('/') else agent_url
         agent_page = await context.new_page()
-        
-        # Set timeout for the page
         agent_page.set_default_timeout(PAGE_LOAD_TIMEOUT)
         
         try:
@@ -62,8 +58,7 @@ async def fetch_agent_details(context, agent_url, agent_data, retry_count=0):
                 return await fetch_agent_details(context, agent_url, agent_data, retry_count + 1)
         finally:
             await agent_page.close()
-            await asyncio.sleep(REQUEST_DELAY)  # Rate limiting between agent detail fetches
-            
+            await asyncio.sleep(REQUEST_DELAY)
     except Exception as e:
         print(f"Failed to fetch agent details for {agent_url}: {e}")
     finally:
@@ -73,9 +68,7 @@ async def process_page(context, page, inner_city_name, city_name, page_num, sema
     """Process a single page of agents with concurrency control."""
     async with semaphore:
         print(f"    Processing page {page_num} for {inner_city_name}")
-        
         try:
-            # Wait for agent blocks to load
             await page.wait_for_selector('.agent-block', timeout=PAGE_LOAD_TIMEOUT)
             agent_blocks = await page.query_selector_all('.agent-block')
             print(f"    Found {len(agent_blocks)} agents on page {page_num}")
@@ -87,41 +80,34 @@ async def process_page(context, page, inner_city_name, city_name, page_num, sema
                 try:
                     agent_name_element = await agent_block.query_selector('.agent-content-name > a')
                     agent_name = (await agent_name_element.inner_text()).strip() if agent_name_element else "N/A"
-                    
                     mobile_element = await agent_block.query_selector('.phone-link')
                     mobile = (await mobile_element.inner_text()).strip() if mobile_element else "N/A"
-                    
                     agent_url = await agent_name_element.get_attribute('href') if agent_name_element else None
                     
                     current_agent = {
                         "name": agent_name,
-                        "email": "N/A",  # Default value, updated later if found
+                        "email": "N/A",
+                        "phone": mobile,
                         "mobile": mobile,
                         "city": city_name,
                         "inner_city": inner_city_name
                     }
-                    
                     current_page_agents.append(current_agent)
                     
                     if agent_url:
-                        # Add delay between creating tasks to spread out requests
                         await asyncio.sleep(0.5)
                         tasks.append(fetch_agent_details(context, agent_url, current_agent))
-                    
                     print(f"      Agent {agent_index+1}: {current_agent['name']}")
                 except Exception as e:
                     print(f"      Error processing agent: {e}")
             
-            # Process agent details with controlled concurrency
             if tasks:
-                # Process tasks in smaller batches to avoid overwhelming the server
                 for i in range(0, len(tasks), CONCURRENT_REQUESTS):
                     batch = tasks[i:i + CONCURRENT_REQUESTS]
                     await asyncio.gather(*batch)
-                    await asyncio.sleep(RATE_LIMIT_DELAY)  # Additional delay between batches
+                    await asyncio.sleep(RATE_LIMIT_DELAY)
             
             all_agents.extend(current_page_agents)
-            
         except Exception as e:
             print(f"Error processing page {page_num}: {e}")
             raise
@@ -131,35 +117,27 @@ async def _run_scraper(url, fields_to_extract=None):
     all_agents = []
     start_time = datetime.now()
     processed_agents = 0
-    total_estimated_agents = 50000  # Approximate total agents (can be adjusted)
+    total_estimated_agents = 50000
+    success = False
+    error_message = None
 
-    # Clear existing files and reset progress
     clear_existing_files()
     reset_progress()
 
     try:
         async with async_playwright() as p:
-            # Launch browser with slower connection emulation to be gentler
-            browser = await p.chromium.launch(
-                headless=True,
-                slow_mo=100,  # Add small delay between actions
-            )
-            
-            # Create a new context with conservative settings
+            browser = await p.chromium.launch(headless=True, slow_mo=150)
             context = await browser.new_context(
                 viewport={'width': 1280, 'height': 800},
-                # Emulate a slower connection to prevent overwhelming the server
                 user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
             )
-            
-            # Create a single page for main navigation
             page = await context.new_page()
             page.set_default_timeout(PAGE_LOAD_TIMEOUT)
 
             try:
                 print(f"Navigating to {url}")
                 await page.goto(url, wait_until="domcontentloaded")
-                await asyncio.sleep(REQUEST_DELAY)  # Initial delay
+                await asyncio.sleep(REQUEST_DELAY)
 
                 main_city_rows = await page.query_selector_all('tbody.notranslate > tr')
                 print(f"Found {len(main_city_rows)} main cities")
@@ -175,17 +153,14 @@ async def _run_scraper(url, fields_to_extract=None):
                             city_urls.append((city_name, city_url))
                             print(f"Added city: {city_name} ({city_url})")
                 
-                # Create semaphore for controlling concurrency
                 semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
 
                 for city_index, (city_name, city_url) in enumerate(city_urls):
                     if scraper_stop_event.is_set():
-                        print("Scraping stopped by user request.")
-                        update_progress(start_time, processed_agents, total_estimated_agents, "stopped")
-                        return
+                        error_message = "Scraping stopped by user request"
+                        break
 
                     print(f"\nProcessing city {city_index+1}/{len(city_urls)}: {city_name}")
-                    
                     try:
                         await page.goto(city_url, wait_until="domcontentloaded")
                         await asyncio.sleep(REQUEST_DELAY)
@@ -205,12 +180,10 @@ async def _run_scraper(url, fields_to_extract=None):
 
                         for inner_index, (inner_city_name, inner_city_url) in enumerate(inner_city_urls):
                             if scraper_stop_event.is_set():
-                                print("Scraping stopped by user request.")
-                                update_progress(start_time, processed_agents, total_estimated_agents, "stopped")
-                                return
+                                error_message = "Scraping stopped by user request"
+                                break
 
                             print(f"\n  Processing inner city {inner_index+1}/{len(inner_city_urls)}: {inner_city_name}")
-
                             try:
                                 await page.goto(inner_city_url, wait_until="domcontentloaded")
                                 await asyncio.sleep(REQUEST_DELAY)
@@ -220,24 +193,20 @@ async def _run_scraper(url, fields_to_extract=None):
 
                                 while has_more_pages:
                                     if scraper_stop_event.is_set():
-                                        print("Scraping stopped by user request.")
-                                        update_progress(start_time, processed_agents, total_estimated_agents, "stopped")
-                                        return
+                                        error_message = "Scraping stopped by user request"
+                                        break
 
                                     await process_page(context, page, inner_city_name, city_name, page_num, semaphore, all_agents)
                                     processed_agents = len(all_agents)
                                     print(f"Processed {processed_agents} agents so far.")
 
-                                    # Save data after every batch
                                     if len(all_agents) >= BATCH_SIZE:
                                         save_data(all_agents, fields_to_extract)
                                         print(f"Saved {len(all_agents)} agents.")
                                         all_agents.clear()
 
-                                    # Update progress
                                     update_progress(start_time, processed_agents, total_estimated_agents)
 
-                                    # Check if there's a next page
                                     try:
                                         next_page_button = await page.query_selector('.pagination ul > li:last-child > a')
                                         if next_page_button:
@@ -257,16 +226,15 @@ async def _run_scraper(url, fields_to_extract=None):
                             except Exception as e:
                                 print(f"  Error processing inner city {inner_city_name}: {e}")
                                 continue
-
                     except Exception as e:
                         print(f"Error processing city {city_name}: {e}")
                         continue
 
+                success = not scraper_stop_event.is_set() and not error_message
             except Exception as e:
-                print(f"Main navigation error: {e}")
+                error_message = f"Main navigation error: {e}"
                 update_progress(start_time, processed_agents, total_estimated_agents, "error")
             finally:
-                # Save remaining agents after all processing
                 if all_agents:
                     save_data(all_agents, fields_to_extract)
                     print(f"Final save: {len(all_agents)} agents saved.")
@@ -276,19 +244,43 @@ async def _run_scraper(url, fields_to_extract=None):
                 await browser.close()
                 print("Browser closed. Scraping completed")
                 
-                # Final progress update
-                update_progress(start_time, processed_agents, total_estimated_agents, "completed")
+                update_progress(start_time, processed_agents, total_estimated_agents, "completed" if success else "failed")
+                
+                if success:
+                    message = (
+                        f"<p>Coldwell Banker agent scraping completed successfully on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.</p>"
+                        f"<p>Total agents scraped: {processed_agents}</p>"
+                        f"<p>Data saved to: {OUTPUT_FOLDER}/coldwell_agents.csv</p>"
+                    )
+                    send_email(message)
+                    print("Success email sent")
+                else:
+                    message = (
+                        f"<p>Coldwell Banker agent scraping failed or was interrupted on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.</p>"
+                        f"<p>Reason: {error_message or 'Unknown error'}</p>"
+                        f"<p>Agents scraped before failure: {processed_agents}</p>"
+                        f"<p>Partial data saved to: {OUTPUT_FOLDER}/coldwell_agents.csv</p>"
+                    )
+                    send_email(message)
+                    print("Failure email sent")
 
     except Exception as e:
-        print(f"Fatal error in scraper: {e}")
+        error_message = f"Fatal error in scraper: {e}"
         update_progress(start_time, processed_agents, total_estimated_agents, "error")
-        raise
+        if all_agents:
+            save_data(all_agents, fields_to_extract)
+        message = (
+            f"<p>Coldwell Banker agent scraping failed on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}.</p>"
+            f"<p>Reason: {error_message}</p>"
+            f"<p>Agents scraped before failure: {processed_agents}</p>"
+            f"<p>Partial data saved to: {OUTPUT_FOLDER}/coldwell_agents.csv</p>"
+        )
+        send_email(message)
+        print("Failure email sent")
 
 def update_progress(start_time, processed_agents, total_estimated_agents, status="running"):
     """Update the progress file with current statistics."""
     elapsed_time = (datetime.now() - start_time).total_seconds()
-    
-    # Calculate time per agent (avoid division by zero)
     time_per_agent = elapsed_time / max(1, processed_agents)
     remaining_agents = max(0, total_estimated_agents - processed_agents)
     estimated_time_remaining = remaining_agents * time_per_agent
@@ -308,33 +300,20 @@ def update_progress(start_time, processed_agents, total_estimated_agents, status
         print(f"Error updating progress file: {e}")
 
 def save_data(agents, fields_to_extract=None):
-    """Save the agent data to files, only keeping the specified fields."""
-    # json_file = f"{OUTPUT_FOLDER}/coldwell_agents.json"
+    """Save the agent data to CSV file only, keeping specified fields."""
     csv_file = f"{OUTPUT_FOLDER}/coldwell_agents.csv"
-
-    # Ensure the output directory exists
-    if not os.path.exists(OUTPUT_FOLDER):
-        os.makedirs(OUTPUT_FOLDER)
-        print(f"Created directory: {OUTPUT_FOLDER}")
-
-    # Filter agents to only include specified fields
+    if not agents:
+        return
+    print(fields_to_extract)
     if fields_to_extract:
         filtered_agents = [
             {key: agent.get(key, "N/A") for key in fields_to_extract}
             for agent in agents
         ]
+        print(filtered_agents)
     else:
-        filtered_agents = agents  # Save all fields if no specific fields are provided
+        filtered_agents = agents
 
-    # Save to JSON file (overwrite)
-    # try:
-    #     with open(json_file, 'w', encoding='utf-8') as f:
-    #         json.dump(filtered_agents, f, indent=4, ensure_ascii=False)
-    #     print(f"Saved {len(filtered_agents)} agents to JSON")
-    # except Exception as e:
-    #     print(f"Error saving JSON file: {e}")
-
-    # Save to CSV file (append)
     try:
         fieldnames = fields_to_extract if fields_to_extract else filtered_agents[0].keys()
         file_exists = os.path.exists(csv_file)
@@ -349,22 +328,17 @@ def save_data(agents, fields_to_extract=None):
         print(f"Error saving CSV file: {e}")
 
 def get_all_data(url="https://www.coldwellbankerhomes.com/sitemap/agents/", fields_to_extract=None):
-    """
-    Start the scraper in the background and return immediately.
-    This is the function that users will call directly.
-
-    Args:
-        url (str): The URL to scrape.
-        fields_to_extract (list): List of fields to extract and save (e.g., ['email', 'mobile', 'name']).
-                                 If None, all fields will be saved.
-    """
-    # Stop the previous scraper thread if it's running
+    """Start the scraper in the background and stop any previous scraping task."""
+    global current_scraper_thread, scraper_stop_event  # Ensure we're working with global references
+    
+    # Stop any existing scraper thread before starting a new one
     if current_scraper_thread and current_scraper_thread.is_alive():
         print("Stopping previous scraper thread...")
-        stopThread()
-        print("Stopped previous scraper thread...")
+        stopThread()  # Stop the running thread
+        current_scraper_thread.join()  # Wait for it to fully stop
+        scraper_stop_event.clear()  # Reset the stop event for the new run
+        print("Previous scraper thread stopped.")
 
-    # Define a function to run in the background thread
     def background_scraper():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
@@ -375,18 +349,14 @@ def get_all_data(url="https://www.coldwellbankerhomes.com/sitemap/agents/", fiel
         finally:
             loop.close()
 
-    # Start the background thread
     startThread(background_scraper)
-
     print("Scraper started in the background.")
     return {
         "status": "started",
-        "message": "Scraper has started running in the background. Data will be saved to the 'data' folder.",
+        "message": "Scraper has started running in the background. Data will be saved to the 'data' folder as CSV.",
         "progress_file": PROGRESS_FILE
     }
 
-# Example usage
 if __name__ == "__main__":
-    # Extract specific fields with a more conservative approach
     result = get_all_data(fields_to_extract=['name', 'email', 'city', 'inner_city'])
     print(result)

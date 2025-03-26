@@ -745,7 +745,7 @@ def simulate_ai_extraction(html_content, field):
         return names
     elif any(keyword in field_lower for keyword in ['phone', 'tel', 'mobile']):
         # Extract phone numbers
-        phone_matches = re.findall(REGEX_PATTER['phone'], html_content)
+        phone_matches = re.findall(REGEX_PATTERNS['phone'], html_content)
         if phone_matches:
             return phone_matches
         return ["+1 (555) 123-4567", "+1 (555) 987-6543"]
@@ -784,7 +784,7 @@ with st.expander("ℹ️ How to Use This Tool", expanded=False):
 
     1️⃣ **Enter URLs Manually**  
        - Paste one or more website URLs in the text area.  
-       - Use the "Enter field to extract" input to specify what data you need (e.g., Email, Phone, Name).  
+       - Use the "Enter field to extract" input to specify what data you need (e.g., Email, Mobile, Name).  
        - Click "➕ Add Field" to save each entry.  
 
     2️⃣ **Select a Predefined Website**  
@@ -1017,16 +1017,25 @@ with tab1:
                 help="Select a website if not providing URLs above. You must choose one option."
             )
             st.write(f"Selected website: {selected_option}")
-
+            # selectedValues= {
+            #     "email":False,
+            #     "mobile":False,
+            #     "Email, Mobile, Name":False
+            # }
             # Field Selection for Predefined Websites
             field_options = ["Email", "Mobile", "Email, Mobile, Name"]
             selected_fields = [opt.lower() for opt in field_options[:-1] if st.checkbox(opt, value=False)]
-
+            # selectedValues["Email, Mobile, Name"]=False
             # If the last option ("Email, Mobile, Name") is selected, override selection
-            if st.checkbox(field_options[-1], value=False):
+            if st.checkbox(field_options[-1]):
+                # selectedValues["email"]=False
+                # selectedValues["mobile"]=False
                 print(selected_website,"The selected fields are: ", selected_fields)
                 if selected_website=="C21":
                     print("Website is C21")
+                    selected_fields = ["name", "mobile", "email"]
+                elif selected_website=="Coldwell":
+                    print("Website is Coldwell")
                     selected_fields = ["name", "mobile", "email"]
                 else:
                     selected_fields = ["name", "phone", "email"]
@@ -1333,10 +1342,26 @@ with tab1:
             if st.session_state.current_phase == "complete":
                 if selected_option and not st.session_state.fields:
                     st.info("Task Started You will be notified after completion by email")
+
                 else:    
                     st.info("Task Complete Go to Result Tab to See Result")
                     st.info("Took " + str(st.session_state.options.get("time", 20)) + " Seconds to Crawl and Extract Websites")
-
+            st.markdown("""
+                <div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; border: 1px solid #d0e7ff;">
+                    <h3 style="color: #0077b6;">Important Instructions</h3>
+                    <p style="font-size: 16px; color: #333333;">
+                        <strong>If the wrong process starts, please follow these steps:</strong>
+                    </p>
+                    <ol style="font-size: 16px; color: #333333;">
+                                <li>Select <strong>'C21' website</strong>.</li>
+                                <li>Select <strong>'Mobile' field</strong>.</li>
+                                <li>Start the scraping process.</li>
+                    </ol>
+                    <p style="font-size: 16px; color: #333333;">
+                        The previous process will automatically stop after <strong>2 minutes</strong>.
+                    </p>
+                </div>
+            """, unsafe_allow_html=True)
 import streamlit as st
 import pandas as pd
 import re
@@ -1377,7 +1402,7 @@ def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
         if hyphen_separator:
             mobile = f"+1-{mobile}"  # Add +1- before the number
         else:
-            mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
+            mobile = f"+1{mobile}"  # Add +1 with space if no hyphens
 
     return mobile
 
@@ -1538,30 +1563,38 @@ import streamlit as st
 import re
 from datetime import datetime
 
+import streamlit as st
+import pandas as pd
+import os
+import re
+import io
+from datetime import datetime
+
+# Assume these are defined elsewhere in your app
+# selected_rtab = "tab1"  # Example value; replace with actual logic
+# tab2 = st.tabs(["Tab2"])[0]  # Example tab; adjust to your tab setup
+# coldwell = False  # Example; replace with your condition
+# st.session_state["results"] = []  # Example; replace with actual scraping results
+
 if selected_tab != "tab2":
     with tab2:
         # Define available website options
-        website_options = [
-            "C21",
-            "Coldwell",
-            "Remax",
-            "Compass"
-        ]
+        website_options = ["C21", "Coldwell", "Remax", "Compass"]
         
-        # Assume 'coldwell' is a condition from elsewhere in your code; if not, we'll use the toggle alone
         if not coldwell:
             showResult = st.toggle("View Task Results", key=f"result-{selected_website.lower()}", help="Toggle between task results and other quick tasks.")
-        
-       
+        else:
+            showResult = False  # Default to False if coldwell is True
+
+        # Let user choose a website (moved outside conditional to always be visible)
+        selected_website = st.selectbox("Choose a website to view", website_options, index=1)  # Default to Coldwell
         
         if coldwell or showResult:
-             # Let user choose a website (moved outside conditional to always be visible)
-            selected_website = st.selectbox("Choose a website to view", website_options, index=1)  # Default to Coldwell
-            
             # Construct the expected CSV filename based on the selected website
             data_dir = "data/"
             expected_file = f"{selected_website.lower()}_agents.csv"
             file_path = os.path.join(data_dir, expected_file)
+            
             with tab2:
                 st.subheader(f"📊 Scraping Results ({selected_website})")
 
@@ -1583,11 +1616,16 @@ if selected_tab != "tab2":
                             mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
                     return mobile
 
+                # Define these variables (adjust as needed)
+                # country_code = False
+                # hyphen_separator = True
+                # fields_to_extract = ["email"]  # Default for TXT condition; adjust as needed
+
                 try:
                     # Check if the file exists
                     if not os.path.exists(file_path):
                         st.error(f"Fetching data for {selected_website}. We'll show you 100 users once fetched. Please check back later.")
-
+                        agents_df = pd.DataFrame()  # Empty DataFrame if file not found
                     else:
                         # Load data from the selected website's CSV file
                         agents_df = pd.read_csv(file_path)
@@ -1600,13 +1638,13 @@ if selected_tab != "tab2":
                                     lambda x: format_mobile_number(x, country_code, hyphen_separator)
                                 )
 
-                        # Deduplicate based on all columns
+                        # Deduplicate based on all columns (optional)
                         agents_df = agents_df.drop_duplicates()
 
                         st.info(f"This table displays only the first 50 agents from {selected_website}. The downloadable file will include all agents.")
                         st.write("Edit or delete cells/rows in the table below:")
 
-                        # Use st.data_editor to make the table editable with dynamic columns
+                        # Use st.data_editor to make the table editable with dynamic columns (display only)
                         edited_df = st.data_editor(
                             agents_df.head(50),
                             use_container_width=True,
@@ -1614,17 +1652,21 @@ if selected_tab != "tab2":
                             key=f"{selected_website.lower()}_editor"
                         )
 
-                        # Allow users to download the edited data
+                        # Allow users to download the FULL data (not just edited)
                         selected_columns = st.multiselect(
                             "Select columns to download",
-                            options=edited_df.columns,
-                            default=edited_df.columns.tolist()  # Default to all columns
+                            options=agents_df.columns,  # Use full agents_df columns
+                            default=agents_df.columns.tolist()  # Default to all columns
                         )
+
+                        # Debugging
+                        # st.write("Full data rows:", len(agents_df))
+                        # st.write("Full data columns:", agents_df.columns.tolist())
 
                         if st.button("📥 Download Data", use_container_width=True):
                             if selected_columns:
-                                # Filter DataFrame based on selected columns
-                                download_df = edited_df[selected_columns]
+                                # Filter FULL DataFrame based on selected columns
+                                download_df = agents_df[selected_columns]
 
                                 # Display download options (CSV, JSON, TXT, Excel)
                                 col1, col2, col3, col4 = st.columns(4)
@@ -1650,16 +1692,17 @@ if selected_tab != "tab2":
                                     )
 
                                 # TXT Download
-                                if len(fields_to_extract)==1 and 'email' in fields_to_extract:
+                                if len(fields_to_extract) == 1 and 'email' in fields_to_extract:
+                                    print(fields_to_extract)
+                                    # TXT
                                     with col3:
-                                        txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
+                                        txt_data = download_df.to_csv(index=False, encoding="utf-8-sig")
                                         st.download_button(
-                                            label="📥 Download TXT (Tab Separated)",
+                                            label="📥 Download TXT (Comma Separated)",
                                             data=txt_data,
                                             file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                            mime="text/txt",
+                                            mime="text/plain",
                                         )
-                                        
                                 # Excel Download
                                 with col4:
                                     buffer = io.BytesIO()
@@ -1681,7 +1724,6 @@ if selected_tab != "tab2":
                     st.error(f"An error occurred while loading {expected_file}: {str(e)}")
         
         else:
-            # Original logic for other URLs (unchanged)
             with tab2:
                 st.subheader("📊 Scraping Results")
 
@@ -1690,17 +1732,12 @@ if selected_tab != "tab2":
                         if not data_dicts:
                             return pd.DataFrame()
                         
-                        # First, collect all the data into a list of dictionaries
                         all_data = []
                         metadata_cols = ["Source_Index", "url", "timestamp", "date", "datetime", "time", "title"]
-                        
-                        # Track seen values for deduplication
                         seen_values = {}
                         
                         for i, data_dict in enumerate(data_dicts):
                             source_index = f"Data-{i+1}"
-                            
-                            # Extract metadata
                             metadata = {"Source_Index": source_index}
                             for key in metadata_cols:
                                 if key in data_dict:
@@ -1710,7 +1747,6 @@ if selected_tab != "tab2":
                                     else:
                                         metadata[key] = "" if value is None else str(value)
                             
-                            # Extract list fields and non-list fields
                             list_fields = {}
                             non_list_fields = {}
                             
@@ -1725,132 +1761,87 @@ if selected_tab != "tab2":
                                     else:
                                         non_list_fields[key] = "" if value is None else str(value)
                             
-                            # Process list fields
                             if list_fields:
                                 max_length = max(len(value) for value in list_fields.values())
                                 for j in range(max_length):
                                     row_data = {}
-                                    
-                                    # Add metadata
                                     if j == 0 or not extend_metadata:
                                         row_data.update(metadata)
                                     else:
                                         row_data["Source_Index"] = source_index
-                                    
-                                    # Add non-list fields
                                     row_data.update(non_list_fields)
-                                    
-                                    # Add list fields for this row
                                     has_valid_data = False
                                     for key, value_list in list_fields.items():
                                         if j < len(value_list):
                                             value = str(value_list[j])
-                                            if value:  # Only process non-empty values
-                                                # Initialize seen_values for this column if needed
+                                            if value:
                                                 if key not in seen_values:
                                                     seen_values[key] = set()
-                                                
-                                                # Only add the value if it hasn't been seen before
                                                 if value not in seen_values[key]:
                                                     row_data[key] = value
                                                     seen_values[key].add(value)
                                                     has_valid_data = True
-                                        
-                                    # Only add row if it has valid data
-                                    if has_valid_data or j == 0:  # Keep at least one row per source
+                                    if has_valid_data or j == 0:
                                         all_data.append(row_data)
                             else:
-                                # Process single row
                                 row_data = {}
                                 row_data.update(metadata)
-                                
-                                # Add non-list fields with deduplication
                                 has_valid_data = False
                                 for key, value in non_list_fields.items():
-                                    if value:  # Only process non-empty values
-                                        # Initialize seen_values for this column if needed
+                                    if value:
                                         if key not in seen_values:
                                             seen_values[key] = set()
-                                        
-                                        # Only add the value if it hasn't been seen before
                                         if value not in seen_values[key]:
                                             row_data[key] = value
                                             seen_values[key].add(value)
                                             has_valid_data = True
-                                
-                                # Only add row if it has valid data
-                                if has_valid_data or i == 0:  # Keep at least one row per source
+                                if has_valid_data or i == 0:
                                     all_data.append(row_data)
                         
-                        # Create DataFrame
                         try:
-                            # Create DataFrame from collected data
                             df = pd.DataFrame(all_data)
-                            
-                            # If DataFrame is empty, return empty DataFrame
                             if df.empty:
                                 return df
-                            
-                            # Fill NaN values that might have been created during the process
                             df = df.fillna("")
-                            
-                            # If extend_metadata is True, clear metadata in duplicate rows
                             if extend_metadata:
                                 metadata_cols_in_df = [col for col in metadata_cols if col in df.columns and col != "Source_Index"]
                                 df.loc[df.duplicated(subset=["Source_Index"]), metadata_cols_in_df] = ""
-                            
-                            # Define column order: Source_Index first, then other metadata, then data
                             first_cols = ["Source_Index"]
                             for col in ["url", "timestamp", "date", "datetime", "time", "title"]:
                                 if col in df.columns:
                                     first_cols.append(col)
-                                    
-                            # Arrange the rest of the columns
                             remaining_cols = [col for col in df.columns if col not in first_cols]
-                            
-                            # Final result with proper column order
                             return df[first_cols + remaining_cols]
-                            
                         except Exception as e:
                             return pd.DataFrame({"Error": [str(e)]})
-                    
-                    def get_data_without_metadata(df):
-                        # Define metadata columns to exclude
-                        metadata_cols = ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]
-                        # Keep only columns that are not metadata
-                        data_cols = [col for col in df.columns if col.lower() not in metadata_cols]
-                        return df[data_cols]
 
-                    # Process results with extend_metadata=True
+                    # Process results
                     results_df = process_results(st.session_state.results, extend_metadata=True)
 
-                    # Display the editable table
                     st.write("Edit or delete cells/rows in the table below:")
-
-                    # Use st.data_editor to make the table editable
                     edited_results_df = st.data_editor(
                         results_df,
                         use_container_width=True,
-                        num_rows="dynamic",  # Allow adding/deleting rows
+                        num_rows="dynamic",
                         key="results_editor"
                     )
 
-                    # Allow users to download the edited data
+                    # Use full results_df for download
                     selected_columns = st.multiselect(
                         "Select columns to download",
-                        options=edited_results_df.columns,
-                        default=edited_results_df.columns
+                        options=results_df.columns,
+                        default=results_df.columns.tolist()
                     )
+
+                    # Debugging
+                    st.write("Full data rows:", len(results_df))
+                    st.write("Full data columns:", results_df.columns.tolist())
 
                     if st.button("📥 Download Data", use_container_width=True):
                         if selected_columns:
-                            # Filter DataFrame based on selected columns
-                            download_df = edited_results_df[selected_columns]
-
-                            # Display download options (CSV, JSON, TXT, Excel)
+                            download_df = results_df[selected_columns]
                             col1, col2, col3, col4 = st.columns(4)
 
-                            # CSV Download
                             with col1:
                                 csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
                                 st.download_button(
@@ -1860,7 +1851,6 @@ if selected_tab != "tab2":
                                     mime="text/csv",
                                 )
 
-                            # JSON Download
                             with col2:
                                 json_str = download_df.to_json(orient="records", indent=2)
                                 st.download_button(
@@ -1870,18 +1860,16 @@ if selected_tab != "tab2":
                                     mime="application/json",
                                 )
 
-                            # TXT Download
-                            if len(fields_to_extract)==1 and 'email' in fields_to_extract:
+                            if len(fields_to_extract) == 1 and 'email' in fields_to_extract:
                                 with col3:
                                     txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
                                     st.download_button(
                                         label="📥 Download TXT (Tab Separated)",
                                         data=txt_data,
                                         file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                        mime="text/txt",
+                                        mime="text/plain",
                                     )
-                                    
-                            # Excel Download
+
                             with col4:
                                 buffer = io.BytesIO()
                                 with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
@@ -2077,7 +2065,7 @@ if selected_tab == "tab2":
                         if hyphen_separator:
                             mobile = f"+1-{mobile}"  # Add +1- before the number
                         else:
-                            mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
+                            mobile = f"+1{mobile}"  # Add +1 with space if no hyphens
                     return mobile
 
                 try:
@@ -2140,16 +2128,16 @@ if selected_tab == "tab2":
                                         file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
                                         mime="application/json",
                                     )
-
-                                # TXT
-                                with col3:
-                                    txt_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                                    st.download_button(
-                                        label="📥 Download TXT (Comma Separated)",
-                                        data=txt_data,
-                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                        mime="text/plain",
-                                    )
+                                if len(fields_to_extract) == 1 and 'email' in fields_to_extract:
+                                    # TXT
+                                    with col3:
+                                        txt_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                        st.download_button(
+                                            label="📥 Download TXT (Comma Separated)",
+                                            data=txt_data,
+                                            file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                            mime="text/plain",
+                                        )
                                 # Excel Download
                                 with col4:
                                     buffer = io.BytesIO()
