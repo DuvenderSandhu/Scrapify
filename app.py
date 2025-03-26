@@ -1346,22 +1346,7 @@ with tab1:
                 else:    
                     st.info("Task Complete Go to Result Tab to See Result")
                     st.info("Took " + str(st.session_state.options.get("time", 20)) + " Seconds to Crawl and Extract Websites")
-            st.markdown("""
-                <div style="background-color: #f0f8ff; padding: 15px; border-radius: 8px; border: 1px solid #d0e7ff;">
-                    <h3 style="color: #0077b6;">Important Instructions</h3>
-                    <p style="font-size: 16px; color: #333333;">
-                        <strong>If the wrong process starts, please follow these steps:</strong>
-                    </p>
-                    <ol style="font-size: 16px; color: #333333;">
-                                <li>Select <strong>'C21' website</strong>.</li>
-                                <li>Select <strong>'Mobile' field</strong>.</li>
-                                <li>Start the scraping process.</li>
-                    </ol>
-                    <p style="font-size: 16px; color: #333333;">
-                        The previous process will automatically stop after <strong>2 minutes</strong>.
-                    </p>
-                </div>
-            """, unsafe_allow_html=True)
+    
 import streamlit as st
 import pandas as pd
 import re
