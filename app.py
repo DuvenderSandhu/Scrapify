@@ -848,6 +848,7 @@ import os
 
 # Folder path to delete
 data_folder = "data"
+log_file = "scraper.log"
 with tab1:
     # Setup & Controls tab
     col1, col2 = st.columns([2, 1])
@@ -857,12 +858,18 @@ with tab1:
         
         # URL Input
         # Button to delete folder
-        if st.button("Delete Data Folder"):
+        if st.button("Clear Data Folder"):
             if os.path.exists(data_folder):
-                shutil.rmtree(data_folder)
-                st.success(f"✅ '{data_folder}' folder deleted successfully!")
+                for item in os.listdir(data_folder):
+                    item_path = os.path.join(data_folder, item)
+                    if item != log_file:
+                        if os.path.isfile(item_path):
+                            os.remove(item_path)  # Delete file
+                        elif os.path.isdir(item_path):
+                            shutil.rmtree(item_path)  # Delete folder
+                st.success(f"Website data deleted successfully")
             else:
-                st.warning(f"⚠️ '{data_folder}' folder does not exist.")
+                st.warning(f"⚠️ data does not exist or might be empty.")
         automatic,manual=st.tabs(["Automatic Scraping","Manual Scraping"])
         with manual:
             saveToDb= st.toggle("Save to DB")
