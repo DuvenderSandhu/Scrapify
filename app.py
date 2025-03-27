@@ -842,7 +842,12 @@ def addEmail():
         file.write(data_to_write)
 # pagination_text_match= ""
 # if selected_tab == "tab1":
+import streamlit as st
+import shutil
+import os
 
+# Folder path to delete
+data_folder = "data"
 with tab1:
     # Setup & Controls tab
     col1, col2 = st.columns([2, 1])
@@ -851,7 +856,13 @@ with tab1:
         st.subheader("Configure Scraping Job")
         
         # URL Input
-        
+        # Button to delete folder
+        if st.button("Delete Data Folder"):
+            if os.path.exists(data_folder):
+                shutil.rmtree(data_folder)
+                st.success(f"✅ '{data_folder}' folder deleted successfully!")
+            else:
+                st.warning(f"⚠️ '{data_folder}' folder does not exist.")
         automatic,manual=st.tabs(["Automatic Scraping","Manual Scraping"])
         with manual:
             saveToDb= st.toggle("Save to DB")
