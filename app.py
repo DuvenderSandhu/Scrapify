@@ -1594,9 +1594,9 @@ if selected_tab != "tab2":
             showResult = False  # Default to False if coldwell is True
 
         # Let user choose a website (moved outside conditional to always be visible)
-        selected_website = st.selectbox("Choose a website to view", website_options, index=1)  # Default to Coldwell
         
         if coldwell or showResult:
+            selected_website = st.selectbox("Choose a website to view", website_options, index=1)  # Default to Coldwell
             # Construct the expected CSV filename based on the selected website
             data_dir = "data/"
             expected_file = f"{selected_website.lower()}_agents.csv"

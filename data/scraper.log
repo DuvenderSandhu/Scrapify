@@ -3033,3 +3033,272 @@ Call log:
 2025-03-27 17:32:19,313 - ERROR - Error closing context: BrowserContext.close: Target page, context or browser has been closed
 2025-03-27 17:32:23,956 - INFO - Completion email sent
 2025-03-27 17:32:23,957 - INFO - Removed lock file
+2025-03-27 18:55:25,101 - INFO - Compass agent scraper started in the background.
+2025-03-27 18:55:25,106 - INFO - Cleared existing file: data/compass_agents.csv
+2025-03-27 18:55:25,111 - INFO - Cleared progress file: data/progress.csv
+2025-03-27 18:55:25,115 - INFO - Created lock file with PID: 559180
+2025-03-27 18:55:31,854 - INFO - Scraping agents from https://www.compass.com/agents/locations/aspen-co/24050/
+2025-03-27 18:55:38,685 - INFO - Found 40 agent cards on page 1
+2025-03-27 18:55:44,558 - INFO - Found 7 agent cards on page 2
+2025-03-27 18:55:44,730 - INFO - Saved 47 agents to data/compass_agents.csv
+2025-03-27 18:55:47,122 - INFO - Scraping agents from https://www.compass.com/agents/locations/atlanta-ga/32533/
+2025-03-27 18:55:54,764 - INFO - Found 40 agent cards on page 1
+2025-03-27 18:56:02,517 - INFO - Found 40 agent cards on page 2
+2025-03-27 18:56:02,846 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:56:07,266 - INFO - Another instance (PID 559180) or thread is running. Stopping it and starting new instance.
+2025-03-27 18:56:09,267 - INFO - Removed lock file
+2025-03-27 18:56:09,269 - INFO - Compass agent scraper started in the background.
+2025-03-27 18:56:09,274 - INFO - Cleared existing file: data/compass_agents.csv
+2025-03-27 18:56:09,278 - INFO - Created lock file with PID: 559180
+2025-03-27 18:56:10,512 - INFO - Found 40 agent cards on page 3
+2025-03-27 18:56:18,666 - INFO - Scraping agents from https://www.compass.com/agents/locations/aspen-co/24050/
+2025-03-27 18:56:20,351 - INFO - Found 40 agent cards on page 4
+2025-03-27 18:56:21,090 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:56:25,897 - INFO - Found 40 agent cards on page 1
+2025-03-27 18:56:28,237 - INFO - Found 40 agent cards on page 5
+2025-03-27 18:56:31,753 - INFO - Found 7 agent cards on page 2
+2025-03-27 18:56:32,206 - INFO - Saved 47 agents to data/compass_agents.csv
+2025-03-27 18:56:34,405 - INFO - Scraping agents from https://www.compass.com/agents/locations/atlanta-ga/32533/
+2025-03-27 18:56:36,533 - INFO - Found 40 agent cards on page 6
+2025-03-27 18:56:37,100 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:56:41,572 - INFO - Found 40 agent cards on page 1
+2025-03-27 18:56:44,225 - INFO - Found 40 agent cards on page 7
+2025-03-27 18:56:49,461 - INFO - Found 40 agent cards on page 2
+2025-03-27 18:56:50,050 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:56:52,235 - INFO - Found 40 agent cards on page 8
+2025-03-27 18:56:53,005 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:56:57,269 - INFO - Found 40 agent cards on page 3
+2025-03-27 18:56:59,971 - INFO - Found 40 agent cards on page 9
+2025-03-27 18:57:05,177 - INFO - Found 40 agent cards on page 4
+2025-03-27 18:57:05,233 - INFO - Found 1 agent cards on page 10
+2025-03-27 18:57:05,291 - INFO - Saved 41 agents to data/compass_agents.csv
+2025-03-27 18:57:05,653 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:57:07,452 - INFO - Scraping agents from https://www.compass.com/agents/locations/austin-tx/42626/
+2025-03-27 18:57:13,217 - INFO - Found 40 agent cards on page 5
+2025-03-27 18:57:14,361 - INFO - Found 40 agent cards on page 1
+2025-03-27 18:57:21,109 - INFO - Found 40 agent cards on page 6
+2025-03-27 18:57:21,504 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:57:22,331 - INFO - Found 40 agent cards on page 2
+2025-03-27 18:57:23,183 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:57:28,590 - INFO - Found 40 agent cards on page 7
+2025-03-27 18:57:30,445 - INFO - Found 40 agent cards on page 3
+2025-03-27 18:57:36,809 - INFO - Found 40 agent cards on page 8
+2025-03-27 18:57:37,266 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:57:39,208 - INFO - Found 40 agent cards on page 4
+2025-03-27 18:57:40,029 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:57:44,715 - INFO - Found 40 agent cards on page 9
+2025-03-27 18:57:47,264 - INFO - Found 40 agent cards on page 5
+2025-03-27 18:57:50,408 - INFO - Found 1 agent cards on page 10
+2025-03-27 18:57:50,535 - INFO - Saved 41 agents to data/compass_agents.csv
+2025-03-27 18:57:52,704 - INFO - Scraping agents from https://www.compass.com/agents/locations/austin-tx/42626/
+2025-03-27 18:57:55,179 - INFO - Found 40 agent cards on page 6
+2025-03-27 18:57:55,846 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:58:00,216 - INFO - Found 40 agent cards on page 1
+2025-03-27 18:58:02,948 - INFO - Found 40 agent cards on page 7
+2025-03-27 18:58:07,854 - INFO - Found 40 agent cards on page 2
+2025-03-27 18:58:08,293 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:58:10,597 - INFO - Found 40 agent cards on page 8
+2025-03-27 18:58:11,328 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:58:15,654 - INFO - Found 40 agent cards on page 3
+2025-03-27 18:58:18,463 - INFO - Found 40 agent cards on page 9
+2025-03-27 18:58:23,405 - INFO - Found 40 agent cards on page 4
+2025-03-27 18:58:23,741 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:58:26,041 - INFO - Found 40 agent cards on page 10
+2025-03-27 18:58:26,410 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:58:30,787 - INFO - Found 40 agent cards on page 5
+2025-03-27 18:58:33,614 - INFO - Found 40 agent cards on page 11
+2025-03-27 18:58:38,167 - INFO - Found 40 agent cards on page 6
+2025-03-27 18:58:38,473 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:58:41,187 - INFO - Found 40 agent cards on page 12
+2025-03-27 18:58:41,523 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:58:45,892 - INFO - Found 40 agent cards on page 7
+2025-03-27 18:58:48,832 - INFO - Found 40 agent cards on page 13
+2025-03-27 18:58:53,552 - INFO - Found 40 agent cards on page 8
+2025-03-27 18:58:53,898 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:58:56,434 - INFO - Found 40 agent cards on page 14
+2025-03-27 18:58:56,809 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:59:01,265 - INFO - Found 40 agent cards on page 9
+2025-03-27 18:59:03,803 - INFO - Found 40 agent cards on page 15
+2025-03-27 18:59:09,634 - INFO - Found 40 agent cards on page 10
+2025-03-27 18:59:09,954 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:59:12,347 - INFO - Found 40 agent cards on page 16
+2025-03-27 18:59:12,712 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:59:17,197 - INFO - Found 40 agent cards on page 11
+2025-03-27 18:59:19,529 - INFO - Found 40 agent cards on page 17
+2025-03-27 18:59:25,051 - INFO - Found 40 agent cards on page 12
+2025-03-27 18:59:25,352 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:59:27,154 - INFO - Found 40 agent cards on page 18
+2025-03-27 18:59:27,840 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:59:32,443 - INFO - Found 40 agent cards on page 13
+2025-03-27 18:59:34,812 - INFO - Found 40 agent cards on page 19
+2025-03-27 18:59:40,086 - INFO - Found 40 agent cards on page 14
+2025-03-27 18:59:40,469 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:59:42,410 - INFO - Found 40 agent cards on page 20
+2025-03-27 18:59:42,993 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:59:47,939 - INFO - Found 40 agent cards on page 15
+2025-03-27 18:59:50,054 - INFO - Found 40 agent cards on page 21
+2025-03-27 18:59:55,416 - INFO - Found 40 agent cards on page 16
+2025-03-27 18:59:55,716 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 18:59:58,172 - INFO - Found 40 agent cards on page 22
+2025-03-27 18:59:58,592 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:00:02,890 - INFO - Found 40 agent cards on page 17
+2025-03-27 19:00:05,554 - INFO - Found 40 agent cards on page 23
+2025-03-27 19:00:10,630 - INFO - Found 40 agent cards on page 18
+2025-03-27 19:00:11,019 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:00:12,804 - INFO - Found 40 agent cards on page 24
+2025-03-27 19:00:13,467 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:00:18,421 - INFO - Found 40 agent cards on page 19
+2025-03-27 19:00:20,748 - INFO - Found 40 agent cards on page 25
+2025-03-27 19:00:25,992 - INFO - Found 40 agent cards on page 20
+2025-03-27 19:00:26,605 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:00:28,339 - INFO - Found 40 agent cards on page 26
+2025-03-27 19:00:29,549 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:00:34,789 - INFO - Found 40 agent cards on page 21
+2025-03-27 19:00:37,844 - INFO - Found 40 agent cards on page 27
+2025-03-27 19:00:42,351 - INFO - Found 40 agent cards on page 22
+2025-03-27 19:00:42,736 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:00:45,375 - INFO - Found 40 agent cards on page 28
+2025-03-27 19:00:45,670 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:00:50,148 - INFO - Found 40 agent cards on page 23
+2025-03-27 19:00:50,383 - INFO - Found 8 agent cards on page 29
+2025-03-27 19:00:50,576 - INFO - Saved 8 agents to data/compass_agents.csv
+2025-03-27 19:00:52,788 - INFO - Scraping agents from https://www.compass.com/agents/locations/baltimore-city-md/191748/
+2025-03-27 19:00:59,550 - INFO - Found 40 agent cards on page 24
+2025-03-27 19:00:59,896 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:01:00,956 - INFO - Found 40 agent cards on page 1
+2025-03-27 19:01:07,755 - INFO - Found 40 agent cards on page 25
+2025-03-27 19:01:09,857 - INFO - Found 40 agent cards on page 2
+2025-03-27 19:01:10,537 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:01:15,410 - INFO - Found 40 agent cards on page 26
+2025-03-27 19:01:15,756 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:01:17,505 - INFO - Found 40 agent cards on page 3
+2025-03-27 19:01:23,123 - INFO - Found 40 agent cards on page 27
+2025-03-27 19:01:25,141 - INFO - Found 40 agent cards on page 4
+2025-03-27 19:01:25,781 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:01:30,664 - INFO - Found 40 agent cards on page 28
+2025-03-27 19:01:31,075 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:01:33,031 - INFO - Found 40 agent cards on page 5
+2025-03-27 19:01:36,715 - INFO - Found 8 agent cards on page 29
+2025-03-27 19:01:36,886 - INFO - Saved 8 agents to data/compass_agents.csv
+2025-03-27 19:01:39,100 - INFO - Scraping agents from https://www.compass.com/agents/locations/baltimore-city-md/191748/
+2025-03-27 19:01:41,194 - INFO - Found 40 agent cards on page 6
+2025-03-27 19:01:43,777 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:01:47,570 - INFO - Found 40 agent cards on page 1
+2025-03-27 19:01:50,883 - INFO - Found 23 agent cards on page 7
+2025-03-27 19:01:51,233 - INFO - Saved 23 agents to data/compass_agents.csv
+2025-03-27 19:01:53,556 - INFO - Scraping agents from https://www.compass.com/agents/locations/bellevue-wa/9972/
+2025-03-27 19:01:55,198 - INFO - Found 40 agent cards on page 2
+2025-03-27 19:01:55,683 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:02:00,325 - INFO - Found 40 agent cards on page 1
+2025-03-27 19:02:02,830 - INFO - Found 40 agent cards on page 3
+2025-03-27 19:02:07,673 - INFO - Found 40 agent cards on page 2
+2025-03-27 19:02:08,116 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:02:10,677 - INFO - Found 40 agent cards on page 4
+2025-03-27 19:02:11,212 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:02:15,398 - INFO - Found 40 agent cards on page 3
+2025-03-27 19:02:18,334 - INFO - Found 40 agent cards on page 5
+2025-03-27 19:02:23,446 - INFO - Found 40 agent cards on page 4
+2025-03-27 19:02:23,749 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:02:25,990 - INFO - Found 40 agent cards on page 6
+2025-03-27 19:02:26,354 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:02:28,509 - INFO - Found 40 agent cards on page 5
+2025-03-27 19:02:34,671 - INFO - Found 23 agent cards on page 7
+2025-03-27 19:02:34,905 - INFO - Saved 23 agents to data/compass_agents.csv
+2025-03-27 19:02:36,346 - INFO - Found 40 agent cards on page 6
+2025-03-27 19:02:36,726 - INFO - Saved 79 agents to data/compass_agents.csv
+2025-03-27 19:02:37,166 - INFO - Scraping agents from https://www.compass.com/agents/locations/bellevue-wa/9972/
+2025-03-27 19:02:44,210 - INFO - Found 40 agent cards on page 1
+2025-03-27 19:02:44,269 - INFO - Found 40 agent cards on page 7
+2025-03-27 19:02:53,174 - INFO - Found 40 agent cards on page 8
+2025-03-27 19:02:53,509 - INFO - Saved 79 agents to data/compass_agents.csv
+2025-03-27 19:02:53,763 - INFO - Found 40 agent cards on page 2
+2025-03-27 19:02:54,380 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:03:00,962 - INFO - Found 40 agent cards on page 9
+2025-03-27 19:03:01,925 - INFO - Found 40 agent cards on page 3
+2025-03-27 19:03:07,166 - INFO - Found 6 agent cards on page 10
+2025-03-27 19:03:07,246 - INFO - Saved 45 agents to data/compass_agents.csv
+2025-03-27 19:03:09,541 - INFO - Scraping agents from https://www.compass.com/agents/locations/boston-ma/20737/
+2025-03-27 19:03:09,714 - INFO - Found 40 agent cards on page 4
+2025-03-27 19:03:10,085 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:03:15,095 - INFO - Found 40 agent cards on page 1
+2025-03-27 19:03:15,956 - INFO - Found 40 agent cards on page 5
+2025-03-27 19:03:24,522 - INFO - Found 40 agent cards on page 6
+2025-03-27 19:03:24,849 - INFO - Saved 79 agents to data/compass_agents.csv
+2025-03-27 19:03:25,116 - INFO - Found 40 agent cards on page 2
+2025-03-27 19:03:25,733 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:03:33,287 - INFO - Found 40 agent cards on page 7
+2025-03-27 19:03:33,461 - INFO - Found 40 agent cards on page 3
+2025-03-27 19:03:41,937 - INFO - Found 40 agent cards on page 4
+2025-03-27 19:03:42,359 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:03:44,549 - INFO - Found 40 agent cards on page 8
+2025-03-27 19:03:45,072 - INFO - Saved 79 agents to data/compass_agents.csv
+2025-03-27 19:03:49,799 - INFO - Found 40 agent cards on page 5
+2025-03-27 19:03:52,292 - INFO - Found 40 agent cards on page 9
+2025-03-27 19:03:59,467 - INFO - Found 40 agent cards on page 6
+2025-03-27 19:03:59,790 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:04:01,884 - ERROR - Error closing context: BrowserContext.close: Target page, context or browser has been closed
+2025-03-27 19:04:06,715 - INFO - Found 40 agent cards on page 7
+2025-03-27 19:04:07,109 - INFO - Completion email sent
+2025-03-27 19:04:07,110 - INFO - Removed lock file
+2025-03-27 19:04:14,364 - INFO - Found 40 agent cards on page 8
+2025-03-27 19:04:14,670 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:04:21,674 - INFO - Found 40 agent cards on page 9
+2025-03-27 19:04:29,715 - INFO - Found 40 agent cards on page 10
+2025-03-27 19:04:30,085 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:04:37,201 - INFO - Found 40 agent cards on page 11
+2025-03-27 19:04:45,337 - INFO - Found 40 agent cards on page 12
+2025-03-27 19:04:45,798 - INFO - Saved 78 agents to data/compass_agents.csv
+2025-03-27 19:05:24,753 - INFO - Compass agent scraper started in the background.
+2025-03-27 19:05:24,756 - INFO - Cleared existing file: data/compass_agents.csv
+2025-03-27 19:05:24,757 - INFO - Created lock file with PID: 610545
+2025-03-27 19:05:34,448 - INFO - Scraping agents from https://www.compass.com/agents/locations/aspen-co/24050/
+2025-03-27 19:05:41,326 - INFO - Found 40 agent cards on page 1
+2025-03-27 19:05:47,139 - INFO - Found 7 agent cards on page 2
+2025-03-27 19:05:47,351 - INFO - Saved 47 agents to data/compass_agents.csv
+2025-03-27 19:05:49,467 - INFO - Scraping agents from https://www.compass.com/agents/locations/atlanta-ga/32533/
+2025-03-27 19:06:00,565 - INFO - Found 40 agent cards on page 1
+2025-03-27 19:06:08,750 - INFO - Found 40 agent cards on page 2
+2025-03-27 19:06:09,643 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:06:16,862 - INFO - Found 40 agent cards on page 3
+2025-03-27 19:06:25,020 - INFO - Found 40 agent cards on page 4
+2025-03-27 19:06:25,903 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:06:32,880 - INFO - Found 40 agent cards on page 5
+2025-03-27 19:06:42,418 - INFO - Found 40 agent cards on page 6
+2025-03-27 19:06:43,176 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:06:50,212 - INFO - Found 40 agent cards on page 7
+2025-03-27 19:06:58,403 - INFO - Found 40 agent cards on page 8
+2025-03-27 19:06:59,238 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:07:06,326 - INFO - Found 40 agent cards on page 9
+2025-03-27 19:07:12,070 - INFO - Found 1 agent cards on page 10
+2025-03-27 19:07:12,131 - INFO - Saved 41 agents to data/compass_agents.csv
+2025-03-27 19:07:14,265 - INFO - Scraping agents from https://www.compass.com/agents/locations/austin-tx/42626/
+2025-03-27 19:07:21,260 - INFO - Found 40 agent cards on page 1
+2025-03-27 19:07:29,317 - INFO - Found 40 agent cards on page 2
+2025-03-27 19:07:30,141 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:07:37,759 - INFO - Found 40 agent cards on page 3
+2025-03-27 19:07:45,963 - INFO - Found 40 agent cards on page 4
+2025-03-27 19:07:46,775 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:07:53,909 - INFO - Found 40 agent cards on page 5
+2025-03-27 19:08:01,923 - INFO - Found 40 agent cards on page 6
+2025-03-27 19:08:02,775 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:08:10,006 - INFO - Found 40 agent cards on page 7
+2025-03-27 19:08:18,258 - INFO - Found 40 agent cards on page 8
+2025-03-27 19:08:18,994 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:08:26,124 - INFO - Found 40 agent cards on page 9
+2025-03-27 19:08:34,098 - INFO - Found 40 agent cards on page 10
+2025-03-27 19:08:34,861 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:08:42,307 - INFO - Found 40 agent cards on page 11
+2025-03-27 19:08:50,434 - INFO - Found 40 agent cards on page 12
+2025-03-27 19:08:51,334 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:08:58,805 - INFO - Found 40 agent cards on page 13
+2025-03-27 19:09:06,993 - INFO - Found 40 agent cards on page 14
+2025-03-27 19:09:07,647 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:09:15,125 - INFO - Found 40 agent cards on page 15
+2025-03-27 19:09:22,997 - INFO - Found 40 agent cards on page 16
+2025-03-27 19:09:23,694 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:09:31,522 - INFO - Found 40 agent cards on page 17
+2025-03-27 19:09:39,568 - INFO - Found 40 agent cards on page 18
+2025-03-27 19:09:40,339 - INFO - Saved 80 agents to data/compass_agents.csv
+2025-03-27 19:09:47,785 - INFO - Found 40 agent cards on page 19
+2025-03-27 19:09:56,055 - INFO - Found 40 agent cards on page 20
+2025-03-27 19:09:56,905 - INFO - Saved 80 agents to data/compass_agents.csv
