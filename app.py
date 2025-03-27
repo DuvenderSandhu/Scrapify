@@ -1368,28 +1368,50 @@ from datetime import datetime
 import re
 
 # Function to format mobile numbers
-def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
-    if pd.isna(mobile):  # Handle NaN values
-        return ""
+import re
+import pandas as pd
 
+def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
+    """
+    Format mobile number with specific requirements
+    
+    Args:
+    mobile (str/int/float): Mobile number to format
+    country_code (bool): Whether to add country code
+    hyphen_separator (bool): Whether to add hyphen separators
+    
+    Returns:
+    str: Formatted mobile number or empty string if invalid
+    """
+    # Handle NaN or None values
+    if pd.isna(mobile):
+        return ""
+    
     # Remove all non-numeric characters
     mobile = re.sub(r"\D", "", str(mobile))
-
-    if len(mobile) < 10:  # Ensure a valid 10-digit number
-        return mobile  # Return as-is if not a full number
-
-    # Apply hyphen separator if enabled
-    if hyphen_separator:
-        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
-
-    # Apply country code if enabled
+    
+    # Check for valid 10-digit number
+    if len(mobile) != 10:
+        return ""
+    
+    # Separate into groups of 3-3-4
+    area_code = mobile[:3]
+    prefix = mobile[3:6]
+    line_number = mobile[6:]
+    
+    # Determine the prefix based on country_code
     if country_code:
-        if hyphen_separator:
-            mobile = f"+1-{mobile}"  # Add +1- before the number
-        else:
-            mobile = f"+1{mobile}"  # Add +1 with space if no hyphens
-
-    return mobile
+        prefix_text = "+1"
+    else:
+        prefix_text = "001"
+    
+    # Construct the base mobile number
+    if hyphen_separator:
+        formatted_mobile = f"{prefix_text}-{area_code}-{prefix}-{line_number}"
+    else:
+        formatted_mobile = f"{prefix_text}{area_code}{prefix}{line_number}"
+    
+    return formatted_mobile
 
 # Function to normalize and deduplicate data
 def normalize_and_deduplicate(value):
@@ -1583,24 +1605,51 @@ if selected_tab != "tab2":
             with tab2:
                 st.subheader(f"📊 Scraping Results ({selected_website})")
 
+                import re
+                import pandas as pd
+
+
                 def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
-                    if pd.isna(mobile):  # Handle NaN values
+                    """
+                    Format mobile number with specific requirements
+                    
+                    Args:
+                    mobile (str/int/float): Mobile number to format
+                    country_code (bool): Whether to add country code
+                    hyphen_separator (bool): Whether to add hyphen separators
+                    
+                    Returns:
+                    str: Formatted mobile number or empty string if invalid
+                    """
+                    # Handle NaN or None values
+                    if pd.isna(mobile):
                         return ""
+                    
                     # Remove all non-numeric characters
                     mobile = re.sub(r"\D", "", str(mobile))
-                    if len(mobile) < 10:  # Ensure a valid 10-digit number
-                        return mobile  # Return as-is if not a full number
-                    # Apply hyphen separator if enabled
-                    if hyphen_separator:
-                        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
-                    # Apply country code if enabled
+                    
+                    # Check for valid 10-digit number
+                    if len(mobile) != 10:
+                        return ""
+                    
+                    # Separate into groups of 3-3-4
+                    area_code = mobile[:3]
+                    prefix = mobile[3:6]
+                    line_number = mobile[6:]
+                    
+                    # Determine the prefix based on country_code
                     if country_code:
-                        if hyphen_separator:
-                            mobile = f"+1-{mobile}"  # Add +1- before the number
-                        else:
-                            mobile = f"+1 {mobile}"  # Add +1 with space if no hyphens
-                    return mobile
-
+                        prefix_text = "+1"
+                    else:
+                        prefix_text = "001"
+                    
+                    # Construct the base mobile number
+                    if hyphen_separator:
+                        formatted_mobile = f"{prefix_text}-{area_code}-{prefix}-{line_number}"
+                    else:
+                        formatted_mobile = f"{prefix_text}{area_code}{prefix}{line_number}"
+                    
+                    return formatted_mobile
                 # Define these variables (adjust as needed)
                 # country_code = False
                 # hyphen_separator = True
