@@ -156,7 +156,7 @@ def extract_data_with_ai(html_content, field,ai="groq",api=""):
         if cleaned_ai_response:
             print(cleaned_ai_response)
             return cleaned_ai_response  # Convert AI response to list
-        return {data:f"No {field} found"}
+        return {"data":f"No {field} found"}
     except :
         return {"status": 401, "data": "Error While Connecting to AI. Probably Invalid API Key"}
 

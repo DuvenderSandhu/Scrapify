@@ -1,11 +1,14 @@
 import asyncio
-from playwright.async_api import async_playwright
+from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeoutError
 import csv
 import os
 from datetime import datetime
+import threading
+import json
 from mainthread import startThread, stopThread, current_scraper_thread, scraper_stop_event
 from emailSender import send_email
-import json
+from fakeagents import get_random_user_agent
+
 # Constants
 OUTPUT_FOLDER = "data"
 PROGRESS_FILE = f"{OUTPUT_FOLDER}/progress.json"
@@ -17,6 +20,9 @@ MAX_LOAD_ATTEMPTS = 50
 
 if not os.path.exists(OUTPUT_FOLDER):
     os.makedirs(OUTPUT_FOLDER)
+
+# Global list to track all browser instances
+active_browsers = []
 
 def reset_progress():
     progress_data = {
@@ -163,7 +169,7 @@ async def collect_all_agent_data(page, start_time, total_estimated):
             agent_data = {
                 "name": agent_name.strip(),
                 "mobile": mobile.strip(),
-                "phone": mobile.strip(),  # Alias for mobile
+                "phone": mobile.strip(),
                 "email": "Pending" if profile_url else "Not available",
                 "profile_url": profile_url
             }
@@ -187,21 +193,21 @@ async def fetch_emails_concurrently(browser, agents, start_time):
         print("No agents with profile URLs found. Skipping email fetching.")
         return agents
     
-    contexts = []
     semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
-    
+    pages = []
+
+    # Create pages within the single browser instance
     for _ in range(CONCURRENT_REQUESTS):
         context = await browser.new_context(viewport={'width': 1280, 'height': 800})
         page = await context.new_page()
-        contexts.append((context, page))
+        pages.append((context, page))
     
     async def fetch_with_semaphore(agent, idx):
         if scraper_stop_event.is_set():
             return
             
         async with semaphore:
-            context, page = contexts[idx % CONCURRENT_REQUESTS]
-            
+            context, page = pages[idx % CONCURRENT_REQUESTS]
             if agent.get("profile_url"):
                 await fetch_agent_details(page, agent, agent["profile_url"])
                 print(f"Fetched details for: {agent['name']}")
@@ -221,7 +227,9 @@ async def fetch_emails_concurrently(browser, agents, start_time):
     except Exception as e:
         print(f"Error during task execution: {e}")
     
-    for context, _ in contexts:
+    # Close all pages and contexts
+    for context, page in pages:
+        await page.close()
         await context.close()
         
     print("Email fetching completed or stopped")
@@ -234,7 +242,6 @@ def save_data(agents, fields_to_extract=None):
     
     csv_file = f"{OUTPUT_FOLDER}/c21_agents.csv"
     
-    # Normalize field names (allow 'phone' or 'mobile')
     if fields_to_extract:
         normalized_fields = []
         for field in fields_to_extract:
@@ -244,12 +251,7 @@ def save_data(agents, fields_to_extract=None):
                 normalized_fields.append(field)
         fields_to_extract = normalized_fields
         
-        filtered_agents = []
-        for agent in agents:
-            filtered_agent = {}
-            for field in fields_to_extract:
-                filtered_agent[field] = agent.get(field, "N/A")
-            filtered_agents.append(filtered_agent)
+        filtered_agents = [{field: agent.get(field, "N/A") for field in fields_to_extract} for agent in agents]
     else:
         filtered_agents = agents
     
@@ -263,23 +265,37 @@ def save_data(agents, fields_to_extract=None):
     
     print(f"Saved data for {len(filtered_agents)} agents to {csv_file}")
 
+async def close_all_browsers():
+    global active_browsers
+    for browser in active_browsers[:]:  # Copy to avoid modifying list during iteration
+        try:
+            await browser.close()
+            print(f"Closed browser instance: {browser}")
+        except Exception as e:
+            print(f"Error closing browser: {e}")
+    active_browsers.clear()
+
 async def _run_scraper(url, fields_to_extract=None):
+    global active_browsers
     start_time = datetime.now()
     clear_existing_files()
     reset_progress()
+    
+    # Close any existing browsers
+    await close_all_browsers()
     
     async with async_playwright() as p:
         browser = await p.chromium.launch(
             headless=True,
             args=['--disable-gpu', '--no-sandbox', '--disable-dev-shm-usage']
         )
-        
-        context = await browser.new_context(
-            viewport={'width': 1280, 'height': 800},
-            user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        )
+        active_browsers.append(browser)
         
         try:
+            context = await browser.new_context(
+                viewport={'width': 1280, 'height': 800},
+                user_agent=get_random_user_agent()
+            )
             page = await context.new_page()
             print(f"Navigating to {url}")
             await page.goto(url, wait_until="domcontentloaded", timeout=60000)
@@ -287,13 +303,10 @@ async def _run_scraper(url, fields_to_extract=None):
             total_agents = await load_all_agents(page)
             await update_progress(0, total_agents, start_time)
             
-            # Collect all available data first
             agents_with_basic_data = await collect_all_agent_data(page, start_time, total_agents)
             
-            # Fetch emails only if there are profile URLs
             complete_agents = await fetch_emails_concurrently(browser, agents_with_basic_data, start_time)
             
-            # Save only the requested fields
             save_data(complete_agents, fields_to_extract)
             
             completed_count = len(complete_agents)
@@ -317,10 +330,13 @@ async def _run_scraper(url, fields_to_extract=None):
         finally:
             await context.close()
             await browser.close()
+            active_browsers.remove(browser) if browser in active_browsers else None
             print("Resources released. Scraper finished.")
 
 def get_c21_agents(fields_to_extract=None):
-    # Check if 'email' is requested at the start
+    global current_scraper_thread, scraper_stop_event
+    
+    # Check if 'email' is requested
     if fields_to_extract and 'email' in [field.lower() for field in fields_to_extract]:
         message = "<p>Hello,</p><p>No Email was found on the provided website. Please check the details and try without Email.</p>"
         send_email_notification(message)
@@ -328,21 +344,30 @@ def get_c21_agents(fields_to_extract=None):
 
     url = "https://www.c21atwood.com/realestate/agents/group/agents/"
     
+    # Stop any existing scraper and close all browsers
     if current_scraper_thread and current_scraper_thread.is_alive():
         print("Stopping previous scraper thread...")
+        scraper_stop_event.set()
         stopThread()
-        print("Previous scraper thread stopped")
+        current_scraper_thread.join(timeout=10)
+        if current_scraper_thread.is_alive():
+            print("Warning: Previous thread did not stop cleanly.")
+        scraper_stop_event.clear()
+        asyncio.run(close_all_browsers())  # Ensure all browsers are closed
+        print("Previous scraper thread and browsers stopped")
     
     def background_scraper():
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
-        loop.run_until_complete(_run_scraper(url, fields_to_extract))
+        try:
+            loop.run_until_complete(_run_scraper(url, fields_to_extract))
+        finally:
+            loop.close()
     
     startThread(background_scraper)
     
     return "C21 agent scraper started in the background. It will stop and notify you if pending emails are found."
 
-# Example usage
 if __name__ == "__main__":
     # Requesting only name and phone
     result = get_c21_agents(fields_to_extract=['name', 'phone'])

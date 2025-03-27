@@ -10,7 +10,7 @@ from fake_useragent import UserAgent
 ua_platform= ['desktop','mobile','tablet']
 ua_os= ["Windows", "Linux", "Ubuntu", "Chrome OS", "Mac OS X", "Android", "iOS"]
 
-
+from fakeagents import get_random_user_agent
 import spacy
 rawid = ""
 async def random_sleep(min_delay=1, max_delay=3):
@@ -62,7 +62,7 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
     Fetch HTML content by navigating to a URL and extracting a strictly meaningful container using AsyncWebCrawler.
     """
     ua = UserAgent(os=random.choice(ua_os), platforms=random.choice(ua_platform))
-    print("ua", ua.random)
+    # print("ua", ua.random)
     options = options or {}
     max_pages = options.get('max_pages', 1)
     handle_lazy_loading = options.get('handle_lazy_loading', False)
@@ -90,7 +90,7 @@ async def get_html(url: str, button: str = None, options: dict = None, loader: s
             # Create a fresh context and page for each attempt.
             context = await browser.new_context(
                 viewport={"width": 1920, "height": 1080},
-                user_agent=ua.random,
+                user_agent=get_random_user_agent(),
                 ignore_https_errors=True,
                 java_script_enabled=True
             )
@@ -334,10 +334,10 @@ async def scrape_agent_data(url: str, options: dict = None, json_file=None, csv_
             ]
         )
         log_info("Launched headless Chromium browser with optimized memory settings")
-        print("user agent ua",ua.random)
+        # print("user agent ua",ua.random)
         context = await browser.new_context(
             viewport={"width": 1920, "height": 1080},
-            user_agent=ua.random,
+            user_agent=get_random_user_agent(),
             ignore_https_errors=True,
             java_script_enabled=True
         )

