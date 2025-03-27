@@ -361,7 +361,7 @@ async def _run_scraper(fields_to_extract):
             active_browser = None
 
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=False, args=['--disable-gpu', '--no-sandbox'])
+            browser = await p.chromium.launch(headless=True, args=['--disable-gpu', '--no-sandbox'])
             active_browser = browser
             context = await browser.new_context(
                 viewport={'width': 1280, 'height': 800},

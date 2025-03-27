@@ -173,7 +173,7 @@ async def _run_scraper(url, fields_to_extract=None):
 
     try:
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=False, slow_mo=150)
+            browser = await p.chromium.launch(headless=True, slow_mo=150)
             print("Browser launched")
             context = await browser.new_context(
                 viewport={"width": 1280, "height": 800},
