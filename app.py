@@ -1730,11 +1730,12 @@ if selected_tab != "tab2":
                                     print(fields_to_extract)
                                     # TXT
                                     with col3:
-                                        txt_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                        # Filter out NaN values and join valid emails with commas
+                                        txt_data = ','.join(email for email in download_df['email'].astype(str) if email != 'nan')
                                         st.download_button(
                                             label="📥 Download TXT (Comma Separated)",
                                             data=txt_data,
-                                            file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                            file_name=f"{selected_website.lower()}agents{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                                             mime="text/plain",
                                         )
                                 # Excel Download
@@ -1895,12 +1896,15 @@ if selected_tab != "tab2":
                                 )
 
                             if len(fields_to_extract) == 1 and 'email' in fields_to_extract:
+                                print(fields_to_extract)
+                                # TXT
                                 with col3:
-                                    txt_data = download_df.to_csv(index=False, sep="\t", encoding="utf-8-sig")
+                                    # Filter out NaN values and join valid emails with commas
+                                    txt_data = ','.join(email for email in download_df['email'].astype(str) if email != 'nan')
                                     st.download_button(
-                                        label="📥 Download TXT (Tab Separated)",
+                                        label="📥 Download TXT (Comma Separated)",
                                         data=txt_data,
-                                        file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                        file_name=f"{selected_website.lower()}agents{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                                         mime="text/plain",
                                     )
 
@@ -2163,13 +2167,15 @@ if selected_tab == "tab2":
                                         mime="application/json",
                                     )
                                 if len(fields_to_extract) == 1 and 'email' in fields_to_extract:
+                                    print(fields_to_extract)
                                     # TXT
                                     with col3:
-                                        txt_data = download_df.to_csv(index=False, encoding="utf-8-sig")
+                                        # Filter out NaN values and join valid emails with commas
+                                        txt_data = ','.join(email for email in download_df['email'].astype(str) if email != 'nan')
                                         st.download_button(
                                             label="📥 Download TXT (Comma Separated)",
                                             data=txt_data,
-                                            file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                            file_name=f"{selected_website.lower()}agents{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
                                             mime="text/plain",
                                         )
                                 # Excel Download
