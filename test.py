@@ -3,24 +3,24 @@ from playwright.async_api import async_playwright, TimeoutError as PlaywrightTim
 import csv
 import os
 from datetime import datetime
-import json
 import logging
 import psutil
 from mainthread import startThread, stopThread, current_scraper_thread, scraper_stop_event
 from emailSender import send_email
 from fakeagents import get_random_user_agent
 import time
+
 # Configuration
 BATCH_SIZE = 10
 OUTPUT_FOLDER = "data"
 PROGRESS_FILE = f"{OUTPUT_FOLDER}/progress.json"
-LOCK_FILE = f"{OUTPUT_FOLDER}/scraper.lock"  # New lock file to detect running instances
-CONCURRENT_REQUESTS = 2
+LOCK_FILE = f"{OUTPUT_FOLDER}/scraper.lock"
+CONCURRENT_REQUESTS = 8
 RETRY_LIMIT = 3
-REQUEST_DELAY = 5
+REQUEST_DELAY = 2
 PAGE_LOAD_TIMEOUT = 30000
-RATE_LIMIT_DELAY = 2
-MEMORY_THRESHOLD_MB = 2000
+RATE_LIMIT_DELAY = 0.5
+MEMORY_THRESHOLD_MB = 1500
 
 # Setup logging
 logging.basicConfig(
@@ -32,29 +32,17 @@ logging.basicConfig(
 # Ensure output folder exists
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
-def reset_progress():
-    """Reset progress.json to initial state."""
-    progress_data = {
-        "processed_agents": 0,
-        "total_estimated_agents": 50000,
-        "estimated_time_remaining": "Calculating",
-        "elapsed_time": 0,
-        "status": "running",
-        "last_city": "",
-        "last_inner_city": "",
-        "last_page": 1
-    }
-    with open(PROGRESS_FILE, "w") as f:
-        json.dump(progress_data, f)
-    print("Progress file reset")
-
 def clear_existing_files():
-    """Remove existing CSV file."""
+    """Remove existing CSV and progress files."""
     csv_file = f"{OUTPUT_FOLDER}/coldwell_agents.csv"
     if os.path.exists(csv_file):
         os.remove(csv_file)
         print(f"Cleared existing file: {csv_file}")
         logging.info(f"Cleared existing file: {csv_file}")
+    if os.path.exists(PROGRESS_FILE):
+        os.remove(PROGRESS_FILE)
+        print(f"Cleared progress file: {PROGRESS_FILE}")
+        logging.info(f"Cleared progress file: {PROGRESS_FILE}")
 
 def create_lock_file():
     """Create a lock file to indicate the script is running."""
@@ -86,6 +74,7 @@ async def fetch_agent_details(context, agent_url, agent_data, retry_count=0):
     """Fetch agent details with retries and rate limiting."""
     full_agent_url = f"https://www.coldwellbankerhomes.com{agent_url}" if agent_url.startswith("/") else agent_url
     print(f"Fetching agent details from {full_agent_url} (Retry {retry_count}/{RETRY_LIMIT})")
+    agent_page = None
     try:
         agent_page = await context.new_page()
         agent_page.set_default_timeout(PAGE_LOAD_TIMEOUT)
@@ -105,7 +94,12 @@ async def fetch_agent_details(context, agent_url, agent_data, retry_count=0):
         print(f"Failed to fetch {full_agent_url}: {e}")
         logging.error(f"Failed to fetch {full_agent_url}: {e}")
     finally:
-        await agent_page.close()
+        if agent_page:
+            try:
+                await agent_page.close()
+            except Exception as e:
+                print(f"Error closing agent page: {e}")
+                logging.error(f"Error closing agent page: {e}")
         await asyncio.sleep(REQUEST_DELAY)
     return agent_data
 
@@ -159,36 +153,27 @@ async def process_page(context, page, inner_city_name, city_name, page_num, sema
             raise
 
 async def _run_scraper(url, fields_to_extract=None):
-    """Main scraping function with checkpointing and memory management."""
+    """Main scraping function with improved resource management."""
     all_agents = []
     start_time = datetime.now()
     processed_agents = 0
     total_estimated_agents = 50000
     success = False
     error_message = None
+    browser = None
+    context = None
+    page = None
 
-    # Load progress for resuming
-    if os.path.exists(PROGRESS_FILE):
-        with open(PROGRESS_FILE, "r") as f:
-            progress = json.load(f)
-        last_city = progress.get("last_city", "")
-        last_inner_city = progress.get("last_inner_city", "")
-        last_page = progress.get("last_page", 1)
-        processed_agents = progress.get("processed_agents", 0)
-        print(f"Resuming from: {last_city}, {last_inner_city}, page {last_page}, {processed_agents} agents processed")
-    else:
-        clear_existing_files()
-        reset_progress()
-        last_city = last_inner_city = ""
-        last_page = 1
-        print("Starting fresh scrape")
+    # Clear existing files at the start of every run
+    clear_existing_files()
+    print("Starting fresh scrape")
 
     # Create lock file to indicate this instance is running
     create_lock_file()
 
     try:
         async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True, slow_mo=150)
+            browser = await p.chromium.launch(headless=False, slow_mo=150)
             print("Browser launched")
             context = await browser.new_context(
                 viewport={"width": 1280, "height": 800},
@@ -215,17 +200,12 @@ async def _run_scraper(url, fields_to_extract=None):
                         print(f"Added city: {city_name} ({city_url})")
 
             semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
-            skip_to_last = last_city != ""
 
             for city_index, (city_name, city_url) in enumerate(city_urls):
                 if scraper_stop_event.is_set() or check_for_new_instance():
                     error_message = "Scraping stopped by user request or new instance detected"
                     print(error_message)
                     break
-                if skip_to_last and city_name != last_city:
-                    print(f"Skipping city {city_name} (before last processed: {last_city})")
-                    continue
-                skip_to_last = False
 
                 print(f"\nProcessing city {city_index+1}/{len(city_urls)}: {city_name}")
                 logging.info(f"Processing city {city_index+1}/{len(city_urls)}: {city_name}")
@@ -244,23 +224,18 @@ async def _run_scraper(url, fields_to_extract=None):
                             inner_city_urls.append((inner_city_name, inner_city_url))
                             print(f"  - Found inner city: {inner_city_name}")
 
-                inner_skip = last_inner_city != ""
                 for inner_index, (inner_city_name, inner_city_url) in enumerate(inner_city_urls):
                     if scraper_stop_event.is_set() or check_for_new_instance():
                         error_message = "Scraping stopped by user request or new instance detected"
                         print(error_message)
                         break
-                    if inner_skip and inner_city_name != last_inner_city:
-                        print(f"  Skipping inner city {inner_city_name} (before last processed: {last_inner_city})")
-                        continue
-                    inner_skip = False
 
                     print(f"\n  Processing inner city {inner_index+1}/{len(inner_city_urls)}: {inner_city_name}")
                     logging.info(f"Processing inner city {inner_index+1}/{len(inner_city_urls)}: {inner_city_name}")
                     await page.goto(inner_city_url, wait_until="domcontentloaded")
                     await asyncio.sleep(REQUEST_DELAY)
 
-                    page_num = last_page if inner_city_name == last_inner_city else 1
+                    page_num = 1
                     has_more_pages = True
 
                     while has_more_pages:
@@ -270,15 +245,13 @@ async def _run_scraper(url, fields_to_extract=None):
                             break
 
                         await process_page(context, page, inner_city_name, city_name, page_num, semaphore, all_agents)
-                        processed_agents = len(all_agents) + progress.get("processed_agents", 0)
+                        processed_agents = len(all_agents)
                         print(f"Processed {processed_agents} agents so far")
 
                         if len(all_agents) >= BATCH_SIZE or check_memory():
                             save_data(all_agents, fields_to_extract)
                             print(f"Saved batch of {len(all_agents)} agents")
                             all_agents.clear()
-
-                        update_progress(start_time, processed_agents, total_estimated_agents, city_name, inner_city_name, page_num)
 
                         try:
                             next_page_button = await page.query_selector(".pagination ul > li:last-child > a")
@@ -302,17 +275,31 @@ async def _run_scraper(url, fields_to_extract=None):
         print(error_message)
         logging.error(error_message)
     finally:
+        # Safely close resources if they exist
+        if page:
+            try:
+                await page.close()
+            except Exception as e:
+                print(f"Error closing page: {e}")
+                logging.error(f"Error closing page: {e}")
+        if context:
+            try:
+                await context.close()
+            except Exception as e:
+                print(f"Error closing context: {e}")
+                logging.error(f"Error closing context: {e}")
+        if browser:
+            try:
+                await browser.close()
+            except Exception as e:
+                print(f"Error closing browser: {e}")
+                logging.error(f"Error closing browser: {e}")
+        print("Browser resources cleaned up")
         if all_agents:
             save_data(all_agents, fields_to_extract)
             print(f"Final save: {len(all_agents)} agents")
-        await page.close()
-        await context.close()
-        await browser.close()
-        print("Browser closed")
-        status = "completed" if success else "failed"
-        update_progress(start_time, processed_agents, total_estimated_agents, "", "", 1, status)
         send_completion_email(success, processed_agents, error_message)
-        remove_lock_file()  # Clean up lock file when done
+        remove_lock_file()
 
 def check_memory():
     """Check if memory usage exceeds threshold."""
@@ -322,31 +309,6 @@ def check_memory():
         logging.warning(f"Memory usage high ({mem} MB), forcing save")
         return True
     return False
-
-def update_progress(start_time, processed_agents, total_estimated_agents, last_city, last_inner_city, last_page, status="running"):
-    """Update progress file with current state."""
-    elapsed_time = (datetime.now() - start_time).total_seconds()
-    time_per_agent = elapsed_time / max(1, processed_agents)
-    remaining_agents = max(0, total_estimated_agents - processed_agents)
-    estimated_time_remaining = remaining_agents * time_per_agent
-    
-    progress_data = {
-        "processed_agents": processed_agents,
-        "total_estimated_agents": total_estimated_agents,
-        "estimated_time_remaining": estimated_time_remaining,
-        "elapsed_time": elapsed_time,
-        "status": status,
-        "last_city": last_city,
-        "last_inner_city": last_inner_city,
-        "last_page": last_page
-    }
-    try:
-        with open(PROGRESS_FILE, "w") as f:
-            json.dump(progress_data, f)
-        print(f"Progress updated: {processed_agents} agents, status: {status}")
-    except Exception as e:
-        print(f"Error updating progress: {e}")
-        logging.error(f"Error updating progress: {e}")
 
 def save_data(agents, fields_to_extract=None):
     """Save agent data to CSV."""
@@ -395,11 +357,11 @@ def get_all_data(url="https://www.coldwellbankerhomes.com/sitemap/agents/", fiel
         if current_scraper_thread and current_scraper_thread.is_alive():
             stopThread()
             current_scraper_thread.join()
-        scraper_stop_event.set()  # Signal the existing instance to stop
-        time.sleep(2)  # Give time for the previous instance to stop
-        remove_lock_file()  # Clean up the old lock file
+        scraper_stop_event.set()
+        time.sleep(2)
+        remove_lock_file()
 
-    scraper_stop_event.clear()  # Reset stop event for the new instance
+    scraper_stop_event.clear()
 
     def background_scraper():
         loop = asyncio.new_event_loop()
@@ -414,8 +376,7 @@ def get_all_data(url="https://www.coldwellbankerhomes.com/sitemap/agents/", fiel
     logging.info("Scraper started in background")
     return {
         "status": "started",
-        "message": "Scraper running in background. Check data folder and logs.",
-        "progress_file": PROGRESS_FILE
+        "message": "Scraper running in background. Check data folder and logs."
     }
 
 if __name__ == "__main__":

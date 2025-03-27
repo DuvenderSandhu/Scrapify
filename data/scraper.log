@@ -1,0 +1,3035 @@
+2025-03-27 15:03:05,487 - INFO - Scraper started in background
+2025-03-27 15:03:05,491 - INFO - Created lock file with PID: 463974
+2025-03-27 15:03:17,498 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 15:03:25,907 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 15:03:33,620 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 15:03:33,704 - INFO - Found 25 agents on page 1
+2025-03-27 15:03:33,745 - INFO - Agent 1: Timothy Dalrymple
+2025-03-27 15:03:33,782 - INFO - Agent 2: Lillian Shine
+2025-03-27 15:03:33,820 - INFO - Agent 3: Linda Niederkorn
+2025-03-27 15:03:33,857 - INFO - Agent 4: Verna Elmer
+2025-03-27 15:03:33,894 - INFO - Agent 5: Clare Fernandes
+2025-03-27 15:03:33,931 - INFO - Agent 6: Sue Taylor-Lane
+2025-03-27 15:03:33,966 - INFO - Agent 7: April Campbell
+2025-03-27 15:03:34,004 - INFO - Agent 8: Sara Hunter
+2025-03-27 15:03:34,040 - INFO - Agent 9: Jeanne Zachman
+2025-03-27 15:03:34,100 - INFO - Agent 10: Trina Alberta Oesterle
+2025-03-27 15:03:34,136 - INFO - Agent 11: Beata Lopez
+2025-03-27 15:03:34,175 - INFO - Agent 12: Ed Baker
+2025-03-27 15:03:34,210 - INFO - Agent 13: April Cooper
+2025-03-27 15:03:34,246 - INFO - Agent 14: Perla Velasquez
+2025-03-27 15:03:34,281 - INFO - Agent 15: Rudy Berthold
+2025-03-27 15:03:34,316 - INFO - Agent 16: Laurel Caprio
+2025-03-27 15:03:34,353 - INFO - Agent 17: Keith Kleimola
+2025-03-27 15:03:34,387 - INFO - Agent 18: Phoebe Bigelow
+2025-03-27 15:03:34,422 - INFO - Agent 19: Christopher Molander
+2025-03-27 15:03:34,456 - INFO - Agent 20: Lorraine Demeerleer
+2025-03-27 15:03:34,489 - INFO - Agent 21: Rodney Chiddix
+2025-03-27 15:03:34,524 - INFO - Agent 22: Michon Brudenell
+2025-03-27 15:03:34,561 - INFO - Agent 23: Denise Jacobs
+2025-03-27 15:03:34,594 - INFO - Agent 24: Alicia Hiller
+2025-03-27 15:03:34,629 - INFO - Agent 25: Jim Hoppens
+2025-03-27 15:05:41,219 - INFO - Saved 25 agents to CSV
+2025-03-27 15:05:48,253 - INFO - Processing page 2 for Amado real estate agents
+2025-03-27 15:05:48,374 - INFO - Found 25 agents on page 2
+2025-03-27 15:05:48,413 - INFO - Agent 1: Rita Collier
+2025-03-27 15:05:48,446 - INFO - Agent 2: Jr. Gerardo Ochoa Rico
+2025-03-27 15:05:48,484 - INFO - Agent 3: Candy Bell
+2025-03-27 15:05:48,520 - INFO - Agent 4: Jim McDougall
+2025-03-27 15:05:48,559 - INFO - Agent 5: Linda Jehle
+2025-03-27 15:05:48,594 - INFO - Agent 6: Pam Pesqueira
+2025-03-27 15:05:48,632 - INFO - Agent 7: Julie Bishop
+2025-03-27 15:05:48,667 - INFO - Agent 8: Enrique Vance
+2025-03-27 15:05:48,711 - INFO - Agent 9: Julie Leon
+2025-03-27 15:05:48,755 - INFO - Agent 10: Tavee Brzuchalski
+2025-03-27 15:05:48,802 - INFO - Agent 11: Ramon Ross
+2025-03-27 15:05:48,847 - INFO - Agent 12: Elizabeth Alegria
+2025-03-27 15:05:48,889 - INFO - Agent 13: Marybeth Woodworth
+2025-03-27 15:05:48,923 - INFO - Agent 14: Tamara Kempton
+2025-03-27 15:05:48,961 - INFO - Agent 15: Julius Barraza
+2025-03-27 15:05:49,005 - INFO - Agent 16: Darrell Lilja
+2025-03-27 15:05:49,041 - INFO - Agent 17: Tom Williams
+2025-03-27 15:05:49,076 - INFO - Agent 18: Cheryl Maynard
+2025-03-27 15:05:49,115 - INFO - Agent 19: Brent Self
+2025-03-27 15:05:49,149 - INFO - Agent 20: Christi Nicklas
+2025-03-27 15:05:49,185 - INFO - Agent 21: Vanessa Alday
+2025-03-27 15:05:49,223 - INFO - Agent 22: Donna Schenek
+2025-03-27 15:05:49,260 - INFO - Agent 23: Matt Bowen
+2025-03-27 15:05:49,301 - INFO - Agent 24: Lora Dungy Cheney
+2025-03-27 15:05:49,346 - INFO - Agent 25: Dolores Jakeway
+2025-03-27 15:07:57,321 - INFO - Saved 25 agents to CSV
+2025-03-27 15:08:07,486 - INFO - Processing page 3 for Amado real estate agents
+2025-03-27 15:08:07,624 - INFO - Found 23 agents on page 3
+2025-03-27 15:08:07,666 - INFO - Agent 1: Dinah Lewis
+2025-03-27 15:08:07,707 - INFO - Agent 2: Laurie Lundeen
+2025-03-27 15:08:07,751 - INFO - Agent 3: Deborah Wyrsch-Williams
+2025-03-27 15:08:07,798 - INFO - Agent 4: Julie Hummer-Bellmyer
+2025-03-27 15:08:07,841 - INFO - Agent 5: Dave Margolis
+2025-03-27 15:08:07,884 - INFO - Agent 6: Terry Lang
+2025-03-27 15:08:07,924 - INFO - Agent 7: Rudy Lira
+2025-03-27 15:08:07,964 - INFO - Agent 8: Trenna Hiney
+2025-03-27 15:08:08,002 - INFO - Agent 9: Jim Callery
+2025-03-27 15:08:08,041 - INFO - Agent 10: Elaine Grace
+2025-03-27 15:08:08,078 - INFO - Agent 11: Marsha Eades
+2025-03-27 15:08:08,118 - INFO - Agent 12: Carolyn Fox
+2025-03-27 15:08:08,153 - INFO - Agent 13: Francisco Ruiz
+2025-03-27 15:08:08,188 - INFO - Agent 14: Denise Matthys
+2025-03-27 15:08:08,223 - INFO - Agent 15: Chrissie Hancock
+2025-03-27 15:08:08,258 - INFO - Agent 16: William Ims
+2025-03-27 15:08:08,293 - INFO - Agent 17: Randall Koster
+2025-03-27 15:08:08,337 - INFO - Agent 18: Becky Tucker
+2025-03-27 15:08:08,378 - INFO - Agent 19: Leticia Diaz
+2025-03-27 15:08:08,416 - INFO - Agent 20: Richard Duarte
+2025-03-27 15:08:08,460 - INFO - Agent 21: Tomas Echeverri
+2025-03-27 15:08:08,503 - INFO - Agent 22: Martin Kennedy
+2025-03-27 15:08:08,549 - INFO - Agent 23: Dennese Cole
+2025-03-27 15:10:05,738 - INFO - Saved 23 agents to CSV
+2025-03-27 15:10:05,761 - INFO - Processing inner city 2/80: Anthem real estate agents
+2025-03-27 15:10:13,786 - INFO - Processing page 1 for Anthem real estate agents
+2025-03-27 15:10:13,939 - INFO - Found 25 agents on page 1
+2025-03-27 15:10:13,991 - INFO - Agent 1: The Hunter Jenkins Group
+2025-03-27 15:10:14,039 - INFO - Agent 2: Kenny Knight
+2025-03-27 15:10:14,083 - INFO - Agent 3: Connie McGregor
+2025-03-27 15:10:14,128 - INFO - Agent 4: Bob Pfeiffer
+2025-03-27 15:10:14,167 - INFO - Agent 5: Barbara Prizeman
+2025-03-27 15:10:14,211 - INFO - Agent 6: Stacy Eaton
+2025-03-27 15:10:14,251 - INFO - Agent 7: Jo Ann Bauer
+2025-03-27 15:10:14,295 - INFO - Agent 8: Ben Curtin
+2025-03-27 15:10:14,357 - INFO - Agent 9: Misty DiBella
+2025-03-27 15:10:14,399 - INFO - Agent 10: Noemie Neipert
+2025-03-27 15:10:14,444 - INFO - Agent 11: Eric Hess
+2025-03-27 15:10:14,485 - INFO - Agent 12: Jessica Pile
+2025-03-27 15:10:14,526 - INFO - Agent 13: Lisa Stine
+2025-03-27 15:10:14,569 - INFO - Agent 14: Cori Bender
+2025-03-27 15:10:14,620 - INFO - Agent 15: Bibianna Baez
+2025-03-27 15:10:14,660 - INFO - Agent 16: Carol Campbell
+2025-03-27 15:10:14,703 - INFO - Agent 17: D. Andre Nicu
+2025-03-27 15:10:14,749 - INFO - Agent 18: Michelle Perry
+2025-03-27 15:10:14,798 - INFO - Agent 19: Bill Ciora
+2025-03-27 15:10:14,855 - INFO - Agent 20: Bruce Woods
+2025-03-27 15:10:14,923 - INFO - Agent 21: Mandy Bennett
+2025-03-27 15:10:14,968 - INFO - Agent 22: Kathleen Erba
+2025-03-27 15:10:15,014 - INFO - Agent 23: Larisa Falcon
+2025-03-27 15:10:15,055 - INFO - Agent 24: Peggy Nelson
+2025-03-27 15:10:15,134 - INFO - Agent 25: Brian Elliott
+2025-03-27 15:12:26,266 - INFO - Saved 25 agents to CSV
+2025-03-27 15:12:33,488 - INFO - Processing page 2 for Anthem real estate agents
+2025-03-27 15:12:33,597 - INFO - Found 25 agents on page 2
+2025-03-27 15:12:33,674 - INFO - Agent 1: Denise Monaghan OConnell
+2025-03-27 15:12:33,716 - INFO - Agent 2: Dennis Erba
+2025-03-27 15:12:33,759 - INFO - Agent 3: Rhonda Solomon
+2025-03-27 15:12:33,800 - INFO - Agent 4: Zach Kriegshauser
+2025-03-27 15:12:33,840 - INFO - Agent 5: Dominic Scappaticci
+2025-03-27 15:12:33,878 - INFO - Agent 6: David Schrand
+2025-03-27 15:12:33,921 - INFO - Agent 7: Melissa McCormick Wise
+2025-03-27 15:12:33,968 - INFO - Agent 8: Curtis McCormick
+2025-03-27 15:12:34,009 - INFO - Agent 9: Tammi Stifel
+2025-03-27 15:12:34,069 - INFO - Agent 10: Cherie Lang
+2025-03-27 15:12:34,135 - INFO - Agent 11: Louise Haarala
+2025-03-27 15:12:34,177 - INFO - Agent 12: Lori Davies
+2025-03-27 15:12:34,219 - INFO - Agent 13: Arlene Warren-Hernandez
+2025-03-27 15:12:34,260 - INFO - Agent 14: Audrey Fischer
+2025-03-27 15:12:34,303 - INFO - Agent 15: John Wallitschek
+2025-03-27 15:12:34,349 - INFO - Agent 16: Wendy Dobbs
+2025-03-27 15:12:34,389 - INFO - Agent 17: Dawn VanSickle
+2025-03-27 15:12:34,433 - INFO - Agent 18: Tom Scappaticci
+2025-03-27 15:12:34,475 - INFO - Agent 19: Nadia Alden
+2025-03-27 15:12:34,522 - INFO - Agent 20: Shelby Purdy
+2025-03-27 15:12:34,575 - INFO - Agent 21: Josh Dean
+2025-03-27 15:12:34,622 - INFO - Agent 22: Mary Ann Birdoes
+2025-03-27 15:12:34,660 - INFO - Agent 23: Lee Johnson
+2025-03-27 15:12:34,701 - INFO - Agent 24: Mark Friedman
+2025-03-27 15:12:34,742 - INFO - Agent 25: Sandra Moses
+2025-03-27 15:14:42,961 - INFO - Saved 25 agents to CSV
+2025-03-27 15:14:49,931 - INFO - Processing page 3 for Anthem real estate agents
+2025-03-27 15:14:50,017 - INFO - Found 25 agents on page 3
+2025-03-27 15:14:50,086 - INFO - Agent 1: Amanda Geyer
+2025-03-27 15:14:50,129 - INFO - Agent 2: Deana Aller
+2025-03-27 15:14:50,172 - INFO - Agent 3: Kristen Donovan
+2025-03-27 15:14:50,208 - INFO - Agent 4: Mila Delaware
+2025-03-27 15:14:50,250 - INFO - Agent 5: Kevin Downey
+2025-03-27 15:14:50,302 - INFO - Agent 6: Monica Condomitti
+2025-03-27 15:14:50,350 - INFO - Agent 7: Oscar Rodriguez
+2025-03-27 15:14:50,399 - INFO - Agent 8: Enza Duda
+2025-03-27 15:14:50,445 - INFO - Agent 9: Jennifer Rogers
+2025-03-27 15:14:50,492 - INFO - Agent 10: Lynn Green
+2025-03-27 15:14:50,536 - INFO - Agent 11: Dean Hoppes
+2025-03-27 15:14:50,578 - INFO - Agent 12: Craig Kelly
+2025-03-27 15:14:50,616 - INFO - Agent 13: Jill Stecker
+2025-03-27 15:14:50,654 - INFO - Agent 14: Gary Holloway
+2025-03-27 15:14:50,695 - INFO - Agent 15: Sandy Esmay
+2025-03-27 15:14:50,732 - INFO - Agent 16: Terrie Lescarbeau
+2025-03-27 15:14:50,771 - INFO - Agent 17: Cindy Buckhannon
+2025-03-27 15:14:50,812 - INFO - Agent 18: Elana Nager
+2025-03-27 15:14:50,859 - INFO - Agent 19: Patricia Godleski
+2025-03-27 15:14:50,908 - INFO - Agent 20: Kim Farnsworth
+2025-03-27 15:14:50,963 - INFO - Agent 21: Jeannine Raiffie
+2025-03-27 15:14:51,022 - INFO - Agent 22: Tom Edler
+2025-03-27 15:14:51,069 - INFO - Agent 23: Crystal Moore
+2025-03-27 15:14:51,102 - INFO - Agent 24: Pam Fain
+2025-03-27 15:14:51,141 - INFO - Agent 25: Candy Jenkins
+2025-03-27 15:16:57,878 - INFO - Saved 25 agents to CSV
+2025-03-27 15:17:06,187 - INFO - Processing page 4 for Anthem real estate agents
+2025-03-27 15:17:06,267 - INFO - Found 25 agents on page 4
+2025-03-27 15:17:06,306 - INFO - Agent 1: Donna Hunter
+2025-03-27 15:17:06,348 - INFO - Agent 2: Paige Dutcher
+2025-03-27 15:17:06,389 - INFO - Agent 3: Mariah Cantrell
+2025-03-27 15:17:06,429 - INFO - Agent 4: Shawn Keane
+2025-03-27 15:17:06,468 - INFO - Agent 5: Steve Fanto
+2025-03-27 15:17:06,516 - INFO - Agent 6: Eric Linden
+2025-03-27 15:17:06,554 - INFO - Agent 7: Cheryl Linden
+2025-03-27 15:17:06,593 - INFO - Agent 8: Charles Turner
+2025-03-27 15:17:06,632 - INFO - Agent 9: James Telich
+2025-03-27 15:17:06,674 - INFO - Agent 10: Crisi Mintz
+2025-03-27 15:17:06,714 - INFO - Agent 11: Rebecca Norton
+2025-03-27 15:17:06,753 - INFO - Agent 12: Dana Winter
+2025-03-27 15:17:06,790 - INFO - Agent 13: Kerri Schrand
+2025-03-27 15:17:06,867 - INFO - Agent 14: Megan Fernandez
+2025-03-27 15:17:06,952 - INFO - Agent 15: Sandi Hess
+2025-03-27 15:17:07,021 - INFO - Agent 16: Gary Frantz
+2025-03-27 15:17:07,060 - INFO - Agent 17: Jerry Tulman
+2025-03-27 15:17:07,100 - INFO - Agent 18: John Schuetze
+2025-03-27 15:17:07,136 - INFO - Agent 19: Alfred Monsalvatge
+2025-03-27 15:17:07,177 - INFO - Agent 20: Mary Ann Davis
+2025-03-27 15:17:07,216 - INFO - Agent 21: Heather Miller
+2025-03-27 15:17:07,253 - INFO - Agent 22: Marty Mogalian
+2025-03-27 15:17:07,290 - INFO - Agent 23: Timothy York
+2025-03-27 15:17:07,329 - INFO - Agent 24: Nikki Norton
+2025-03-27 15:17:07,369 - INFO - Agent 25: Katy Curtis
+2025-03-27 15:19:09,885 - INFO - Saved 25 agents to CSV
+2025-03-27 15:19:17,834 - INFO - Processing page 5 for Anthem real estate agents
+2025-03-27 15:19:17,906 - INFO - Found 11 agents on page 5
+2025-03-27 15:19:17,948 - INFO - Agent 1: Brock Moses
+2025-03-27 15:19:17,984 - INFO - Agent 2: John Smith
+2025-03-27 15:19:18,026 - INFO - Agent 3: Hillari Hardt
+2025-03-27 15:19:18,069 - INFO - Agent 4: Julie Charron
+2025-03-27 15:19:18,108 - INFO - Agent 5: Noralicia Flores de Valdez
+2025-03-27 15:19:18,146 - INFO - Agent 6: Danielle McBride
+2025-03-27 15:19:18,187 - INFO - Agent 7: Theo Christakos
+2025-03-27 15:19:18,228 - INFO - Agent 8: Kurt Fischer
+2025-03-27 15:19:18,267 - INFO - Agent 9: Sean Berdy
+2025-03-27 15:19:18,306 - INFO - Agent 10: Regina Levin
+2025-03-27 15:19:18,345 - INFO - Agent 11: Chloe Skorpikova
+2025-03-27 15:20:16,378 - INFO - Saved 11 agents to CSV
+2025-03-27 15:20:16,392 - INFO - Processing inner city 3/80: Apache Junction real estate agents
+2025-03-27 15:20:23,253 - INFO - Processing page 1 for Apache Junction real estate agents
+2025-03-27 15:20:23,353 - INFO - Found 25 agents on page 1
+2025-03-27 15:20:23,394 - INFO - Agent 1: Leah Lichter-Roedig
+2025-03-27 15:20:23,432 - INFO - Agent 2: Allison Wood
+2025-03-27 15:20:23,496 - INFO - Agent 3: Jillian Kuefner
+2025-03-27 15:20:23,533 - INFO - Agent 4: India Ryer
+2025-03-27 15:20:23,572 - INFO - Agent 5: Bill Adams
+2025-03-27 15:20:23,615 - INFO - Agent 6: Deborah Hickey
+2025-03-27 15:20:23,654 - INFO - Agent 7: Cynthia Morisch
+2025-03-27 15:20:23,689 - INFO - Agent 8: Christina Choe
+2025-03-27 15:20:23,729 - INFO - Agent 9: Nicole Ryan
+2025-03-27 15:20:23,765 - INFO - Agent 10: Julie Sims
+2025-03-27 15:20:23,802 - INFO - Agent 11: Tammie Wagner
+2025-03-27 15:20:23,841 - INFO - Agent 12: Andre Taylor
+2025-03-27 15:20:23,877 - INFO - Agent 13: Mike Johns
+2025-03-27 15:20:23,917 - INFO - Agent 14: Nicole Johnson
+2025-03-27 15:20:23,957 - INFO - Agent 15: Kathy Reardon
+2025-03-27 15:20:23,996 - INFO - Agent 16: Shelli Bronstine
+2025-03-27 15:20:24,035 - INFO - Agent 17: Gregory Boone
+2025-03-27 15:20:24,075 - INFO - Agent 18: Gustavo Borquez
+2025-03-27 15:20:24,119 - INFO - Agent 19: Rhonda Franklin
+2025-03-27 15:20:24,156 - INFO - Agent 20: Daryl McIlhargie
+2025-03-27 15:20:24,194 - INFO - Agent 21: Antoinette Perez
+2025-03-27 15:20:24,230 - INFO - Agent 22: Chris Johnson
+2025-03-27 15:20:24,268 - INFO - Agent 23: Steven Toth
+2025-03-27 15:20:24,306 - INFO - Agent 24: Kelly Kanehen
+2025-03-27 15:20:24,344 - INFO - Agent 25: Ellsworth Group
+2025-03-27 15:22:28,440 - INFO - Saved 25 agents to CSV
+2025-03-27 15:22:37,076 - INFO - Processing page 2 for Apache Junction real estate agents
+2025-03-27 15:22:37,161 - INFO - Found 25 agents on page 2
+2025-03-27 15:22:37,201 - INFO - Agent 1: Tom Miller
+2025-03-27 15:22:37,241 - INFO - Agent 2: Ellen Fleming
+2025-03-27 15:22:37,279 - INFO - Agent 3: Drew Burns
+2025-03-27 15:22:37,319 - INFO - Agent 4: Sheila Hanna
+2025-03-27 15:22:37,356 - INFO - Agent 5: Jane Grimm
+2025-03-27 15:22:37,393 - INFO - Agent 6: Kristina Read
+2025-03-27 15:22:37,433 - INFO - Agent 7: Shana Trotter
+2025-03-27 15:22:37,470 - INFO - Agent 8: Ivelina Angelova
+2025-03-27 15:22:37,508 - INFO - Agent 9: Johnny Ruano
+2025-03-27 15:22:37,562 - INFO - Agent 10: Angela Jacques
+2025-03-27 15:22:37,601 - INFO - Agent 11: Johannes Rath
+2025-03-27 15:22:37,640 - INFO - Agent 12: Stephanie Clark-Lamb
+2025-03-27 15:22:37,678 - INFO - Agent 13: Jason Slagter
+2025-03-27 15:22:37,716 - INFO - Agent 14: Tom Evangelista
+2025-03-27 15:22:37,751 - INFO - Agent 15: Frank Ellis
+2025-03-27 15:22:37,792 - INFO - Agent 16: Elmira Mills
+2025-03-27 15:22:37,828 - INFO - Agent 17: Bill Parkerson
+2025-03-27 15:22:37,865 - INFO - Agent 18: Jennifer Usher
+2025-03-27 15:22:37,902 - INFO - Agent 19: Eric Bustamante
+2025-03-27 15:22:37,940 - INFO - Agent 20: Jen Green
+2025-03-27 15:22:37,978 - INFO - Agent 21: George Haith
+2025-03-27 15:22:38,015 - INFO - Agent 22: Yvonne Corrigan-Carr
+2025-03-27 15:22:38,053 - INFO - Agent 23: Sara Waide Bowers
+2025-03-27 15:22:38,092 - INFO - Agent 24: Kirk Dewberry
+2025-03-27 15:22:38,136 - INFO - Agent 25: Jayne Wolff
+2025-03-27 15:24:40,329 - INFO - Saved 25 agents to CSV
+2025-03-27 15:24:47,983 - INFO - Processing page 3 for Apache Junction real estate agents
+2025-03-27 15:24:48,067 - INFO - Found 25 agents on page 3
+2025-03-27 15:24:48,105 - INFO - Agent 1: Cedric Allen
+2025-03-27 15:24:48,143 - INFO - Agent 2: Robert Andler
+2025-03-27 15:24:48,204 - INFO - Agent 3: Ignacio Melgarejo
+2025-03-27 15:24:48,251 - INFO - Agent 4: Ann Wrigley
+2025-03-27 15:24:48,290 - INFO - Agent 5: Dane McFall
+2025-03-27 15:24:48,328 - INFO - Agent 6: Melissa Lopez
+2025-03-27 15:24:48,366 - INFO - Agent 7: Lori Bond
+2025-03-27 15:24:48,404 - INFO - Agent 8: Billy Fallos
+2025-03-27 15:24:48,440 - INFO - Agent 9: Jackie Salmans
+2025-03-27 15:24:48,476 - INFO - Agent 10: Bill O'Connell
+2025-03-27 15:24:48,513 - INFO - Agent 11: Stephanie Mitchell
+2025-03-27 15:24:48,551 - INFO - Agent 12: Dee Grayer
+2025-03-27 15:24:48,593 - INFO - Agent 13: Cher Redmond
+2025-03-27 15:24:48,629 - INFO - Agent 14: Gillian Kirkpatrick
+2025-03-27 15:24:48,665 - INFO - Agent 15: Merrill O'Connor
+2025-03-27 15:24:48,701 - INFO - Agent 16: Wendy Meredith
+2025-03-27 15:24:48,737 - INFO - Agent 17: Bobbi J Buchli
+2025-03-27 15:24:48,773 - INFO - Agent 18: Tommy Hudson
+2025-03-27 15:24:48,810 - INFO - Agent 19: Kateryna Hedz
+2025-03-27 15:24:48,846 - INFO - Agent 20: Beatriz Kraft
+2025-03-27 15:24:48,883 - INFO - Agent 21: Steven Meredith
+2025-03-27 15:24:48,918 - INFO - Agent 22: Dennis Swaney
+2025-03-27 15:24:48,956 - INFO - Agent 23: Julia Trujillo
+2025-03-27 15:24:48,991 - INFO - Agent 24: Karen Sechrist
+2025-03-27 15:24:49,028 - INFO - Agent 25: Debra Mason
+2025-03-27 15:27:00,144 - INFO - Saved 25 agents to CSV
+2025-03-27 15:27:08,098 - INFO - Processing page 4 for Apache Junction real estate agents
+2025-03-27 15:27:08,311 - INFO - Found 25 agents on page 4
+2025-03-27 15:27:08,437 - INFO - Agent 1: Sam Garcia
+2025-03-27 15:27:08,483 - INFO - Agent 2: Jacie Czerwinski
+2025-03-27 15:27:08,527 - INFO - Agent 3: Joshua Simpson
+2025-03-27 15:27:08,573 - INFO - Agent 4: Heather Bennett
+2025-03-27 15:27:08,619 - INFO - Agent 5: Steve Bauman
+2025-03-27 15:27:08,690 - INFO - Agent 6: Lisa Sheble
+2025-03-27 15:27:08,772 - INFO - Agent 7: Laura Joyner
+2025-03-27 15:27:08,857 - INFO - Agent 8: William Darby
+2025-03-27 15:27:08,941 - INFO - Agent 9: Joye Holverson
+2025-03-27 15:27:09,011 - INFO - Agent 10: Andrew Watts
+2025-03-27 15:27:09,078 - INFO - Agent 11: Rick Ferguson
+2025-03-27 15:27:09,155 - INFO - Agent 12: Michelle Boone
+2025-03-27 15:27:09,236 - INFO - Agent 13: Rebecca Blank
+2025-03-27 15:27:09,333 - INFO - Agent 14: Morgan Ellsworth
+2025-03-27 15:27:09,406 - INFO - Agent 15: Lisa Grayer
+2025-03-27 15:27:09,506 - INFO - Agent 16: Darryl Bassette
+2025-03-27 15:27:09,595 - INFO - Agent 17: Azita Sajjadi
+2025-03-27 15:27:09,685 - INFO - Agent 18: Paula Serven
+2025-03-27 15:27:09,777 - INFO - Agent 19: Denise Von Der Linn
+2025-03-27 15:27:09,883 - INFO - Agent 20: Heather Manos
+2025-03-27 15:27:09,979 - INFO - Agent 21: Christina Dugie
+2025-03-27 15:27:10,041 - INFO - Agent 22: Ryann Haenel
+2025-03-27 15:27:10,103 - INFO - Agent 23: Denise Adame
+2025-03-27 15:27:10,161 - INFO - Agent 24: Sophia Chandy
+2025-03-27 15:27:10,211 - INFO - Agent 25: Claudia Hedt
+2025-03-27 15:29:26,382 - INFO - Saved 25 agents to CSV
+2025-03-27 15:29:34,114 - INFO - Processing page 5 for Apache Junction real estate agents
+2025-03-27 15:29:34,384 - INFO - Found 25 agents on page 5
+2025-03-27 15:29:34,505 - INFO - Agent 1: Denise Hopkins
+2025-03-27 15:29:34,559 - INFO - Agent 2: Tim Sevcik
+2025-03-27 15:29:34,608 - INFO - Agent 3: Joe Hernandez
+2025-03-27 15:29:34,656 - INFO - Agent 4: Sonja Shaw
+2025-03-27 15:29:34,707 - INFO - Agent 5: Heather Hurwitz
+2025-03-27 15:29:34,809 - INFO - Agent 6: Tony Gonzalez
+2025-03-27 15:29:34,905 - INFO - Agent 7: Nick Drake
+2025-03-27 15:29:34,986 - INFO - Agent 8: George Low
+2025-03-27 15:29:35,039 - INFO - Agent 9: Tasha Jones
+2025-03-27 15:29:35,084 - INFO - Agent 10: Martha Appel
+2025-03-27 15:29:35,138 - INFO - Agent 11: Kim Peterson
+2025-03-27 15:29:35,197 - INFO - Agent 12: Bill Adams
+2025-03-27 15:29:35,246 - INFO - Agent 13: Selena Worl
+2025-03-27 15:29:35,288 - INFO - Agent 14: Anne Martin
+2025-03-27 15:29:35,328 - INFO - Agent 15: Cynthia Brown
+2025-03-27 15:29:35,368 - INFO - Agent 16: Allie Sanders
+2025-03-27 15:29:35,413 - INFO - Agent 17: Douglas Ava
+2025-03-27 15:29:35,490 - INFO - Agent 18: Davontae Smith
+2025-03-27 15:29:35,548 - INFO - Agent 19: Rebecca Sherlin
+2025-03-27 15:29:35,608 - INFO - Agent 20: Karen Moore
+2025-03-27 15:29:35,651 - INFO - Agent 21: Lindsay Barton
+2025-03-27 15:29:35,701 - INFO - Agent 22: Oscar Villado-Cano
+2025-03-27 15:29:35,748 - INFO - Agent 23: David Courtright
+2025-03-27 15:29:35,799 - INFO - Agent 24: Mercedes Arenado-Melian
+2025-03-27 15:29:35,854 - INFO - Agent 25: Angie Denicola-Rush
+2025-03-27 15:31:49,351 - INFO - Saved 25 agents to CSV
+2025-03-27 15:31:56,416 - INFO - Processing page 6 for Apache Junction real estate agents
+2025-03-27 15:31:56,597 - INFO - Found 25 agents on page 6
+2025-03-27 15:31:56,766 - INFO - Agent 1: Kim Keller
+2025-03-27 15:31:56,899 - INFO - Agent 2: Cedric Allen
+2025-03-27 15:31:57,010 - INFO - Agent 3: Happy Basla
+2025-03-27 15:31:57,120 - INFO - Agent 4: Jean Pomeroy
+2025-03-27 15:31:57,240 - INFO - Agent 5: Michael Rossi
+2025-03-27 15:31:57,292 - INFO - Agent 6: Daeon Smith-Jones
+2025-03-27 15:31:57,339 - INFO - Agent 7: Daryl McIlhargie
+2025-03-27 15:31:57,387 - INFO - Agent 8: Chris Johnson
+2025-03-27 15:31:57,436 - INFO - Agent 9: Nicole Ryan
+2025-03-27 15:31:57,483 - INFO - Agent 10: Julie Sims
+2025-03-27 15:31:57,555 - INFO - Agent 11: Keith George
+2025-03-27 15:31:57,609 - INFO - Agent 12: Jen Green
+2025-03-27 15:31:57,665 - INFO - Agent 13: Johnny Johnson
+2025-03-27 15:31:57,721 - INFO - Agent 14: Claudia Hedt
+2025-03-27 15:31:57,789 - INFO - Agent 15: Tammie Wagner
+2025-03-27 15:31:57,855 - INFO - Agent 16: Heather Hurwitz
+2025-03-27 15:31:57,920 - INFO - Agent 17: Andre Taylor
+2025-03-27 15:31:57,999 - INFO - Agent 18: Lisa Sheble
+2025-03-27 15:31:58,051 - INFO - Agent 19: Cassandra Borja
+2025-03-27 15:31:58,106 - INFO - Agent 20: Dee Grayer
+2025-03-27 15:31:58,155 - INFO - Agent 21: Kathy Reardon
+2025-03-27 15:31:58,198 - INFO - Agent 22: Kathy Campbell
+2025-03-27 15:31:58,239 - INFO - Agent 23: Brenda Brandhorst
+2025-03-27 15:31:58,280 - INFO - Agent 24: Debbie Mack
+2025-03-27 15:31:58,329 - INFO - Agent 25: Rick Ferguson
+2025-03-27 15:34:13,740 - INFO - Saved 25 agents to CSV
+2025-03-27 15:34:20,643 - INFO - Processing page 7 for Apache Junction real estate agents
+2025-03-27 15:34:20,760 - INFO - Found 25 agents on page 7
+2025-03-27 15:34:20,807 - INFO - Agent 1: Debra Spagna
+2025-03-27 15:34:20,855 - INFO - Agent 2: Deanne Martin
+2025-03-27 15:34:20,925 - INFO - Agent 3: JoAnn Ford
+2025-03-27 15:34:20,990 - INFO - Agent 4: Christina Dugie
+2025-03-27 15:34:21,039 - INFO - Agent 5: Lori Bond
+2025-03-27 15:34:21,106 - INFO - Agent 6: Leslie Phillips
+2025-03-27 15:34:21,183 - INFO - Agent 7: Kyna Morris
+2025-03-27 15:34:21,234 - INFO - Agent 8: Ellen Fleming
+2025-03-27 15:34:21,293 - INFO - Agent 9: Shawn Behanna
+2025-03-27 15:34:21,343 - INFO - Agent 10: Nikki McMillian
+2025-03-27 15:34:21,389 - INFO - Agent 11: George Low
+2025-03-27 15:34:21,445 - INFO - Agent 12: Kristina Read
+2025-03-27 15:34:21,501 - INFO - Agent 13: Jarod Britman
+2025-03-27 15:34:21,569 - INFO - Agent 14: Michael Maddox
+2025-03-27 15:34:21,624 - INFO - Agent 15: Ignacio Melgarejo
+2025-03-27 15:34:21,682 - INFO - Agent 16: Anne Martin
+2025-03-27 15:34:21,738 - INFO - Agent 17: Shalynn Evans
+2025-03-27 15:34:21,795 - INFO - Agent 18: Heather Manos
+2025-03-27 15:34:21,855 - INFO - Agent 19: Katy Farol
+2025-03-27 15:34:21,919 - INFO - Agent 20: Amanda Thomason
+2025-03-27 15:34:21,968 - INFO - Agent 21: George Haith
+2025-03-27 15:34:22,017 - INFO - Agent 22: Yvonne Corrigan-Carr
+2025-03-27 15:34:22,078 - INFO - Agent 23: Sam Garcia
+2025-03-27 15:34:22,128 - INFO - Agent 24: Ty Green
+2025-03-27 15:34:22,189 - INFO - Agent 25: Joshua Simpson
+2025-03-27 15:36:33,480 - INFO - Saved 25 agents to CSV
+2025-03-27 15:36:41,224 - INFO - Processing page 8 for Apache Junction real estate agents
+2025-03-27 15:36:41,470 - INFO - Found 25 agents on page 8
+2025-03-27 15:36:41,551 - INFO - Agent 1: Sara Waide Bowers
+2025-03-27 15:36:41,623 - INFO - Agent 2: Jayne Wolff
+2025-03-27 15:36:41,675 - INFO - Agent 3: Dave Penunuri
+2025-03-27 15:36:41,729 - INFO - Agent 4: Jillian Kuefner
+2025-03-27 15:36:41,778 - INFO - Agent 5: Morgan Ellsworth
+2025-03-27 15:36:41,828 - INFO - Agent 6: Bill Adams
+2025-03-27 15:36:41,883 - INFO - Agent 7: Jorge Valencia
+2025-03-27 15:36:41,931 - INFO - Agent 8: Bobbi J Buchli
+2025-03-27 15:36:41,977 - INFO - Agent 9: Stephanie Clark-Lamb
+2025-03-27 15:36:42,032 - INFO - Agent 10: Billy Fallos
+2025-03-27 15:36:42,077 - INFO - Agent 11: Jackie Salmans
+2025-03-27 15:36:42,118 - INFO - Agent 12: Karen Sechrist
+2025-03-27 15:36:42,157 - INFO - Agent 13: Tammy Danielson
+2025-03-27 15:36:42,231 - INFO - Agent 14: Leah Triller
+2025-03-27 15:36:42,314 - INFO - Agent 15: Stephanie Mitchell
+2025-03-27 15:36:42,384 - INFO - Agent 16: Tim Sevcik
+2025-03-27 15:36:42,437 - INFO - Agent 17: Dalila Sanchez Nava
+2025-03-27 15:36:42,493 - INFO - Agent 18: Heather Bennett
+2025-03-27 15:36:42,537 - INFO - Agent 19: Drew Burns
+2025-03-27 15:36:42,583 - INFO - Agent 20: Karen Moore
+2025-03-27 15:36:42,638 - INFO - Agent 21: Allison Wood
+2025-03-27 15:36:42,683 - INFO - Agent 22: Tasha Jones
+2025-03-27 15:36:42,730 - INFO - Agent 23: The Boone Team
+2025-03-27 15:36:42,786 - INFO - Agent 24: Kim Peterson
+2025-03-27 15:36:42,833 - INFO - Agent 25: McCaul Wallesen
+2025-03-27 15:39:01,514 - INFO - Saved 25 agents to CSV
+2025-03-27 15:39:08,514 - INFO - Processing page 9 for Apache Junction real estate agents
+2025-03-27 15:39:08,769 - INFO - Found 25 agents on page 9
+2025-03-27 15:39:08,861 - INFO - Agent 1: Shana Trotter
+2025-03-27 15:39:08,949 - INFO - Agent 2: Gillian Kirkpatrick
+2025-03-27 15:39:09,026 - INFO - Agent 3: Kylie Mack-Garding
+2025-03-27 15:39:09,079 - INFO - Agent 4: Stephen Albee
+2025-03-27 15:39:09,126 - INFO - Agent 5: Dane McFall
+2025-03-27 15:39:09,179 - INFO - Agent 6: Melissa Lopez
+2025-03-27 15:39:09,221 - INFO - Agent 7: Patricia Whorton
+2025-03-27 15:39:09,267 - INFO - Agent 8: Kateryna Hedz
+2025-03-27 15:39:09,311 - INFO - Agent 9: John Jacobs
+2025-03-27 15:39:09,360 - INFO - Agent 10: Dan Leboffe
+2025-03-27 15:39:09,404 - INFO - Agent 11: Ryann Haenel
+2025-03-27 15:39:09,449 - INFO - Agent 12: Beatriz Kraft
+2025-03-27 15:39:09,492 - INFO - Agent 13: Elmira Mills
+2025-03-27 15:39:09,540 - INFO - Agent 14: Bill Parkerson
+2025-03-27 15:39:09,600 - INFO - Agent 15: Jennifer Usher
+2025-03-27 15:39:09,669 - INFO - Agent 16: Chris Atherton
+2025-03-27 15:39:09,722 - INFO - Agent 17: Al Andersen
+2025-03-27 15:39:09,778 - INFO - Agent 18: Jane Andersen
+2025-03-27 15:39:09,833 - INFO - Agent 19: Jacie Czerwinski
+2025-03-27 15:39:09,874 - INFO - Agent 20: Joseph Hicks
+2025-03-27 15:39:09,923 - INFO - Agent 21: Steve Bauman
+2025-03-27 15:39:09,969 - INFO - Agent 22: Nick Drake
+2025-03-27 15:39:10,012 - INFO - Agent 23: Sheila Hanna
+2025-03-27 15:39:10,055 - INFO - Agent 24: Shelli Bronstine
+2025-03-27 15:39:10,100 - INFO - Agent 25: Jane Grimm
+2025-03-27 15:41:51,274 - INFO - Saved 25 agents to CSV
+2025-03-27 15:41:58,202 - INFO - Processing page 10 for Apache Junction real estate agents
+2025-03-27 15:41:58,488 - INFO - Found 25 agents on page 10
+2025-03-27 15:41:58,549 - INFO - Agent 1: Andrew Watts
+2025-03-27 15:41:58,617 - INFO - Agent 2: Douglas Corbin
+2025-03-27 15:41:58,685 - INFO - Agent 3: Chad Corbin
+2025-03-27 15:41:58,746 - INFO - Agent 4: India Ryer
+2025-03-27 15:41:58,805 - INFO - Agent 5: Ivelina Angelova
+2025-03-27 15:41:58,860 - INFO - Agent 6: Selena Worl
+2025-03-27 15:41:58,918 - INFO - Agent 7: Angela Jacques
+2025-03-27 15:41:58,970 - INFO - Agent 8: Melinda Bacon
+2025-03-27 15:41:59,022 - INFO - Agent 9: Stacie Bell
+2025-03-27 15:41:59,079 - INFO - Agent 10: Steven Toth
+2025-03-27 15:41:59,136 - INFO - Agent 11: Fiona Bigbee
+2025-03-27 15:41:59,187 - INFO - Agent 12: Tavit Kazanjian
+2025-03-27 15:41:59,243 - INFO - Agent 13: Rebecca Sherlin
+2025-03-27 15:41:59,290 - INFO - Agent 14: Tom Miller
+2025-03-27 15:41:59,348 - INFO - Agent 15: Aj Alsadi
+2025-03-27 15:41:59,401 - INFO - Agent 16: William Darby
+2025-03-27 15:41:59,454 - INFO - Agent 17: Tony Gonzalez
+2025-03-27 15:41:59,505 - INFO - Agent 18: Ulises Sandoval
+2025-03-27 15:41:59,564 - INFO - Agent 19: Joel Knight
+2025-03-27 15:41:59,614 - INFO - Agent 20: Judy Ellison
+2025-03-27 15:41:59,664 - INFO - Agent 21: Sariah Crandall
+2025-03-27 15:41:59,713 - INFO - Agent 22: Gregory Boone
+2025-03-27 15:41:59,763 - INFO - Agent 23: Lindsay Barton
+2025-03-27 15:41:59,814 - INFO - Agent 24: Oscar Villado-Cano
+2025-03-27 15:41:59,866 - INFO - Agent 25: Cher Redmond
+2025-03-27 15:44:09,792 - INFO - Saved 25 agents to CSV
+2025-03-27 15:44:17,840 - INFO - Processing page 11 for Apache Junction real estate agents
+2025-03-27 15:44:18,072 - INFO - Found 25 agents on page 11
+2025-03-27 15:44:18,125 - INFO - Agent 1: Martha Appel
+2025-03-27 15:44:18,174 - INFO - Agent 2: Mercedes Arenado-Melian
+2025-03-27 15:44:18,226 - INFO - Agent 3: The Engstrom Team
+2025-03-27 15:44:18,297 - INFO - Agent 4: Gustavo Borquez
+2025-03-27 15:44:18,376 - INFO - Agent 5: Angie Denicola-Rush
+2025-03-27 15:44:18,442 - INFO - Agent 6: Bill Adams
+2025-03-27 15:44:18,526 - INFO - Agent 7: Samantha Fields
+2025-03-27 15:44:18,607 - INFO - Agent 8: Nancy Wittenberg
+2025-03-27 15:44:18,691 - INFO - Agent 9: Paula Serven
+2025-03-27 15:44:18,756 - INFO - Agent 10: Travis Parker
+2025-03-27 15:44:18,916 - INFO - Agent 11: Michelle Kramer
+2025-03-27 15:44:19,060 - INFO - Agent 12: Tyler Davis
+2025-03-27 15:44:19,216 - INFO - Agent 13: The Stolworthy Caspers Team
+2025-03-27 15:44:19,353 - INFO - Agent 14: Bill Hoff
+2025-03-27 15:44:19,484 - INFO - Agent 15: Liz Bandarupally
+2025-03-27 15:44:19,701 - INFO - Agent 16: Ida Horvath
+2025-03-27 15:44:19,835 - INFO - Agent 17: Renee Slagter
+2025-03-27 15:44:19,970 - INFO - Agent 18: Sherri Johnson
+2025-03-27 15:44:20,100 - INFO - Agent 19: Deanna Christenson
+2025-03-27 15:44:20,236 - INFO - Agent 20: Kerri Ostrom
+2025-03-27 15:44:20,293 - INFO - Agent 21: Sheena Gray
+2025-03-27 15:44:20,365 - INFO - Agent 22: Chet Derouen
+2025-03-27 15:44:20,438 - INFO - Agent 23: Gabi Crow
+2025-03-27 15:44:20,506 - INFO - Agent 24: Brian Kamenca
+2025-03-27 15:44:20,549 - INFO - Agent 25: Timothy Smith
+2025-03-27 15:46:36,331 - INFO - Saved 25 agents to CSV
+2025-03-27 15:46:43,624 - INFO - Processing page 12 for Apache Junction real estate agents
+2025-03-27 15:46:43,761 - INFO - Found 6 agents on page 12
+2025-03-27 15:46:43,813 - INFO - Agent 1: Kay Jones
+2025-03-27 15:46:43,868 - INFO - Agent 2: Vahid Millani
+2025-03-27 15:46:43,921 - INFO - Agent 3: Kayli Sells
+2025-03-27 15:46:43,973 - INFO - Agent 4: John Frank
+2025-03-27 15:46:44,026 - INFO - Agent 5: Feng-Yi Li
+2025-03-27 15:46:44,140 - INFO - Agent 6: Juan Batres
+2025-03-27 15:47:17,354 - INFO - Processing inner city 4/80: Arivaca real estate agents
+2025-03-27 15:47:24,717 - INFO - Processing page 1 for Arivaca real estate agents
+2025-03-27 15:47:24,838 - INFO - Found 25 agents on page 1
+2025-03-27 15:47:24,923 - INFO - Agent 1: Alicia Hiller
+2025-03-27 15:47:24,968 - INFO - Agent 2: Elizabeth Alegria
+2025-03-27 15:47:25,010 - INFO - Agent 3: Marybeth Woodworth
+2025-03-27 15:47:25,051 - INFO - Agent 4: Tamara Kempton
+2025-03-27 15:47:25,097 - INFO - Agent 5: Laurel Caprio
+2025-03-27 15:47:25,144 - INFO - Agent 6: Linda Jehle
+2025-03-27 15:47:25,186 - INFO - Agent 7: Cheryl Maynard
+2025-03-27 15:47:25,231 - INFO - Agent 8: Julie Hummer-Bellmyer
+2025-03-27 15:47:25,278 - INFO - Agent 9: Francisco Ruiz
+2025-03-27 15:47:25,324 - INFO - Agent 10: Rudy Lira
+2025-03-27 15:47:25,401 - INFO - Agent 11: Candy Bell
+2025-03-27 15:47:25,451 - INFO - Agent 12: Trenna Hiney
+2025-03-27 15:47:25,500 - INFO - Agent 13: Pam Pesqueira
+2025-03-27 15:47:25,547 - INFO - Agent 14: Clare Fernandes
+2025-03-27 15:47:25,593 - INFO - Agent 15: Tom Williams
+2025-03-27 15:47:25,638 - INFO - Agent 16: Donna Schenek
+2025-03-27 15:47:25,686 - INFO - Agent 17: Matt Bowen
+2025-03-27 15:47:25,731 - INFO - Agent 18: Lora Dungy Cheney
+2025-03-27 15:47:25,794 - INFO - Agent 19: Dolores Jakeway
+2025-03-27 15:47:25,861 - INFO - Agent 20: Dinah Lewis
+2025-03-27 15:47:25,909 - INFO - Agent 21: Laurie Lundeen
+2025-03-27 15:47:25,954 - INFO - Agent 22: Deborah Wyrsch-Williams
+2025-03-27 15:47:26,067 - INFO - Agent 23: Brent Self
+2025-03-27 15:47:26,165 - INFO - Agent 24: Dave Margolis
+2025-03-27 15:47:26,213 - INFO - Agent 25: Jim Callery
+2025-03-27 15:49:38,634 - INFO - Saved 31 agents to CSV
+2025-03-27 15:49:45,622 - INFO - Processing page 2 for Arivaca real estate agents
+2025-03-27 15:49:45,827 - INFO - Found 25 agents on page 2
+2025-03-27 15:49:45,949 - INFO - Agent 1: Beata Lopez
+2025-03-27 15:49:46,016 - INFO - Agent 2: Jim Hoppens
+2025-03-27 15:49:46,061 - INFO - Agent 3: Carolyn Fox
+2025-03-27 15:49:46,104 - INFO - Agent 4: Terry Lang
+2025-03-27 15:49:46,147 - INFO - Agent 5: Ramon Ross
+2025-03-27 15:49:46,190 - INFO - Agent 6: Christopher Molander
+2025-03-27 15:49:46,235 - INFO - Agent 7: Sue Taylor-Lane
+2025-03-27 15:49:46,279 - INFO - Agent 8: Keith Kleimola
+2025-03-27 15:49:46,318 - INFO - Agent 9: Darrell Lilja
+2025-03-27 15:49:46,363 - INFO - Agent 10: Marsha Eades
+2025-03-27 15:49:46,403 - INFO - Agent 11: Verna Elmer
+2025-03-27 15:49:46,446 - INFO - Agent 12: Jeanne Zachman
+2025-03-27 15:49:46,488 - INFO - Agent 13: Christi Nicklas
+2025-03-27 15:49:46,529 - INFO - Agent 14: Perla Velasquez
+2025-03-27 15:49:46,570 - INFO - Agent 15: Trina Alberta Oesterle
+2025-03-27 15:49:46,613 - INFO - Agent 16: Michon Brudenell
+2025-03-27 15:49:46,664 - INFO - Agent 17: April Campbell
+2025-03-27 15:49:46,719 - INFO - Agent 18: Sara Hunter
+2025-03-27 15:49:46,786 - INFO - Agent 19: Elaine Grace
+2025-03-27 15:49:46,854 - INFO - Agent 20: Phoebe Bigelow
+2025-03-27 15:49:46,928 - INFO - Agent 21: Rudy Berthold
+2025-03-27 15:49:46,993 - INFO - Agent 22: Timothy Dalrymple
+2025-03-27 15:49:47,036 - INFO - Agent 23: Lorraine Demeerleer
+2025-03-27 15:49:47,078 - INFO - Agent 24: Ed Baker
+2025-03-27 15:49:47,121 - INFO - Agent 25: Julius Barraza
+2025-03-27 15:51:55,533 - INFO - Saved 25 agents to CSV
+2025-03-27 15:52:03,710 - INFO - Processing page 3 for Arivaca real estate agents
+2025-03-27 15:52:03,894 - INFO - Found 23 agents on page 3
+2025-03-27 15:52:03,983 - INFO - Agent 1: Lillian Shine
+2025-03-27 15:52:04,063 - INFO - Agent 2: Jim McDougall
+2025-03-27 15:52:04,145 - INFO - Agent 3: Julie Bishop
+2025-03-27 15:52:04,278 - INFO - Agent 4: April Cooper
+2025-03-27 15:52:04,358 - INFO - Agent 5: Enrique Vance
+2025-03-27 15:52:04,437 - INFO - Agent 6: Tavee Brzuchalski
+2025-03-27 15:52:04,519 - INFO - Agent 7: Rodney Chiddix
+2025-03-27 15:52:04,607 - INFO - Agent 8: Linda Niederkorn
+2025-03-27 15:52:04,697 - INFO - Agent 9: Denise Jacobs
+2025-03-27 15:52:04,795 - INFO - Agent 10: Julie Leon
+2025-03-27 15:52:04,895 - INFO - Agent 11: Rita Collier
+2025-03-27 15:52:05,052 - INFO - Agent 12: Jr. Gerardo Ochoa Rico
+2025-03-27 15:52:05,147 - INFO - Agent 13: Vanessa Alday
+2025-03-27 15:52:05,201 - INFO - Agent 14: William Ims
+2025-03-27 15:52:05,240 - INFO - Agent 15: Randall Koster
+2025-03-27 15:52:05,282 - INFO - Agent 16: Richard Duarte
+2025-03-27 15:52:05,340 - INFO - Agent 17: Chrissie Hancock
+2025-03-27 15:52:05,381 - INFO - Agent 18: Becky Tucker
+2025-03-27 15:52:05,451 - INFO - Agent 19: Denise Matthys
+2025-03-27 15:52:05,521 - INFO - Agent 20: Leticia Diaz
+2025-03-27 15:52:05,595 - INFO - Agent 21: Tomas Echeverri
+2025-03-27 15:52:05,666 - INFO - Agent 22: Martin Kennedy
+2025-03-27 15:52:05,735 - INFO - Agent 23: Dennese Cole
+2025-03-27 15:54:00,095 - INFO - Saved 23 agents to CSV
+2025-03-27 15:54:00,135 - INFO - Processing inner city 5/80: Avondale real estate agents
+2025-03-27 15:54:06,760 - INFO - Processing page 1 for Avondale real estate agents
+2025-03-27 15:54:06,947 - INFO - Found 25 agents on page 1
+2025-03-27 15:54:07,032 - INFO - Agent 1: Denise Von Der Linn
+2025-03-27 15:54:07,118 - INFO - Agent 2: Igor Berwa
+2025-03-27 15:54:07,201 - INFO - Agent 3: Greg Faulhaber
+2025-03-27 15:54:07,282 - INFO - Agent 4: Laura Tolmachoff
+2025-03-27 15:54:07,361 - INFO - Agent 5: Terri Reblin
+2025-03-27 15:54:07,443 - INFO - Agent 6: Cyndi Wilson
+2025-03-27 15:54:07,525 - INFO - Agent 7: Richie Cantarella
+2025-03-27 15:54:07,606 - INFO - Agent 8: Paul Cantarella
+2025-03-27 15:54:07,691 - INFO - Agent 9: Anabel Guerrero
+2025-03-27 15:54:07,775 - INFO - Agent 10: Kasandra Chavez
+2025-03-27 15:54:07,855 - INFO - Agent 11: Kim Penn
+2025-03-27 15:54:07,935 - INFO - Agent 12: Max Noronha
+2025-03-27 15:54:08,018 - INFO - Agent 13: Anne Hunt
+2025-03-27 15:54:08,104 - INFO - Agent 14: Marisol Castro
+2025-03-27 15:54:08,198 - INFO - Agent 15: Linda Stewart
+2025-03-27 15:54:08,295 - INFO - Agent 16: Jacqui Brown-Schmidt
+2025-03-27 15:54:08,389 - INFO - Agent 17: Jacqueline Casillas
+2025-03-27 15:54:08,465 - INFO - Agent 18: Lynda Haneman
+2025-03-27 15:54:08,542 - INFO - Agent 19: Samantha Lopez
+2025-03-27 15:54:08,617 - INFO - Agent 20: Merrill O'Connor
+2025-03-27 15:54:08,689 - INFO - Agent 21: Victor Rocha
+2025-03-27 15:54:08,759 - INFO - Agent 22: Antoinette Perez
+2025-03-27 15:54:08,828 - INFO - Agent 23: Tasha Greaves
+2025-03-27 15:54:08,898 - INFO - Agent 24: Deborah Hart
+2025-03-27 15:54:08,975 - INFO - Agent 25: Brashad Whiting
+2025-03-27 15:56:18,390 - INFO - Saved 25 agents to CSV
+2025-03-27 15:56:25,501 - INFO - Processing page 2 for Avondale real estate agents
+2025-03-27 15:56:25,754 - INFO - Found 25 agents on page 2
+2025-03-27 15:56:25,816 - INFO - Agent 1: Roxana Loya
+2025-03-27 15:56:25,864 - INFO - Agent 2: Maria Torres
+2025-03-27 15:56:25,917 - INFO - Agent 3: Nidia Guzman
+2025-03-27 15:56:25,965 - INFO - Agent 4: Sonja Shaw
+2025-03-27 15:56:26,013 - INFO - Agent 5: Michelle Pacheco
+2025-03-27 15:56:26,058 - INFO - Agent 6: Gabriela Villarreal
+2025-03-27 15:56:26,104 - INFO - Agent 7: Laura Joyner
+2025-03-27 15:56:26,149 - INFO - Agent 8: Natalie McCluskey
+2025-03-27 15:56:26,201 - INFO - Agent 9: Michelle Leone
+2025-03-27 15:56:26,249 - INFO - Agent 10: Anu Jain
+2025-03-27 15:56:26,297 - INFO - Agent 11: Jean Sichterman
+2025-03-27 15:56:26,345 - INFO - Agent 12: Tammy Boyd
+2025-03-27 15:56:26,391 - INFO - Agent 13: Rebecca Blank
+2025-03-27 15:56:26,440 - INFO - Agent 14: Madelyn Dobson
+2025-03-27 15:56:26,488 - INFO - Agent 15: Sandy Hermann
+2025-03-27 15:56:26,543 - INFO - Agent 16: Andy Berglund
+2025-03-27 15:56:26,623 - INFO - Agent 17: Karen Bosch
+2025-03-27 15:56:26,690 - INFO - Agent 18: Barbara Brno
+2025-03-27 15:56:26,746 - INFO - Agent 19: Leslie Coates
+2025-03-27 15:56:26,802 - INFO - Agent 20: Bonnie Ditty
+2025-03-27 15:56:26,853 - INFO - Agent 21: Kathy Dillard
+2025-03-27 15:56:26,905 - INFO - Agent 22: Jeffery Zaharia
+2025-03-27 15:56:26,956 - INFO - Agent 23: Joan Andersen
+2025-03-27 15:56:27,022 - INFO - Agent 24: Myriam Barrera-Montes
+2025-03-27 15:56:27,065 - INFO - Agent 25: Christine Prescott
+2025-03-27 15:58:41,453 - INFO - Saved 25 agents to CSV
+2025-03-27 15:58:49,258 - INFO - Processing page 3 for Avondale real estate agents
+2025-03-27 15:58:49,445 - INFO - Found 25 agents on page 3
+2025-03-27 15:58:49,563 - INFO - Agent 1: Bea Mitchell
+2025-03-27 15:58:49,670 - INFO - Agent 2: Rosemary Keely
+2025-03-27 15:58:49,826 - INFO - Agent 3: Kurt Mayer
+2025-03-27 15:58:49,923 - INFO - Agent 4: Mary Mayer
+2025-03-27 15:58:50,011 - INFO - Agent 5: Carmen McIntosh
+2025-03-27 15:58:50,100 - INFO - Agent 6: Laurie Balestrino
+2025-03-27 15:58:50,193 - INFO - Agent 7: Sarah Edwards
+2025-03-27 15:58:50,284 - INFO - Agent 8: David Furnia
+2025-03-27 15:58:50,397 - INFO - Agent 9: Jo Stack
+2025-03-27 15:58:50,489 - INFO - Agent 10: Denise Adame
+2025-03-27 15:58:50,539 - INFO - Agent 11: Bill O'Connell
+2025-03-27 15:58:50,588 - INFO - Agent 12: Jill Gerber
+2025-03-27 15:58:50,636 - INFO - Agent 13: Dawn Rajda
+2025-03-27 15:58:50,689 - INFO - Agent 14: Debra Mason
+2025-03-27 15:58:50,735 - INFO - Agent 15: Steve Moore
+2025-03-27 15:58:50,783 - INFO - Agent 16: Kevin Mayer
+2025-03-27 15:58:50,828 - INFO - Agent 17: Cristina Ortiz Penuelas
+2025-03-27 15:58:50,873 - INFO - Agent 18: Eva Amery
+2025-03-27 15:58:50,919 - INFO - Agent 19: Davontae Smith
+2025-03-27 15:58:50,965 - INFO - Agent 20: Mitchell Berman
+2025-03-27 15:58:51,010 - INFO - Agent 21: Sandra Osgood
+2025-03-27 15:58:51,055 - INFO - Agent 22: Kayla Shugars
+2025-03-27 15:58:51,103 - INFO - Agent 23: Jeanne Cantrell
+2025-03-27 15:58:51,149 - INFO - Agent 24: Jan Schaafsma
+2025-03-27 15:58:51,194 - INFO - Agent 25: Jamie Gerdes II
+2025-03-27 16:01:05,835 - INFO - Saved 25 agents to CSV
+2025-03-27 16:01:12,567 - INFO - Processing page 4 for Avondale real estate agents
+2025-03-27 16:01:12,748 - INFO - Found 25 agents on page 4
+2025-03-27 16:01:12,834 - INFO - Agent 1: Tammy Nelson
+2025-03-27 16:01:12,920 - INFO - Agent 2: Marisol Castro
+2025-03-27 16:01:13,005 - INFO - Agent 3: Martha Appel
+2025-03-27 16:01:13,176 - INFO - Agent 4: Frank Ellis
+2025-03-27 16:01:13,262 - INFO - Agent 5: Elmira Mills
+2025-03-27 16:01:13,339 - INFO - Agent 6: Anu Jain
+2025-03-27 16:01:13,396 - INFO - Agent 7: Jacqui Brown-Schmidt
+2025-03-27 16:01:13,437 - INFO - Agent 8: Bill Parkerson
+2025-03-27 16:01:13,476 - INFO - Agent 9: Robyn McLean
+2025-03-27 16:01:13,544 - INFO - Agent 10: Janie Peterman
+2025-03-27 16:01:13,647 - INFO - Agent 11: Ryan Swiatowiec
+2025-03-27 16:01:13,757 - INFO - Agent 12: Yvonne Arnett
+2025-03-27 16:01:13,854 - INFO - Agent 13: Igor Berwa
+2025-03-27 16:01:13,941 - INFO - Agent 14: Samantha Lopez
+2025-03-27 16:01:14,022 - INFO - Agent 15: Greg Faulhaber
+2025-03-27 16:01:14,107 - INFO - Agent 16: Paul Scoville
+2025-03-27 16:01:14,181 - INFO - Agent 17: Victor Rocha
+2025-03-27 16:01:14,254 - INFO - Agent 18: Crystal Barron
+2025-03-27 16:01:14,332 - INFO - Agent 19: Steven Meade
+2025-03-27 16:01:14,401 - INFO - Agent 20: Brenda Zadori
+2025-03-27 16:01:14,472 - INFO - Agent 21: Richard Hasquet
+2025-03-27 16:01:14,541 - INFO - Agent 22: William Darby
+2025-03-27 16:01:14,615 - INFO - Agent 23: Richie Cantarella
+2025-03-27 16:01:14,684 - INFO - Agent 24: Paul Cantarella
+2025-03-27 16:01:14,758 - INFO - Agent 25: Laurie Balestrino
+2025-03-27 16:03:23,579 - INFO - Saved 25 agents to CSV
+2025-03-27 16:03:32,005 - INFO - Processing page 5 for Avondale real estate agents
+2025-03-27 16:03:32,234 - INFO - Found 25 agents on page 5
+2025-03-27 16:03:32,352 - INFO - Agent 1: Sarah Edwards
+2025-03-27 16:03:32,430 - INFO - Agent 2: Mizael Martinez
+2025-03-27 16:03:32,473 - INFO - Agent 3: Amanda Thomason
+2025-03-27 16:03:32,516 - INFO - Agent 4: Deborah Hart
+2025-03-27 16:03:32,559 - INFO - Agent 5: Roxana Loya
+2025-03-27 16:03:32,599 - INFO - Agent 6: Nidia Guzman
+2025-03-27 16:03:32,643 - INFO - Agent 7: Michelle Pacheco
+2025-03-27 16:03:32,686 - INFO - Agent 8: Gabriela Villarreal
+2025-03-27 16:03:32,728 - INFO - Agent 9: Allicia Roza-Carrozza
+2025-03-27 16:03:32,773 - INFO - Agent 10: Angela Botz
+2025-03-27 16:03:32,817 - INFO - Agent 11: Linda Stewart
+2025-03-27 16:03:32,860 - INFO - Agent 12: Kamie Ulery
+2025-03-27 16:03:32,901 - INFO - Agent 13: Silvia Wray
+2025-03-27 16:03:32,943 - INFO - Agent 14: Paula Serven
+2025-03-27 16:03:32,982 - INFO - Agent 15: Adrianne Caspers
+2025-03-27 16:03:33,024 - INFO - Agent 16: Denise Von Der Linn
+2025-03-27 16:03:33,072 - INFO - Agent 17: Kim Pilling
+2025-03-27 16:03:33,119 - INFO - Agent 18: Mark Helms
+2025-03-27 16:03:33,161 - INFO - Agent 19: Mark Jones
+2025-03-27 16:03:33,266 - INFO - Agent 20: Valle Wilkinson
+2025-03-27 16:03:33,373 - INFO - Agent 21: Madelyn Dobson
+2025-03-27 16:03:33,427 - INFO - Agent 22: Liz Miles
+2025-03-27 16:03:33,471 - INFO - Agent 23: Suzi Bicknell
+2025-03-27 16:03:33,518 - INFO - Agent 24: Andy Berglund
+2025-03-27 16:03:33,557 - INFO - Agent 25: Karen Bosch
+2025-03-27 16:04:58,870 - INFO - Another instance (PID 463974) is running. Stopping it and starting new instance.
+2025-03-27 16:05:00,873 - INFO - Removed lock file
+2025-03-27 16:05:00,877 - INFO - Scraper started in background
+2025-03-27 16:05:00,886 - INFO - Created lock file with PID: 504164
+2025-03-27 16:05:09,280 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:05:16,726 - INFO - Processing inner city 5/80: Avondale real estate agents
+2025-03-27 16:05:20,547 - INFO - Processing page 4 for Avondale real estate agents
+2025-03-27 16:05:20,727 - INFO - Found 25 agents on page 4
+2025-03-27 16:05:20,812 - INFO - Agent 1: Angela Botz
+2025-03-27 16:05:20,892 - INFO - Agent 2: Linda Stewart
+2025-03-27 16:05:20,975 - INFO - Agent 3: Kamie Ulery
+2025-03-27 16:05:21,059 - INFO - Agent 4: Silvia Wray
+2025-03-27 16:05:21,139 - INFO - Agent 5: Paula Serven
+2025-03-27 16:05:21,222 - INFO - Agent 6: Adrianne Caspers
+2025-03-27 16:05:21,302 - INFO - Agent 7: Denise Von Der Linn
+2025-03-27 16:05:21,396 - INFO - Agent 8: Kim Pilling
+2025-03-27 16:05:21,482 - INFO - Agent 9: Mark Helms
+2025-03-27 16:05:21,573 - INFO - Agent 10: Mark Jones
+2025-03-27 16:05:21,654 - INFO - Agent 11: Valle Wilkinson
+2025-03-27 16:05:21,742 - INFO - Agent 12: Madelyn Dobson
+2025-03-27 16:05:21,841 - INFO - Agent 13: Liz Miles
+2025-03-27 16:05:21,921 - INFO - Agent 14: Suzi Bicknell
+2025-03-27 16:05:21,961 - INFO - Agent 15: Andy Berglund
+2025-03-27 16:05:22,004 - INFO - Agent 16: Karen Bosch
+2025-03-27 16:05:22,053 - INFO - Agent 17: Barbara Brno
+2025-03-27 16:05:22,123 - INFO - Agent 18: Leslie Coates
+2025-03-27 16:05:22,195 - INFO - Agent 19: Diana Silva
+2025-03-27 16:05:22,264 - INFO - Agent 20: Monica Hughett
+2025-03-27 16:05:22,336 - INFO - Agent 21: Bonnie Ditty
+2025-03-27 16:05:22,408 - INFO - Agent 22: Jane Grimm
+2025-03-27 16:05:22,481 - INFO - Agent 23: Joan Andersen
+2025-03-27 16:05:22,550 - INFO - Agent 24: Myriam Barrera-Montes
+2025-03-27 16:05:22,624 - INFO - Agent 25: Julie Helms
+2025-03-27 16:06:01,295 - INFO - Saved 25 agents to CSV
+2025-03-27 16:06:06,284 - INFO - Processing page 5 for Avondale real estate agents
+2025-03-27 16:06:06,518 - INFO - Found 25 agents on page 5
+2025-03-27 16:06:06,620 - INFO - Agent 1: Christine Prescott
+2025-03-27 16:06:06,722 - INFO - Agent 2: Tasha Greaves
+2025-03-27 16:06:06,830 - INFO - Agent 3: Rosemary Keely
+2025-03-27 16:06:06,962 - INFO - Agent 4: Kurt Mayer
+2025-03-27 16:06:07,067 - INFO - Agent 5: Mary Mayer
+2025-03-27 16:06:07,166 - INFO - Agent 6: Carmen McIntosh
+2025-03-27 16:06:07,257 - INFO - Agent 7: Brandy Braveboy
+2025-03-27 16:06:07,348 - INFO - Agent 8: Shannon Biszantz
+2025-03-27 16:06:07,437 - INFO - Agent 9: Kasandra Chavez
+2025-03-27 16:06:07,520 - INFO - Agent 10: Hovan Salibian
+2025-03-27 16:06:07,599 - INFO - Agent 11: Nakeisha Brown Vidrios
+2025-03-27 16:06:07,694 - INFO - Agent 12: Jo Stack
+2025-03-27 16:06:07,784 - INFO - Agent 13: Brashad Whiting
+2025-03-27 16:06:07,865 - INFO - Agent 14: Carrie Bivens
+2025-03-27 16:06:07,963 - INFO - Agent 15: Teri Mogensen
+2025-03-27 16:06:08,044 - INFO - Agent 16: Maria Torres
+2025-03-27 16:06:08,124 - INFO - Agent 17: Susan Kovitz-Tasky
+2025-03-27 16:06:08,206 - INFO - Agent 18: Ivelina Angelova
+2025-03-27 16:06:08,311 - INFO - Agent 19: Max Noronha
+2025-03-27 16:06:08,389 - INFO - Agent 20: Cher Redmond
+2025-03-27 16:06:08,443 - INFO - Agent 21: Jill Gerber
+2025-03-27 16:06:08,502 - INFO - Agent 22: Dawn Rajda
+2025-03-27 16:06:08,568 - INFO - Agent 23: Steve Moore
+2025-03-27 16:06:08,623 - INFO - Agent 24: Kevin Mayer
+2025-03-27 16:06:08,672 - INFO - Agent 25: Cristina Ortiz Penuelas
+2025-03-27 16:07:00,254 - INFO - Another instance (PID 504164) is running. Stopping it and starting new instance.
+2025-03-27 16:07:02,256 - INFO - Removed lock file
+2025-03-27 16:07:02,259 - INFO - Scraper started in background
+2025-03-27 16:07:02,267 - INFO - Created lock file with PID: 505856
+2025-03-27 16:07:12,170 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:07:19,861 - INFO - Processing inner city 5/80: Avondale real estate agents
+2025-03-27 16:07:24,722 - INFO - Processing page 4 for Avondale real estate agents
+2025-03-27 16:07:24,915 - INFO - Found 25 agents on page 4
+2025-03-27 16:07:25,025 - INFO - Agent 1: Roxana Loya
+2025-03-27 16:07:25,139 - INFO - Agent 2: Nidia Guzman
+2025-03-27 16:07:25,241 - INFO - Agent 3: Michelle Pacheco
+2025-03-27 16:07:25,337 - INFO - Agent 4: Gabriela Villarreal
+2025-03-27 16:07:25,428 - INFO - Agent 5: Allicia Roza-Carrozza
+2025-03-27 16:07:25,524 - INFO - Agent 6: Angela Botz
+2025-03-27 16:07:25,616 - INFO - Agent 7: Linda Stewart
+2025-03-27 16:07:25,710 - INFO - Agent 8: Kamie Ulery
+2025-03-27 16:07:25,801 - INFO - Agent 9: Silvia Wray
+2025-03-27 16:07:25,891 - INFO - Agent 10: Paula Serven
+2025-03-27 16:07:25,981 - INFO - Agent 11: Adrianne Caspers
+2025-03-27 16:07:26,074 - INFO - Agent 12: Denise Von Der Linn
+2025-03-27 16:07:26,165 - INFO - Agent 13: Kim Pilling
+2025-03-27 16:07:26,255 - INFO - Agent 14: Mark Helms
+2025-03-27 16:07:26,340 - INFO - Agent 15: Mark Jones
+2025-03-27 16:07:26,438 - INFO - Agent 16: Valle Wilkinson
+2025-03-27 16:07:26,530 - INFO - Agent 17: Madelyn Dobson
+2025-03-27 16:07:26,630 - INFO - Agent 18: Liz Miles
+2025-03-27 16:07:26,717 - INFO - Agent 19: Suzi Bicknell
+2025-03-27 16:07:26,764 - INFO - Agent 20: Andy Berglund
+2025-03-27 16:07:26,811 - INFO - Agent 21: Karen Bosch
+2025-03-27 16:07:26,861 - INFO - Agent 22: Barbara Brno
+2025-03-27 16:07:26,909 - INFO - Agent 23: Leslie Coates
+2025-03-27 16:07:26,958 - INFO - Agent 24: Diana Silva
+2025-03-27 16:07:27,003 - INFO - Agent 25: Monica Hughett
+2025-03-27 16:09:24,550 - INFO - Another instance (PID 505856) is running. Stopping it and starting new instance.
+2025-03-27 16:09:26,551 - INFO - Removed lock file
+2025-03-27 16:09:26,553 - INFO - Scraper started in background
+2025-03-27 16:09:26,561 - INFO - Created lock file with PID: 506695
+2025-03-27 16:09:36,242 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:09:43,543 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 16:09:47,366 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 16:09:47,548 - INFO - Found 25 agents on page 1
+2025-03-27 16:09:47,762 - INFO - Agent 1: Alicia Hiller
+2025-03-27 16:09:47,812 - INFO - Agent 2: Lillian Shine
+2025-03-27 16:09:47,878 - INFO - Agent 3: Donna Schenek
+2025-03-27 16:09:47,933 - INFO - Agent 4: Matt Bowen
+2025-03-27 16:09:47,986 - INFO - Agent 5: Lora Dungy Cheney
+2025-03-27 16:09:48,048 - INFO - Agent 6: Dolores Jakeway
+2025-03-27 16:09:48,106 - INFO - Agent 7: Dinah Lewis
+2025-03-27 16:09:48,155 - INFO - Agent 8: Laurie Lundeen
+2025-03-27 16:09:48,213 - INFO - Agent 9: Deborah Wyrsch-Williams
+2025-03-27 16:09:48,269 - INFO - Agent 10: Dave Margolis
+2025-03-27 16:09:48,324 - INFO - Agent 11: Linda Jehle
+2025-03-27 16:09:48,382 - INFO - Agent 12: Tom Williams
+2025-03-27 16:09:48,431 - INFO - Agent 13: Jim Callery
+2025-03-27 16:09:48,479 - INFO - Agent 14: Sue Taylor-Lane
+2025-03-27 16:09:48,526 - INFO - Agent 15: Brent Self
+2025-03-27 16:09:48,575 - INFO - Agent 16: Carolyn Fox
+2025-03-27 16:09:48,621 - INFO - Agent 17: Michon Brudenell
+2025-03-27 16:09:48,675 - INFO - Agent 18: Linda Niederkorn
+2025-03-27 16:09:48,731 - INFO - Agent 19: Candy Bell
+2025-03-27 16:09:48,787 - INFO - Agent 20: Julius Barraza
+2025-03-27 16:09:48,843 - INFO - Agent 21: Pam Pesqueira
+2025-03-27 16:09:48,899 - INFO - Agent 22: Terry Lang
+2025-03-27 16:09:48,958 - INFO - Agent 23: Perla Velasquez
+2025-03-27 16:09:49,011 - INFO - Agent 24: Phoebe Bigelow
+2025-03-27 16:09:49,060 - INFO - Agent 25: Laurel Caprio
+2025-03-27 16:10:23,996 - INFO - Saved 25 agents to CSV
+2025-03-27 16:10:28,864 - INFO - Processing page 2 for Amado real estate agents
+2025-03-27 16:10:29,077 - INFO - Found 25 agents on page 2
+2025-03-27 16:10:29,192 - INFO - Agent 1: Lorraine Demeerleer
+2025-03-27 16:10:29,281 - INFO - Agent 2: Jeanne Zachman
+2025-03-27 16:10:29,370 - INFO - Agent 3: Trina Alberta Oesterle
+2025-03-27 16:10:29,464 - INFO - Agent 4: Jim McDougall
+2025-03-27 16:10:29,554 - INFO - Agent 5: Verna Elmer
+2025-03-27 16:10:29,649 - INFO - Agent 6: Julie Bishop
+2025-03-27 16:10:29,739 - INFO - Agent 7: Enrique Vance
+2025-03-27 16:10:29,829 - INFO - Agent 8: Tavee Brzuchalski
+2025-03-27 16:10:29,920 - INFO - Agent 9: Rudy Berthold
+2025-03-27 16:10:30,010 - INFO - Agent 10: Ramon Ross
+2025-03-27 16:10:30,105 - INFO - Agent 11: April Campbell
+2025-03-27 16:10:30,197 - INFO - Agent 12: Marsha Eades
+2025-03-27 16:10:30,287 - INFO - Agent 13: Sara Hunter
+2025-03-27 16:10:30,381 - INFO - Agent 14: Vanessa Alday
+2025-03-27 16:10:30,467 - INFO - Agent 15: Jim Hoppens
+2025-03-27 16:10:30,548 - INFO - Agent 16: Ed Baker
+2025-03-27 16:10:30,628 - INFO - Agent 17: Darrell Lilja
+2025-03-27 16:10:30,753 - INFO - Agent 18: Julie Leon
+2025-03-27 16:10:30,861 - INFO - Agent 19: Clare Fernandes
+2025-03-27 16:10:30,947 - INFO - Agent 20: Christopher Molander
+2025-03-27 16:10:30,993 - INFO - Agent 21: Elaine Grace
+2025-03-27 16:10:31,034 - INFO - Agent 22: Rodney Chiddix
+2025-03-27 16:10:31,080 - INFO - Agent 23: Christi Nicklas
+2025-03-27 16:10:31,129 - INFO - Agent 24: Francisco Ruiz
+2025-03-27 16:10:31,175 - INFO - Agent 25: Denise Jacobs
+2025-03-27 16:10:55,337 - INFO - Another instance (PID 506695) is running. Stopping it and starting new instance.
+2025-03-27 16:10:57,352 - INFO - Removed lock file
+2025-03-27 16:11:10,113 - INFO - Saved 25 agents to CSV
+2025-03-27 16:11:15,758 - INFO - Scraper started in background
+2025-03-27 16:11:15,765 - INFO - Created lock file with PID: 506695
+2025-03-27 16:11:25,054 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:11:31,082 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 16:11:34,873 - INFO - Processing page 2 for Amado real estate agents
+2025-03-27 16:11:35,243 - INFO - Found 25 agents on page 2
+2025-03-27 16:11:35,414 - INFO - Agent 1: Cheryl Maynard
+2025-03-27 16:11:35,506 - INFO - Agent 2: Keith Kleimola
+2025-03-27 16:11:35,625 - INFO - Agent 3: Alicia Hiller
+2025-03-27 16:11:35,730 - INFO - Agent 4: Lillian Shine
+2025-03-27 16:11:35,824 - INFO - Agent 5: Donna Schenek
+2025-03-27 16:11:35,891 - INFO - Agent 6: Matt Bowen
+2025-03-27 16:11:35,975 - INFO - Agent 7: Lora Dungy Cheney
+2025-03-27 16:11:36,026 - INFO - Agent 8: Dolores Jakeway
+2025-03-27 16:11:36,085 - INFO - Agent 9: Dinah Lewis
+2025-03-27 16:11:36,136 - INFO - Agent 10: Laurie Lundeen
+2025-03-27 16:11:36,183 - INFO - Agent 11: Deborah Wyrsch-Williams
+2025-03-27 16:11:36,231 - INFO - Agent 12: Dave Margolis
+2025-03-27 16:11:36,280 - INFO - Agent 13: Linda Jehle
+2025-03-27 16:11:36,326 - INFO - Agent 14: Tom Williams
+2025-03-27 16:11:36,375 - INFO - Agent 15: Jim Callery
+2025-03-27 16:11:36,422 - INFO - Agent 16: Sue Taylor-Lane
+2025-03-27 16:11:36,469 - INFO - Agent 17: Brent Self
+2025-03-27 16:11:36,518 - INFO - Agent 18: Carolyn Fox
+2025-03-27 16:11:36,581 - INFO - Agent 19: Michon Brudenell
+2025-03-27 16:11:36,631 - INFO - Agent 20: Linda Niederkorn
+2025-03-27 16:11:36,682 - INFO - Agent 21: Candy Bell
+2025-03-27 16:11:36,734 - INFO - Agent 22: Julius Barraza
+2025-03-27 16:11:36,790 - INFO - Agent 23: Pam Pesqueira
+2025-03-27 16:11:36,842 - INFO - Agent 24: Terry Lang
+2025-03-27 16:11:36,899 - INFO - Agent 25: Perla Velasquez
+2025-03-27 16:12:14,012 - INFO - Saved 25 agents to CSV
+2025-03-27 16:12:20,553 - INFO - Processing page 3 for Amado real estate agents
+2025-03-27 16:12:20,882 - INFO - Found 25 agents on page 3
+2025-03-27 16:12:21,040 - INFO - Agent 1: Phoebe Bigelow
+2025-03-27 16:12:21,124 - INFO - Agent 2: Laurel Caprio
+2025-03-27 16:12:21,245 - INFO - Agent 3: Lorraine Demeerleer
+2025-03-27 16:12:21,372 - INFO - Agent 4: Jeanne Zachman
+2025-03-27 16:12:21,449 - INFO - Agent 5: Trina Alberta Oesterle
+2025-03-27 16:12:21,534 - INFO - Agent 6: Jim McDougall
+2025-03-27 16:12:21,641 - INFO - Agent 7: Verna Elmer
+2025-03-27 16:12:21,763 - INFO - Agent 8: Julie Bishop
+2025-03-27 16:12:21,884 - INFO - Agent 9: Enrique Vance
+2025-03-27 16:12:21,962 - INFO - Agent 10: Tavee Brzuchalski
+2025-03-27 16:12:22,026 - INFO - Agent 11: Rudy Berthold
+2025-03-27 16:12:22,149 - INFO - Agent 12: Ramon Ross
+2025-03-27 16:12:22,258 - INFO - Agent 13: April Campbell
+2025-03-27 16:12:22,349 - INFO - Agent 14: Marsha Eades
+2025-03-27 16:12:22,441 - INFO - Agent 15: Sara Hunter
+2025-03-27 16:12:22,529 - INFO - Agent 16: Vanessa Alday
+2025-03-27 16:12:22,607 - INFO - Agent 17: Jim Hoppens
+2025-03-27 16:12:22,698 - INFO - Agent 18: Ed Baker
+2025-03-27 16:12:22,819 - INFO - Agent 19: Darrell Lilja
+2025-03-27 16:12:22,927 - INFO - Agent 20: Julie Leon
+2025-03-27 16:12:23,042 - INFO - Agent 21: Clare Fernandes
+2025-03-27 16:12:23,118 - INFO - Agent 22: Christopher Molander
+2025-03-27 16:12:23,213 - INFO - Agent 23: Elaine Grace
+2025-03-27 16:12:23,314 - INFO - Agent 24: Rodney Chiddix
+2025-03-27 16:12:23,396 - INFO - Agent 25: Christi Nicklas
+2025-03-27 16:12:59,222 - INFO - Saved 25 agents to CSV
+2025-03-27 16:13:04,326 - INFO - Processing page 4 for Amado real estate agents
+2025-03-27 16:13:04,510 - INFO - Found 23 agents on page 4
+2025-03-27 16:13:04,607 - INFO - Agent 1: Francisco Ruiz
+2025-03-27 16:13:04,716 - INFO - Agent 2: Denise Jacobs
+2025-03-27 16:13:04,813 - INFO - Agent 3: Timothy Dalrymple
+2025-03-27 16:13:04,907 - INFO - Agent 4: Rita Collier
+2025-03-27 16:13:04,997 - INFO - Agent 5: Jr. Gerardo Ochoa Rico
+2025-03-27 16:13:05,087 - INFO - Agent 6: Beata Lopez
+2025-03-27 16:13:05,178 - INFO - Agent 7: Elizabeth Alegria
+2025-03-27 16:13:05,276 - INFO - Agent 8: Julie Hummer-Bellmyer
+2025-03-27 16:13:05,375 - INFO - Agent 9: Marybeth Woodworth
+2025-03-27 16:13:05,475 - INFO - Agent 10: Tamara Kempton
+2025-03-27 16:13:05,566 - INFO - Agent 11: April Cooper
+2025-03-27 16:13:05,658 - INFO - Agent 12: Rudy Lira
+2025-03-27 16:13:05,757 - INFO - Agent 13: Trenna Hiney
+2025-03-27 16:13:05,851 - INFO - Agent 14: Chrissie Hancock
+2025-03-27 16:13:05,933 - INFO - Agent 15: William Ims
+2025-03-27 16:13:06,016 - INFO - Agent 16: Richard Duarte
+2025-03-27 16:13:06,097 - INFO - Agent 17: Denise Matthys
+2025-03-27 16:13:06,177 - INFO - Agent 18: Randall Koster
+2025-03-27 16:13:06,260 - INFO - Agent 19: Leticia Diaz
+2025-03-27 16:13:06,346 - INFO - Agent 20: Becky Tucker
+2025-03-27 16:13:06,424 - INFO - Agent 21: Tomas Echeverri
+2025-03-27 16:13:06,520 - INFO - Agent 22: Dennese Cole
+2025-03-27 16:13:06,602 - INFO - Agent 23: Martin Kennedy
+2025-03-27 16:13:37,142 - INFO - Saved 23 agents to CSV
+2025-03-27 16:13:37,186 - INFO - Processing inner city 2/80: Anthem real estate agents
+2025-03-27 16:13:41,114 - INFO - Processing page 1 for Anthem real estate agents
+2025-03-27 16:13:41,277 - INFO - Found 25 agents on page 1
+2025-03-27 16:13:41,403 - INFO - Agent 1: Kristen Donovan
+2025-03-27 16:13:41,485 - INFO - Agent 2: Nikki Norton
+2025-03-27 16:13:41,577 - INFO - Agent 3: Mandy Bennett
+2025-03-27 16:13:41,677 - INFO - Agent 4: Kathleen Erba
+2025-03-27 16:13:41,766 - INFO - Agent 5: Dawn VanSickle
+2025-03-27 16:13:41,851 - INFO - Agent 6: Jo Ann Bauer
+2025-03-27 16:13:41,937 - INFO - Agent 7: Ben Curtin
+2025-03-27 16:13:42,031 - INFO - Agent 8: Misty DiBella
+2025-03-27 16:13:42,119 - INFO - Agent 9: Oscar Rodriguez
+2025-03-27 16:13:42,207 - INFO - Agent 10: Shawn Keane
+2025-03-27 16:13:42,293 - INFO - Agent 11: Dennis Erba
+2025-03-27 16:13:42,378 - INFO - Agent 12: Connie McGregor
+2025-03-27 16:13:42,467 - INFO - Agent 13: Jessica Pile
+2025-03-27 16:13:42,556 - INFO - Agent 14: Charles Turner
+2025-03-27 16:13:42,646 - INFO - Agent 15: James Telich
+2025-03-27 16:13:42,732 - INFO - Agent 16: Cori Bender
+2025-03-27 16:13:42,821 - INFO - Agent 17: Lynn Green
+2025-03-27 16:13:42,919 - INFO - Agent 18: Kerri Schrand
+2025-03-27 16:13:43,007 - INFO - Agent 19: Mark Friedman
+2025-03-27 16:13:43,197 - INFO - Agent 20: Megan Fernandez
+2025-03-27 16:13:43,311 - INFO - Agent 21: Sandi Hess
+2025-03-27 16:13:43,380 - INFO - Agent 22: Gary Frantz
+2025-03-27 16:13:43,428 - INFO - Agent 23: Sandra Moses
+2025-03-27 16:13:43,475 - INFO - Agent 24: Terrie Lescarbeau
+2025-03-27 16:13:43,522 - INFO - Agent 25: Carol Campbell
+2025-03-27 16:14:26,544 - INFO - Another instance (PID 506695) is running. Stopping it and starting new instance.
+2025-03-27 16:14:28,461 - INFO - Saved 25 agents to CSV
+2025-03-27 16:14:28,546 - INFO - Removed lock file
+2025-03-27 16:14:28,552 - INFO - Scraper started in background
+2025-03-27 16:14:28,558 - INFO - Cleared existing file: data/coldwell_agents.csv
+2025-03-27 16:14:28,572 - INFO - Created lock file with PID: 506695
+2025-03-27 16:14:34,140 - INFO - Processing page 2 for Anthem real estate agents
+2025-03-27 16:14:34,484 - INFO - Found 25 agents on page 2
+2025-03-27 16:14:34,769 - INFO - Agent 1: Jerry Tulman
+2025-03-27 16:14:34,964 - INFO - Agent 2: Alfred Monsalvatge
+2025-03-27 16:14:35,109 - INFO - Agent 3: Kim Farnsworth
+2025-03-27 16:14:35,177 - INFO - Agent 4: Mary Ann Davis
+2025-03-27 16:14:35,444 - INFO - Agent 5: Heather Miller
+2025-03-27 16:14:35,542 - INFO - Agent 6: Marty Mogalian
+2025-03-27 16:14:35,613 - INFO - Agent 7: Bruce Woods
+2025-03-27 16:14:35,663 - INFO - Agent 8: Mila Delaware
+2025-03-27 16:14:35,705 - INFO - Agent 9: Brian Elliott
+2025-03-27 16:14:35,746 - INFO - Agent 10: Monica Condomitti
+2025-03-27 16:14:35,801 - INFO - Agent 11: Mariah Cantrell
+2025-03-27 16:14:35,877 - INFO - Agent 12: Tom Scappaticci
+2025-03-27 16:14:35,964 - INFO - Agent 13: Lisa Stine
+2025-03-27 16:14:36,085 - INFO - Agent 14: Bob Pfeiffer
+2025-03-27 16:14:36,180 - INFO - Agent 15: Barbara Prizeman
+2025-03-27 16:14:36,252 - INFO - Agent 16: Rebecca Norton
+2025-03-27 16:14:36,312 - INFO - Agent 17: Bibianna Baez
+2025-03-27 16:14:36,366 - INFO - Agent 18: Jill Stecker
+2025-03-27 16:14:36,416 - INFO - Agent 19: Sandy Esmay
+2025-03-27 16:14:36,483 - INFO - Agent 20: D. Andre Nicu
+2025-03-27 16:14:36,542 - INFO - Agent 21: John Schuetze
+2025-03-27 16:14:36,602 - INFO - Agent 22: Bill Ciora
+2025-03-27 16:14:36,667 - INFO - Agent 23: Lori Davies
+2025-03-27 16:14:36,740 - INFO - Agent 24: Timothy York
+2025-03-27 16:14:36,805 - INFO - Agent 25: Candy Jenkins
+2025-03-27 16:14:37,872 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:14:47,380 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 16:14:51,100 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 16:14:51,592 - INFO - Found 25 agents on page 1
+2025-03-27 16:14:51,892 - INFO - Agent 1: Rudy Lira
+2025-03-27 16:14:52,177 - INFO - Agent 2: Trenna Hiney
+2025-03-27 16:14:52,609 - INFO - Agent 3: Cheryl Maynard
+2025-03-27 16:14:52,837 - INFO - Agent 4: Keith Kleimola
+2025-03-27 16:14:53,171 - INFO - Agent 5: Alicia Hiller
+2025-03-27 16:14:53,437 - INFO - Agent 6: Lillian Shine
+2025-03-27 16:14:53,696 - INFO - Agent 7: Donna Schenek
+2025-03-27 16:14:54,133 - INFO - Agent 8: Matt Bowen
+2025-03-27 16:14:54,494 - INFO - Agent 9: Lora Dungy Cheney
+2025-03-27 16:14:54,815 - INFO - Agent 10: Dolores Jakeway
+2025-03-27 16:14:55,020 - INFO - Agent 11: Dinah Lewis
+2025-03-27 16:14:55,216 - INFO - Agent 12: Laurie Lundeen
+2025-03-27 16:14:55,361 - INFO - Agent 13: Deborah Wyrsch-Williams
+2025-03-27 16:14:55,493 - INFO - Agent 14: Dave Margolis
+2025-03-27 16:14:55,721 - INFO - Agent 15: Linda Jehle
+2025-03-27 16:14:55,937 - INFO - Agent 16: Tom Williams
+2025-03-27 16:14:56,091 - INFO - Agent 17: Jim Callery
+2025-03-27 16:14:56,220 - INFO - Agent 18: Sue Taylor-Lane
+2025-03-27 16:14:56,437 - INFO - Agent 19: Brent Self
+2025-03-27 16:14:56,677 - INFO - Agent 20: Carolyn Fox
+2025-03-27 16:14:56,841 - INFO - Agent 21: Michon Brudenell
+2025-03-27 16:14:56,917 - INFO - Agent 22: Linda Niederkorn
+2025-03-27 16:14:56,999 - INFO - Agent 23: Candy Bell
+2025-03-27 16:14:57,088 - INFO - Agent 24: Julius Barraza
+2025-03-27 16:14:57,152 - INFO - Agent 25: Pam Pesqueira
+2025-03-27 16:15:23,889 - INFO - Saved 25 agents to CSV
+2025-03-27 16:15:28,981 - INFO - Processing page 3 for Anthem real estate agents
+2025-03-27 16:15:29,608 - INFO - Found 25 agents on page 3
+2025-03-27 16:15:29,880 - INFO - Agent 1: Larisa Falcon
+2025-03-27 16:15:30,156 - INFO - Agent 2: Donna Hunter
+2025-03-27 16:15:30,443 - INFO - Agent 3: Peggy Nelson
+2025-03-27 16:15:30,592 - INFO - Agent 4: Stacy Eaton
+2025-03-27 16:15:30,822 - INFO - Agent 5: Katy Curtis
+2025-03-27 16:15:31,130 - INFO - Agent 6: Steve Fanto
+2025-03-27 16:15:31,441 - INFO - Agent 7: Eric Linden
+2025-03-27 16:15:31,652 - INFO - Agent 8: Shelby Purdy
+2025-03-27 16:15:31,884 - INFO - Agent 9: Kenny Knight
+2025-03-27 16:15:32,043 - INFO - Agent 10: Dominic Scappaticci
+2025-03-27 16:15:32,141 - INFO - Agent 11: David Schrand
+2025-03-27 16:15:32,210 - INFO - Agent 12: Cherie Lang
+2025-03-27 16:15:32,248 - INFO - Agent 13: Jeannine Raiffie
+2025-03-27 16:15:32,288 - INFO - Agent 14: Amanda Geyer
+2025-03-27 16:15:32,326 - INFO - Agent 15: Crystal Moore
+2025-03-27 16:15:32,370 - INFO - Agent 16: Pam Fain
+2025-03-27 16:15:32,416 - INFO - Agent 17: Paige Dutcher
+2025-03-27 16:15:32,453 - INFO - Agent 18: Denise Monaghan OConnell
+2025-03-27 16:15:32,492 - INFO - Agent 19: Noemie Neipert
+2025-03-27 16:15:32,533 - INFO - Agent 20: The Hunter Jenkins Group
+2025-03-27 16:15:32,574 - INFO - Agent 21: Eric Hess
+2025-03-27 16:15:32,643 - INFO - Agent 22: Jennifer Rogers
+2025-03-27 16:15:32,720 - INFO - Agent 23: Zach Kriegshauser
+2025-03-27 16:15:32,802 - INFO - Agent 24: Melissa McCormick Wise
+2025-03-27 16:15:32,875 - INFO - Agent 25: Curtis McCormick
+2025-03-27 16:15:44,032 - ERROR - Fatal error: name 'progress' is not defined
+2025-03-27 16:15:44,035 - INFO - Saved 25 agents to CSV
+2025-03-27 16:16:10,317 - INFO - Saved 25 agents to CSV
+2025-03-27 16:16:14,397 - INFO - Processing page 4 for Anthem real estate agents
+2025-03-27 16:16:14,642 - INFO - Found 25 agents on page 4
+2025-03-27 16:16:14,719 - INFO - Agent 1: Dean Hoppes
+2025-03-27 16:16:14,775 - INFO - Agent 2: Josh Dean
+2025-03-27 16:16:14,824 - INFO - Agent 3: Mary Ann Birdoes
+2025-03-27 16:16:14,878 - INFO - Agent 4: Crisi Mintz
+2025-03-27 16:16:14,933 - INFO - Agent 5: Tammi Stifel
+2025-03-27 16:16:14,984 - INFO - Agent 6: Arlene Warren-Hernandez
+2025-03-27 16:16:15,045 - INFO - Agent 7: Tom Edler
+2025-03-27 16:16:15,096 - INFO - Agent 8: Deana Aller
+2025-03-27 16:16:15,148 - INFO - Agent 9: Audrey Fischer
+2025-03-27 16:16:15,200 - INFO - Agent 10: John Wallitschek
+2025-03-27 16:16:15,253 - INFO - Agent 11: Wendy Dobbs
+2025-03-27 16:16:15,310 - INFO - Agent 12: Kevin Downey
+2025-03-27 16:16:15,385 - INFO - Agent 13: Nadia Alden
+2025-03-27 16:16:15,451 - INFO - Agent 14: Rhonda Solomon
+2025-03-27 16:16:15,582 - INFO - Agent 15: Enza Duda
+2025-03-27 16:16:15,708 - INFO - Agent 16: Cheryl Linden
+2025-03-27 16:16:15,799 - INFO - Agent 17: Craig Kelly
+2025-03-27 16:16:15,855 - INFO - Agent 18: Lee Johnson
+2025-03-27 16:16:15,927 - INFO - Agent 19: Dana Winter
+2025-03-27 16:16:15,982 - INFO - Agent 20: Gary Holloway
+2025-03-27 16:16:16,034 - INFO - Agent 21: Michelle Perry
+2025-03-27 16:16:16,084 - INFO - Agent 22: Cindy Buckhannon
+2025-03-27 16:16:16,130 - INFO - Agent 23: Louise Haarala
+2025-03-27 16:16:16,180 - INFO - Agent 24: Elana Nager
+2025-03-27 16:16:16,229 - INFO - Agent 25: Patricia Godleski
+2025-03-27 16:16:55,517 - INFO - Saved 25 agents to CSV
+2025-03-27 16:16:59,588 - INFO - Processing page 5 for Anthem real estate agents
+2025-03-27 16:16:59,673 - INFO - Found 11 agents on page 5
+2025-03-27 16:16:59,750 - INFO - Agent 1: John Smith
+2025-03-27 16:16:59,801 - INFO - Agent 2: Brock Moses
+2025-03-27 16:16:59,849 - INFO - Agent 3: Noralicia Flores de Valdez
+2025-03-27 16:16:59,897 - INFO - Agent 4: Hillari Hardt
+2025-03-27 16:16:59,980 - INFO - Agent 5: Theo Christakos
+2025-03-27 16:17:00,045 - INFO - Agent 6: Julie Charron
+2025-03-27 16:17:00,096 - INFO - Agent 7: Danielle McBride
+2025-03-27 16:17:00,150 - INFO - Agent 8: Sean Berdy
+2025-03-27 16:17:00,201 - INFO - Agent 9: Kurt Fischer
+2025-03-27 16:17:00,254 - INFO - Agent 10: Chloe Skorpikova
+2025-03-27 16:17:00,317 - INFO - Agent 11: Regina Levin
+2025-03-27 16:17:16,545 - INFO - Another instance (PID 506695) is running. Stopping it and starting new instance.
+2025-03-27 16:17:18,546 - INFO - Removed lock file
+2025-03-27 16:17:18,547 - INFO - Scraper started in background
+2025-03-27 16:17:18,551 - INFO - Cleared existing file: data/coldwell_agents.csv
+2025-03-27 16:17:18,554 - INFO - Created lock file with PID: 506695
+2025-03-27 16:17:20,183 - INFO - Saved 11 agents to CSV
+2025-03-27 16:17:20,255 - INFO - Processing inner city 3/80: Apache Junction real estate agents
+2025-03-27 16:17:24,805 - INFO - Processing page 1 for Apache Junction real estate agents
+2025-03-27 16:17:25,065 - INFO - Found 25 agents on page 1
+2025-03-27 16:17:25,293 - INFO - Agent 1: Traci Daniels
+2025-03-27 16:17:25,545 - INFO - Agent 2: Lisa Sheble
+2025-03-27 16:17:26,005 - INFO - Agent 3: William Darby
+2025-03-27 16:17:26,243 - INFO - Agent 4: Katy Farol
+2025-03-27 16:17:26,581 - INFO - Agent 5: Laurie Balestrino
+2025-03-27 16:17:26,810 - INFO - Agent 6: Sarah Edwards
+2025-03-27 16:17:26,984 - INFO - Agent 7: Cedric Allen
+2025-03-27 16:17:27,129 - INFO - Agent 8: Amanda Thomason
+2025-03-27 16:17:27,236 - INFO - Agent 9: Ty Green
+2025-03-27 16:17:27,479 - INFO - Agent 10: Rick Ferguson
+2025-03-27 16:17:27,532 - INFO - Agent 11: Brigette Metcalf
+2025-03-27 16:17:27,590 - INFO - Agent 12: Roi Clinton
+2025-03-27 16:17:27,652 - INFO - Agent 13: David Courtright
+2025-03-27 16:17:27,698 - INFO - Agent 14: Dominic Hernandez
+2025-03-27 16:17:27,747 - INFO - Agent 15: Paula Serven
+2025-03-27 16:17:27,801 - INFO - Agent 16: Adrianne Caspers
+2025-03-27 16:17:27,863 - INFO - Agent 17: Denise Von Der Linn
+2025-03-27 16:17:27,918 - INFO - Agent 18: Allison Wood
+2025-03-27 16:17:27,968 - INFO - Agent 19: Christina Dugie
+2025-03-27 16:17:28,016 - INFO - Agent 20: Madelyn Dobson
+2025-03-27 16:17:28,061 - INFO - Agent 21: Kate Anderson
+2025-03-27 16:17:28,136 - INFO - Agent 22: Carolyn Irby
+2025-03-27 16:17:28,200 - INFO - Agent 23: Marc Perea
+2025-03-27 16:17:28,252 - INFO - Agent 24: Sophia Chandy
+2025-03-27 16:17:28,296 - INFO - Agent 25: Andy Berglund
+2025-03-27 16:17:33,719 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:17:43,264 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 16:17:46,733 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 16:17:47,610 - INFO - Found 25 agents on page 1
+2025-03-27 16:17:48,021 - INFO - Agent 1: Beata Lopez
+2025-03-27 16:17:48,490 - INFO - Agent 2: Elizabeth Alegria
+2025-03-27 16:17:48,940 - INFO - Agent 3: Julie Hummer-Bellmyer
+2025-03-27 16:17:49,172 - INFO - Agent 4: Marybeth Woodworth
+2025-03-27 16:17:49,439 - INFO - Agent 5: Tamara Kempton
+2025-03-27 16:17:49,643 - INFO - Agent 6: April Cooper
+2025-03-27 16:17:49,945 - INFO - Agent 7: Rudy Lira
+2025-03-27 16:17:50,154 - INFO - Agent 8: Trenna Hiney
+2025-03-27 16:17:50,449 - INFO - Agent 9: Cheryl Maynard
+2025-03-27 16:17:50,762 - INFO - Agent 10: Keith Kleimola
+2025-03-27 16:17:51,216 - INFO - Agent 11: Alicia Hiller
+2025-03-27 16:17:51,734 - INFO - Agent 12: Lillian Shine
+2025-03-27 16:17:52,029 - INFO - Agent 13: Donna Schenek
+2025-03-27 16:17:52,343 - INFO - Agent 14: Matt Bowen
+2025-03-27 16:17:52,720 - INFO - Agent 15: Lora Dungy Cheney
+2025-03-27 16:17:52,942 - INFO - Agent 16: Dolores Jakeway
+2025-03-27 16:17:53,214 - INFO - Agent 17: Dinah Lewis
+2025-03-27 16:17:53,459 - INFO - Agent 18: Laurie Lundeen
+2025-03-27 16:17:53,584 - INFO - Agent 19: Deborah Wyrsch-Williams
+2025-03-27 16:17:53,675 - INFO - Agent 20: Dave Margolis
+2025-03-27 16:17:53,754 - INFO - Agent 21: Linda Jehle
+2025-03-27 16:17:53,863 - INFO - Agent 22: Tom Williams
+2025-03-27 16:17:53,947 - INFO - Agent 23: Jim Callery
+2025-03-27 16:17:54,023 - INFO - Agent 24: Sue Taylor-Lane
+2025-03-27 16:17:54,092 - INFO - Agent 25: Brent Self
+2025-03-27 16:18:21,513 - INFO - Saved 25 agents to CSV
+2025-03-27 16:18:27,833 - INFO - Processing page 2 for Apache Junction real estate agents
+2025-03-27 16:18:28,640 - INFO - Found 25 agents on page 2
+2025-03-27 16:18:29,179 - INFO - Agent 1: Benjamin Ferguson
+2025-03-27 16:18:29,667 - INFO - Agent 2: Karen Bosch
+2025-03-27 16:18:29,841 - INFO - Agent 3: Barbara Brno
+2025-03-27 16:18:30,063 - INFO - Agent 4: Sheila Hanna
+2025-03-27 16:18:30,212 - INFO - Agent 5: Leslie Coates
+2025-03-27 16:18:30,699 - INFO - Agent 6: Bonnie Ditty
+2025-03-27 16:18:31,088 - INFO - Agent 7: Jane Grimm
+2025-03-27 16:18:31,392 - INFO - Agent 8: Max Gau
+2025-03-27 16:18:31,710 - INFO - Agent 9: Christine Prescott
+2025-03-27 16:18:32,200 - INFO - Agent 10: Dee Grayer
+2025-03-27 16:18:32,441 - INFO - Agent 11: Becky Engstrom
+2025-03-27 16:18:32,561 - INFO - Agent 12: Judy Governo
+2025-03-27 16:18:32,670 - INFO - Agent 13: Kari Salvato
+2025-03-27 16:18:32,768 - INFO - Agent 14: Ivelina Angelova
+2025-03-27 16:18:32,836 - INFO - Agent 15: Cher Redmond
+2025-03-27 16:18:32,883 - INFO - Agent 16: GII Varrato
+2025-03-27 16:18:32,950 - INFO - Agent 17: Katie Hernandez
+2025-03-27 16:18:33,023 - INFO - Agent 18: Christina Choe
+2025-03-27 16:18:33,095 - INFO - Agent 19: Carolyn Haith
+2025-03-27 16:18:33,180 - INFO - Agent 20: Charles Myler
+2025-03-27 16:18:33,240 - INFO - Agent 21: George Low
+2025-03-27 16:18:33,313 - INFO - Agent 22: Michelle Leone
+2025-03-27 16:18:33,385 - INFO - Agent 23: Angela Jacques
+2025-03-27 16:18:33,473 - INFO - Agent 24: Barbara Schultz
+2025-03-27 16:18:33,543 - INFO - Agent 25: Troy Goodwin
+2025-03-27 16:18:43,919 - ERROR - Fatal error: 'str' object has no attribute 'get'
+2025-03-27 16:18:43,922 - INFO - Saved 25 agents to CSV
+2025-03-27 16:19:11,224 - INFO - Saved 25 agents to CSV
+2025-03-27 16:19:15,199 - INFO - Processing page 3 for Apache Junction real estate agents
+2025-03-27 16:19:15,387 - INFO - Found 25 agents on page 3
+2025-03-27 16:19:15,471 - INFO - Agent 1: Aesha Williams
+2025-03-27 16:19:15,563 - INFO - Agent 2: Kimberly Deaton
+2025-03-27 16:19:15,658 - INFO - Agent 3: Shannon Behrend
+2025-03-27 16:19:15,745 - INFO - Agent 4: Dave Penunuri
+2025-03-27 16:19:15,837 - INFO - Agent 5: Kathy Wong
+2025-03-27 16:19:15,939 - INFO - Agent 6: Kimberly Borges
+2025-03-27 16:19:16,033 - INFO - Agent 7: Jen Green
+2025-03-27 16:19:16,126 - INFO - Agent 8: Nicole Johnson
+2025-03-27 16:19:16,208 - INFO - Agent 9: Anne Martin
+2025-03-27 16:19:16,294 - INFO - Agent 10: Dennis Swaney
+2025-03-27 16:19:16,378 - INFO - Agent 11: Shelli Bronstine
+2025-03-27 16:19:16,469 - INFO - Agent 12: Jorge Valencia
+2025-03-27 16:19:16,556 - INFO - Agent 13: John Stauffer
+2025-03-27 16:19:16,656 - INFO - Agent 14: Kristine Daligdig
+2025-03-27 16:19:16,742 - INFO - Agent 15: Octavio Ordonez
+2025-03-27 16:19:16,828 - INFO - Agent 16: Dorothy Harrison
+2025-03-27 16:19:16,917 - INFO - Agent 17: Gigi Roberts-Roach
+2025-03-27 16:19:17,003 - INFO - Agent 18: David Furnia
+2025-03-27 16:19:17,096 - INFO - Agent 19: Pat Palmer
+2025-03-27 16:19:17,184 - INFO - Agent 20: Yvonne Strickland David
+2025-03-27 16:19:17,270 - INFO - Agent 21: Stephen Albee
+2025-03-27 16:19:17,359 - INFO - Agent 22: Ashley Sicka
+2025-03-27 16:19:17,442 - INFO - Agent 23: Nancy Herman
+2025-03-27 16:19:17,529 - INFO - Agent 24: Jayne Houghton
+2025-03-27 16:19:17,629 - INFO - Agent 25: Nora Soleimanpour
+2025-03-27 16:19:54,075 - INFO - Saved 25 agents to CSV
+2025-03-27 16:19:59,749 - INFO - Processing page 4 for Apache Junction real estate agents
+2025-03-27 16:19:59,965 - INFO - Found 25 agents on page 4
+2025-03-27 16:20:00,085 - INFO - Agent 1: Leah Triller
+2025-03-27 16:20:00,155 - INFO - Agent 2: Violete Lachini
+2025-03-27 16:20:00,214 - INFO - Agent 3: John Jacobs
+2025-03-27 16:20:00,277 - INFO - Agent 4: Dale Pavlicek
+2025-03-27 16:20:00,341 - INFO - Agent 5: Dan Leboffe
+2025-03-27 16:20:00,397 - INFO - Agent 6: Katina Samaras
+2025-03-27 16:20:00,461 - INFO - Agent 7: Karen Weston
+2025-03-27 16:20:00,526 - INFO - Agent 8: Kay Stolworthy
+2025-03-27 16:20:00,584 - INFO - Agent 9: Cheryl Watson
+2025-03-27 16:20:00,642 - INFO - Agent 10: Sheri Hicks
+2025-03-27 16:20:00,699 - INFO - Agent 11: Nancy Wendt
+2025-03-27 16:20:00,758 - INFO - Agent 12: Daryl McIlhargie
+2025-03-27 16:20:00,817 - INFO - Agent 13: Deanna Funderburk
+2025-03-27 16:20:00,880 - INFO - Agent 14: Chris Johnson
+2025-03-27 16:20:00,937 - INFO - Agent 15: Lori Klindera
+2025-03-27 16:20:00,998 - INFO - Agent 16: Moutaz Helwani
+2025-03-27 16:20:01,065 - INFO - Agent 17: Linda Berg
+2025-03-27 16:20:01,160 - INFO - Agent 18: Michelle Boone
+2025-03-27 16:20:01,264 - INFO - Agent 19: Jamie Gerdes II
+2025-03-27 16:20:01,311 - INFO - Agent 20: Steven Toth
+2025-03-27 16:20:01,359 - INFO - Agent 21: Azita Sajjadi
+2025-03-27 16:20:01,401 - INFO - Agent 22: Lori Bond
+2025-03-27 16:20:01,452 - INFO - Agent 23: Robyn Fonk
+2025-03-27 16:20:01,522 - INFO - Agent 24: John Gordon
+2025-03-27 16:20:01,596 - INFO - Agent 25: Leah Lichter-Roedig
+2025-03-27 16:20:39,801 - INFO - Saved 25 agents to CSV
+2025-03-27 16:20:43,942 - INFO - Processing page 5 for Apache Junction real estate agents
+2025-03-27 16:20:44,126 - INFO - Found 25 agents on page 5
+2025-03-27 16:20:44,211 - INFO - Agent 1: Tom Miller
+2025-03-27 16:20:44,295 - INFO - Agent 2: Heather Manos
+2025-03-27 16:20:44,390 - INFO - Agent 3: Debbie Keehart
+2025-03-27 16:20:44,492 - INFO - Agent 4: Mary Ellsworth
+2025-03-27 16:20:44,586 - INFO - Agent 5: Denise Hopkins
+2025-03-27 16:20:44,685 - INFO - Agent 6: India Ryer
+2025-03-27 16:20:44,777 - INFO - Agent 7: Tammy Danielson
+2025-03-27 16:20:44,866 - INFO - Agent 8: Sonja Shaw
+2025-03-27 16:20:44,951 - INFO - Agent 9: Dalila Sanchez Nava
+2025-03-27 16:20:45,035 - INFO - Agent 10: Jason Button
+2025-03-27 16:20:45,126 - INFO - Agent 11: Nicole Ryan
+2025-03-27 16:20:45,223 - INFO - Agent 12: Julie Sims
+2025-03-27 16:20:45,308 - INFO - Agent 13: Joseph Hicks
+2025-03-27 16:20:45,392 - INFO - Agent 14: Toni Stewart
+2025-03-27 16:20:45,475 - INFO - Agent 15: Rich Johnson
+2025-03-27 16:20:45,560 - INFO - Agent 16: Merrill O'Connor
+2025-03-27 16:20:45,753 - INFO - Agent 17: Wendy Meredith
+2025-03-27 16:20:45,847 - INFO - Agent 18: Tammie Wagner
+2025-03-27 16:20:45,909 - INFO - Agent 19: Andre Taylor
+2025-03-27 16:20:45,952 - INFO - Agent 20: The Boone Team
+2025-03-27 16:20:46,005 - INFO - Agent 21: Steven Meredith
+2025-03-27 16:20:46,056 - INFO - Agent 22: McCaul Wallesen
+2025-03-27 16:20:46,104 - INFO - Agent 23: Julia Trujillo
+2025-03-27 16:20:46,167 - INFO - Agent 24: Kathy Reardon
+2025-03-27 16:20:46,211 - INFO - Agent 25: Kim Keller
+2025-03-27 16:21:20,912 - INFO - Saved 25 agents to CSV
+2025-03-27 16:21:24,825 - INFO - Processing page 6 for Apache Junction real estate agents
+2025-03-27 16:21:24,998 - INFO - Found 25 agents on page 6
+2025-03-27 16:21:25,054 - INFO - Agent 1: Cynthia Brown
+2025-03-27 16:21:25,108 - INFO - Agent 2: Douglas Corbin
+2025-03-27 16:21:25,170 - INFO - Agent 3: Chad Corbin
+2025-03-27 16:21:25,230 - INFO - Agent 4: Happy Basla
+2025-03-27 16:21:25,316 - INFO - Agent 5: Gregory Boone
+2025-03-27 16:21:25,434 - INFO - Agent 6: Sam Garcia
+2025-03-27 16:21:25,526 - INFO - Agent 7: Joshua Simpson
+2025-03-27 16:21:25,585 - INFO - Agent 8: Patricia Whorton
+2025-03-27 16:21:25,634 - INFO - Agent 9: Laura Joyner
+2025-03-27 16:21:25,687 - INFO - Agent 10: Daeon Smith-Jones
+2025-03-27 16:21:25,733 - INFO - Agent 11: Gustavo Borquez
+2025-03-27 16:21:25,777 - INFO - Agent 12: Stephanie Watkins
+2025-03-27 16:21:25,820 - INFO - Agent 13: Davontae Smith
+2025-03-27 16:21:25,864 - INFO - Agent 14: Chris Atherton
+2025-03-27 16:21:25,913 - INFO - Agent 15: Al Andersen
+2025-03-27 16:21:26,014 - INFO - Agent 16: Jane Andersen
+2025-03-27 16:21:26,128 - INFO - Agent 17: Stacie Bell
+2025-03-27 16:21:26,225 - INFO - Agent 18: Keith George
+2025-03-27 16:21:26,309 - INFO - Agent 19: Karen Moore
+2025-03-27 16:21:26,399 - INFO - Agent 20: Robert Andler
+2025-03-27 16:21:26,483 - INFO - Agent 21: Rebecca Blank
+2025-03-27 16:21:26,601 - INFO - Agent 22: Ignacio Melgarejo
+2025-03-27 16:21:26,723 - INFO - Agent 23: Morgan Ellsworth
+2025-03-27 16:21:26,776 - INFO - Agent 24: Aj Alsadi
+2025-03-27 16:21:26,830 - INFO - Agent 25: Ellen Fleming
+2025-03-27 16:22:02,449 - INFO - Saved 25 agents to CSV
+2025-03-27 16:22:06,657 - INFO - Processing page 7 for Apache Junction real estate agents
+2025-03-27 16:22:06,917 - INFO - Found 25 agents on page 7
+2025-03-27 16:22:06,977 - INFO - Agent 1: Kylie Mack-Garding
+2025-03-27 16:22:07,025 - INFO - Agent 2: Denise Adame
+2025-03-27 16:22:07,075 - INFO - Agent 3: Jean Pomeroy
+2025-03-27 16:22:07,119 - INFO - Agent 4: Tim Sevcik
+2025-03-27 16:22:07,169 - INFO - Agent 5: Brian Genzlinger
+2025-03-27 16:22:07,220 - INFO - Agent 6: Kristina Read
+2025-03-27 16:22:07,270 - INFO - Agent 7: Johnny Ruano
+2025-03-27 16:22:07,317 - INFO - Agent 8: Tasha Jones
+2025-03-27 16:22:07,370 - INFO - Agent 9: Tom Evangelista
+2025-03-27 16:22:07,421 - INFO - Agent 10: Kim Peterson
+2025-03-27 16:22:07,483 - INFO - Agent 11: Bobbi J Buchli
+2025-03-27 16:22:07,542 - INFO - Agent 12: Tommy Hudson
+2025-03-27 16:22:07,611 - INFO - Agent 13: George Haith
+2025-03-27 16:22:07,671 - INFO - Agent 14: Yvonne Corrigan-Carr
+2025-03-27 16:22:07,724 - INFO - Agent 15: Debbie Mack
+2025-03-27 16:22:07,776 - INFO - Agent 16: Karen Sechrist
+2025-03-27 16:22:07,827 - INFO - Agent 17: Michael Rossi
+2025-03-27 16:22:07,876 - INFO - Agent 18: Sara Waide Bowers
+2025-03-27 16:22:07,927 - INFO - Agent 19: Debra Mason
+2025-03-27 16:22:07,978 - INFO - Agent 20: The Engstrom Team
+2025-03-27 16:22:08,030 - INFO - Agent 21: Debra Spagna
+2025-03-27 16:22:08,078 - INFO - Agent 22: Jayne Wolff
+2025-03-27 16:22:08,126 - INFO - Agent 23: Heather Bennett
+2025-03-27 16:22:08,177 - INFO - Agent 24: Nancy Wittenberg
+2025-03-27 16:22:08,231 - INFO - Agent 25: Johnny Johnson
+2025-03-27 16:22:45,087 - INFO - Saved 25 agents to CSV
+2025-03-27 16:22:49,255 - INFO - Processing page 8 for Apache Junction real estate agents
+2025-03-27 16:22:49,474 - INFO - Found 25 agents on page 8
+2025-03-27 16:22:49,595 - INFO - Agent 1: Philip Shumway
+2025-03-27 16:22:49,648 - INFO - Agent 2: Tavit Kazanjian
+2025-03-27 16:22:49,710 - INFO - Agent 3: Antoinette Perez
+2025-03-27 16:22:49,766 - INFO - Agent 4: Gerrianne O'Neil
+2025-03-27 16:22:49,815 - INFO - Agent 5: Lisa Grayer
+2025-03-27 16:22:49,867 - INFO - Agent 6: Darryl Bassette
+2025-03-27 16:22:49,919 - INFO - Agent 7: Ann Wrigley
+2025-03-27 16:22:49,973 - INFO - Agent 8: Ulises Sandoval
+2025-03-27 16:22:50,022 - INFO - Agent 9: Kyna Morris
+2025-03-27 16:22:50,081 - INFO - Agent 10: Kathy Campbell
+2025-03-27 16:22:50,131 - INFO - Agent 11: Sariah Crandall
+2025-03-27 16:22:50,186 - INFO - Agent 12: Billy Fallos
+2025-03-27 16:22:50,242 - INFO - Agent 13: Kelly Kanehen
+2025-03-27 16:22:50,295 - INFO - Agent 14: Jackie Salmans
+2025-03-27 16:22:50,348 - INFO - Agent 15: Brenda Brandhorst
+2025-03-27 16:22:50,402 - INFO - Agent 16: Bill O'Connell
+2025-03-27 16:22:50,455 - INFO - Agent 17: Stephanie Mitchell
+2025-03-27 16:22:50,513 - INFO - Agent 18: Ryann Haenel
+2025-03-27 16:22:50,570 - INFO - Agent 19: Deanne Martin
+2025-03-27 16:22:50,619 - INFO - Agent 20: JoAnn Ford
+2025-03-27 16:22:50,671 - INFO - Agent 21: Melinda Bacon
+2025-03-27 16:22:50,724 - INFO - Agent 22: Joe Hernandez
+2025-03-27 16:22:50,780 - INFO - Agent 23: Fiona Bigbee
+2025-03-27 16:22:50,834 - INFO - Agent 24: Nick Drake
+2025-03-27 16:22:50,930 - INFO - Agent 25: Cynthia Morisch
+2025-03-27 16:23:33,556 - INFO - Saved 25 agents to CSV
+2025-03-27 16:23:40,153 - INFO - Processing page 9 for Apache Junction real estate agents
+2025-03-27 16:23:40,370 - INFO - Found 25 agents on page 9
+2025-03-27 16:23:40,454 - INFO - Agent 1: Cassandra Borja
+2025-03-27 16:23:40,547 - INFO - Agent 2: Anabel Guerrero
+2025-03-27 16:23:40,673 - INFO - Agent 3: Leslie Phillips
+2025-03-27 16:23:40,795 - INFO - Agent 4: Stephanie Clark-Lamb
+2025-03-27 16:23:40,896 - INFO - Agent 5: Gillian Kirkpatrick
+2025-03-27 16:23:41,014 - INFO - Agent 6: Joel Knight
+2025-03-27 16:23:41,083 - INFO - Agent 7: Alan Glasband
+2025-03-27 16:23:41,149 - INFO - Agent 8: Judy Ellison
+2025-03-27 16:23:41,268 - INFO - Agent 9: Anne Hunt
+2025-03-27 16:23:41,343 - INFO - Agent 10: Kateryna Hedz
+2025-03-27 16:23:41,427 - INFO - Agent 11: Selena Worl
+2025-03-27 16:23:41,519 - INFO - Agent 12: Beatriz Kraft
+2025-03-27 16:23:41,621 - INFO - Agent 13: Jacqueline Casillas
+2025-03-27 16:23:41,688 - INFO - Agent 14: Samantha Fields
+2025-03-27 16:23:41,779 - INFO - Agent 15: Jacie Czerwinski
+2025-03-27 16:23:41,854 - INFO - Agent 16: Steve Bauman
+2025-03-27 16:23:41,927 - INFO - Agent 17: Joye Holverson
+2025-03-27 16:23:41,990 - INFO - Agent 18: Rhonda Franklin
+2025-03-27 16:23:42,054 - INFO - Agent 19: Shalynn Evans
+2025-03-27 16:23:42,133 - INFO - Agent 20: Rebecca Sherlin
+2025-03-27 16:23:42,234 - INFO - Agent 21: Marjorie Allen
+2025-03-27 16:23:42,377 - INFO - Agent 22: Andrew Watts
+2025-03-27 16:23:42,542 - INFO - Agent 23: Lindsay Barton
+2025-03-27 16:23:42,732 - INFO - Agent 24: Oscar Villado-Cano
+2025-03-27 16:23:42,870 - INFO - Agent 25: Shawn Behanna
+2025-03-27 16:24:22,872 - INFO - Saved 25 agents to CSV
+2025-03-27 16:24:27,092 - INFO - Processing page 10 for Apache Junction real estate agents
+2025-03-27 16:24:27,424 - INFO - Found 25 agents on page 10
+2025-03-27 16:24:27,640 - INFO - Agent 1: Dane McFall
+2025-03-27 16:24:27,875 - INFO - Agent 2: Melissa Lopez
+2025-03-27 16:24:28,220 - INFO - Agent 3: Susan Lynde
+2025-03-27 16:24:28,380 - INFO - Agent 4: Mercedes Arenado-Melian
+2025-03-27 16:24:28,498 - INFO - Agent 5: Natalie McCluskey
+2025-03-27 16:24:28,562 - INFO - Agent 6: Nikki McMillian
+2025-03-27 16:24:28,605 - INFO - Agent 7: Angie Denicola-Rush
+2025-03-27 16:24:28,649 - INFO - Agent 8: Ellsworth Group
+2025-03-27 16:24:28,689 - INFO - Agent 9: Drew Burns
+2025-03-27 16:24:28,731 - INFO - Agent 10: Jillian Kuefner
+2025-03-27 16:24:28,790 - INFO - Agent 11: Claudia Hedt
+2025-03-27 16:24:28,833 - INFO - Agent 12: Bill Adams
+2025-03-27 16:24:28,878 - INFO - Agent 13: Deborah Hickey
+2025-03-27 16:24:28,923 - INFO - Agent 14: Heather Hurwitz
+2025-03-27 16:24:28,963 - INFO - Agent 15: Patrick Fry
+2025-03-27 16:24:29,003 - INFO - Agent 16: Tony Gonzalez
+2025-03-27 16:24:29,045 - INFO - Agent 17: Shana Trotter
+2025-03-27 16:24:29,085 - INFO - Agent 18: J. Kevin Weisbrod
+2025-03-27 16:24:29,129 - INFO - Agent 19: Johannes Rath
+2025-03-27 16:24:29,183 - INFO - Agent 20: Jason Slagter
+2025-03-27 16:24:29,224 - INFO - Agent 21: Martha Appel
+2025-03-27 16:24:29,269 - INFO - Agent 22: Frank Ellis
+2025-03-27 16:24:29,308 - INFO - Agent 23: Elmira Mills
+2025-03-27 16:24:29,348 - INFO - Agent 24: Anu Jain
+2025-03-27 16:24:29,393 - INFO - Agent 25: Bill Adams
+2025-03-27 16:24:39,852 - INFO - Another instance (PID 506695) is running. Stopping it and starting new instance.
+2025-03-27 16:24:41,854 - INFO - Removed lock file
+2025-03-27 16:24:41,856 - INFO - Scraper started in background
+2025-03-27 16:24:41,865 - INFO - Created lock file with PID: 506695
+2025-03-27 16:24:59,720 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:25:09,321 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 16:25:13,236 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 16:25:13,560 - INFO - Found 25 agents on page 1
+2025-03-27 16:25:13,645 - INFO - Agent 1: Timothy Dalrymple
+2025-03-27 16:25:13,688 - INFO - Agent 2: Rita Collier
+2025-03-27 16:25:13,741 - INFO - Agent 3: Jr. Gerardo Ochoa Rico
+2025-03-27 16:25:13,791 - INFO - Agent 4: Beata Lopez
+2025-03-27 16:25:13,839 - INFO - Agent 5: Elizabeth Alegria
+2025-03-27 16:25:13,884 - INFO - Agent 6: Julie Hummer-Bellmyer
+2025-03-27 16:25:13,928 - INFO - Agent 7: Marybeth Woodworth
+2025-03-27 16:25:13,980 - INFO - Agent 8: Tamara Kempton
+2025-03-27 16:25:14,033 - INFO - Agent 9: April Cooper
+2025-03-27 16:25:14,086 - INFO - Agent 10: Rudy Lira
+2025-03-27 16:25:14,132 - INFO - Agent 11: Trenna Hiney
+2025-03-27 16:25:14,178 - INFO - Agent 12: Cheryl Maynard
+2025-03-27 16:25:14,224 - INFO - Agent 13: Keith Kleimola
+2025-03-27 16:25:14,271 - INFO - Agent 14: Alicia Hiller
+2025-03-27 16:25:14,316 - INFO - Agent 15: Lillian Shine
+2025-03-27 16:25:14,360 - INFO - Agent 16: Donna Schenek
+2025-03-27 16:25:14,406 - INFO - Agent 17: Matt Bowen
+2025-03-27 16:25:14,458 - INFO - Agent 18: Lora Dungy Cheney
+2025-03-27 16:25:14,505 - INFO - Agent 19: Dolores Jakeway
+2025-03-27 16:25:14,551 - INFO - Agent 20: Dinah Lewis
+2025-03-27 16:25:14,596 - INFO - Agent 21: Laurie Lundeen
+2025-03-27 16:25:14,641 - INFO - Agent 22: Deborah Wyrsch-Williams
+2025-03-27 16:25:14,647 - INFO - Saved 25 agents to CSV
+2025-03-27 16:25:14,727 - INFO - Agent 23: Dave Margolis
+2025-03-27 16:25:14,771 - INFO - Agent 24: Linda Jehle
+2025-03-27 16:25:14,832 - INFO - Agent 25: Tom Williams
+2025-03-27 16:25:18,861 - INFO - Processing page 11 for Apache Junction real estate agents
+2025-03-27 16:25:19,685 - INFO - Found 25 agents on page 11
+2025-03-27 16:25:20,116 - INFO - Agent 1: Bill Parkerson
+2025-03-27 16:25:20,412 - INFO - Agent 2: Jennifer Usher
+2025-03-27 16:25:20,738 - INFO - Agent 3: Eric Bustamante
+2025-03-27 16:25:21,138 - INFO - Agent 4: Mike Johns
+2025-03-27 16:25:21,404 - INFO - Agent 5: Jarod Britman
+2025-03-27 16:25:21,737 - INFO - Agent 6: Michael Maddox
+2025-03-27 16:25:21,984 - INFO - Agent 7: Kirk Dewberry
+2025-03-27 16:25:22,172 - INFO - Agent 8: Allie Sanders
+2025-03-27 16:25:22,304 - INFO - Agent 9: Douglas Ava
+2025-03-27 16:25:22,461 - INFO - Agent 10: Sheena Gray
+2025-03-27 16:25:22,713 - INFO - Agent 11: Tyler Davis
+2025-03-27 16:25:23,020 - INFO - Agent 12: Chet Derouen
+2025-03-27 16:25:23,374 - INFO - Agent 13: Kerri Ostrom
+2025-03-27 16:25:23,680 - INFO - Agent 14: Deanna Christenson
+2025-03-27 16:25:23,939 - INFO - Agent 15: Ida Horvath
+2025-03-27 16:25:24,228 - INFO - Agent 16: The Stolworthy Caspers Team
+2025-03-27 16:25:24,368 - INFO - Agent 17: Liz Bandarupally
+2025-03-27 16:25:24,448 - INFO - Agent 18: Bill Hoff
+2025-03-27 16:25:24,499 - INFO - Agent 19: Sherri Johnson
+2025-03-27 16:25:24,549 - INFO - Agent 20: Travis Parker
+2025-03-27 16:25:24,607 - INFO - Agent 21: Renee Slagter
+2025-03-27 16:25:24,663 - INFO - Agent 22: Michelle Kramer
+2025-03-27 16:25:24,715 - INFO - Agent 23: Brian Kamenca
+2025-03-27 16:25:24,763 - INFO - Agent 24: Timothy Smith
+2025-03-27 16:25:24,806 - INFO - Agent 25: Kay Jones
+2025-03-27 16:26:07,301 - INFO - Saved 25 agents to CSV
+2025-03-27 16:26:11,446 - INFO - Processing page 2 for Amado real estate agents
+2025-03-27 16:26:11,711 - INFO - Found 25 agents on page 2
+2025-03-27 16:26:11,787 - INFO - Agent 1: Jim Callery
+2025-03-27 16:26:11,865 - INFO - Agent 2: Sue Taylor-Lane
+2025-03-27 16:26:11,946 - INFO - Agent 3: Brent Self
+2025-03-27 16:26:12,002 - INFO - Agent 4: Carolyn Fox
+2025-03-27 16:26:12,050 - INFO - Agent 5: Michon Brudenell
+2025-03-27 16:26:12,109 - INFO - Agent 6: Linda Niederkorn
+2025-03-27 16:26:12,161 - INFO - Agent 7: Candy Bell
+2025-03-27 16:26:12,218 - INFO - Agent 8: Julius Barraza
+2025-03-27 16:26:12,271 - INFO - Agent 9: Pam Pesqueira
+2025-03-27 16:26:12,326 - INFO - Agent 10: Terry Lang
+2025-03-27 16:26:12,381 - INFO - Agent 11: Perla Velasquez
+2025-03-27 16:26:12,436 - INFO - Agent 12: Phoebe Bigelow
+2025-03-27 16:26:12,494 - INFO - Agent 13: Laurel Caprio
+2025-03-27 16:26:12,550 - INFO - Agent 14: Lorraine Demeerleer
+2025-03-27 16:26:12,604 - INFO - Agent 15: Jeanne Zachman
+2025-03-27 16:26:12,663 - INFO - Agent 16: Trina Alberta Oesterle
+2025-03-27 16:26:12,721 - INFO - Agent 17: Jim McDougall
+2025-03-27 16:26:12,779 - INFO - Agent 18: Verna Elmer
+2025-03-27 16:26:12,891 - INFO - Agent 19: Julie Bishop
+2025-03-27 16:26:12,957 - INFO - Agent 20: Enrique Vance
+2025-03-27 16:26:12,993 - INFO - Saved 25 agents to CSV
+2025-03-27 16:26:13,058 - INFO - Agent 21: Tavee Brzuchalski
+2025-03-27 16:26:13,179 - INFO - Agent 22: Rudy Berthold
+2025-03-27 16:26:13,282 - INFO - Agent 23: Ramon Ross
+2025-03-27 16:26:13,370 - INFO - Agent 24: April Campbell
+2025-03-27 16:26:13,511 - INFO - Agent 25: Marsha Eades
+2025-03-27 16:26:18,803 - INFO - Processing page 12 for Apache Junction real estate agents
+2025-03-27 16:26:19,181 - INFO - Found 6 agents on page 12
+2025-03-27 16:26:19,437 - INFO - Agent 1: Gabi Crow
+2025-03-27 16:26:19,659 - INFO - Agent 2: Vahid Millani
+2025-03-27 16:26:19,794 - INFO - Agent 3: John Frank
+2025-03-27 16:26:19,928 - INFO - Agent 4: Kayli Sells
+2025-03-27 16:26:20,107 - INFO - Agent 5: Juan Batres
+2025-03-27 16:26:20,305 - INFO - Agent 6: Feng-Yi Li
+2025-03-27 16:26:29,968 - INFO - Processing inner city 4/80: Arivaca real estate agents
+2025-03-27 16:26:34,786 - INFO - Processing page 1 for Arivaca real estate agents
+2025-03-27 16:26:36,707 - INFO - Found 25 agents on page 1
+2025-03-27 16:26:37,256 - INFO - Agent 1: Cheryl Maynard
+2025-03-27 16:26:37,673 - INFO - Agent 2: Keith Kleimola
+2025-03-27 16:26:38,142 - INFO - Agent 3: Alicia Hiller
+2025-03-27 16:26:38,321 - INFO - Agent 4: Lillian Shine
+2025-03-27 16:26:38,671 - INFO - Agent 5: Donna Schenek
+2025-03-27 16:26:38,890 - INFO - Agent 6: Matt Bowen
+2025-03-27 16:26:39,215 - INFO - Agent 7: Lora Dungy Cheney
+2025-03-27 16:26:39,465 - INFO - Agent 8: Dolores Jakeway
+2025-03-27 16:26:39,855 - INFO - Agent 9: Dinah Lewis
+2025-03-27 16:26:40,183 - INFO - Agent 10: Laurie Lundeen
+2025-03-27 16:26:40,490 - INFO - Agent 11: Deborah Wyrsch-Williams
+2025-03-27 16:26:40,831 - INFO - Agent 12: Dave Margolis
+2025-03-27 16:26:41,185 - INFO - Agent 13: Linda Jehle
+2025-03-27 16:26:41,527 - INFO - Agent 14: Tom Williams
+2025-03-27 16:26:41,616 - INFO - Agent 15: Jim Callery
+2025-03-27 16:26:41,710 - INFO - Agent 16: Sue Taylor-Lane
+2025-03-27 16:26:41,998 - INFO - Agent 17: Brent Self
+2025-03-27 16:26:42,259 - INFO - Agent 18: Carolyn Fox
+2025-03-27 16:26:42,538 - INFO - Agent 19: Michon Brudenell
+2025-03-27 16:26:43,076 - INFO - Agent 20: Linda Niederkorn
+2025-03-27 16:26:43,383 - INFO - Agent 21: Candy Bell
+2025-03-27 16:26:43,621 - INFO - Agent 22: Julius Barraza
+2025-03-27 16:26:43,892 - INFO - Agent 23: Pam Pesqueira
+2025-03-27 16:26:44,266 - INFO - Agent 24: Terry Lang
+2025-03-27 16:26:44,679 - INFO - Agent 25: Perla Velasquez
+2025-03-27 16:27:02,004 - INFO - Another instance (PID 506695) is running. Stopping it and starting new instance.
+2025-03-27 16:27:04,013 - INFO - Removed lock file
+2025-03-27 16:27:08,987 - INFO - Saved 25 agents to CSV
+2025-03-27 16:27:14,894 - INFO - Scraper started in background
+2025-03-27 16:27:14,911 - INFO - Created lock file with PID: 506695
+2025-03-27 16:27:33,039 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:27:35,877 - INFO - Saved 31 agents to CSV
+2025-03-27 16:27:39,592 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 16:27:39,774 - INFO - Processing page 2 for Arivaca real estate agents
+2025-03-27 16:27:39,937 - INFO - Found 25 agents on page 2
+2025-03-27 16:27:40,023 - INFO - Agent 1: Phoebe Bigelow
+2025-03-27 16:27:40,107 - INFO - Agent 2: Laurel Caprio
+2025-03-27 16:27:40,190 - INFO - Agent 3: Lorraine Demeerleer
+2025-03-27 16:27:40,271 - INFO - Agent 4: Jeanne Zachman
+2025-03-27 16:27:40,353 - INFO - Agent 5: Trina Alberta Oesterle
+2025-03-27 16:27:40,433 - INFO - Agent 6: Jim McDougall
+2025-03-27 16:27:40,541 - INFO - Agent 7: Verna Elmer
+2025-03-27 16:27:40,664 - INFO - Agent 8: Julie Bishop
+2025-03-27 16:27:40,728 - INFO - Agent 9: Enrique Vance
+2025-03-27 16:27:40,793 - INFO - Agent 10: Tavee Brzuchalski
+2025-03-27 16:27:40,849 - INFO - Agent 11: Rudy Berthold
+2025-03-27 16:27:40,901 - INFO - Agent 12: Ramon Ross
+2025-03-27 16:27:40,980 - INFO - Agent 13: April Campbell
+2025-03-27 16:27:41,064 - INFO - Agent 14: Marsha Eades
+2025-03-27 16:27:41,147 - INFO - Agent 15: Sara Hunter
+2025-03-27 16:27:41,258 - INFO - Agent 16: Vanessa Alday
+2025-03-27 16:27:41,374 - INFO - Agent 17: Jim Hoppens
+2025-03-27 16:27:41,459 - INFO - Agent 18: Ed Baker
+2025-03-27 16:27:41,521 - INFO - Agent 19: Darrell Lilja
+2025-03-27 16:27:41,588 - INFO - Agent 20: Julie Leon
+2025-03-27 16:27:41,635 - INFO - Agent 21: Clare Fernandes
+2025-03-27 16:27:41,679 - INFO - Agent 22: Christopher Molander
+2025-03-27 16:27:41,731 - INFO - Agent 23: Elaine Grace
+2025-03-27 16:27:41,789 - INFO - Agent 24: Rodney Chiddix
+2025-03-27 16:27:41,868 - INFO - Agent 25: Christi Nicklas
+2025-03-27 16:27:43,192 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 16:27:43,514 - INFO - Found 25 agents on page 1
+2025-03-27 16:27:43,788 - INFO - Agent 1: Francisco Ruiz
+2025-03-27 16:27:44,048 - INFO - Agent 2: Denise Jacobs
+2025-03-27 16:27:44,301 - INFO - Agent 3: Timothy Dalrymple
+2025-03-27 16:27:44,588 - INFO - Agent 4: Rita Collier
+2025-03-27 16:27:44,887 - INFO - Agent 5: Jr. Gerardo Ochoa Rico
+2025-03-27 16:27:45,108 - INFO - Agent 6: Beata Lopez
+2025-03-27 16:27:45,332 - INFO - Agent 7: Elizabeth Alegria
+2025-03-27 16:27:45,613 - INFO - Agent 8: Julie Hummer-Bellmyer
+2025-03-27 16:27:45,853 - INFO - Agent 9: Marybeth Woodworth
+2025-03-27 16:27:45,990 - INFO - Agent 10: Tamara Kempton
+2025-03-27 16:27:46,262 - INFO - Agent 11: April Cooper
+2025-03-27 16:27:46,445 - INFO - Agent 12: Rudy Lira
+2025-03-27 16:27:46,912 - INFO - Agent 13: Trenna Hiney
+2025-03-27 16:27:47,189 - INFO - Agent 14: Cheryl Maynard
+2025-03-27 16:27:47,595 - INFO - Agent 15: Keith Kleimola
+2025-03-27 16:27:48,011 - INFO - Agent 16: Alicia Hiller
+2025-03-27 16:27:48,352 - INFO - Agent 17: Lillian Shine
+2025-03-27 16:27:48,633 - INFO - Agent 18: Donna Schenek
+2025-03-27 16:27:48,872 - INFO - Agent 19: Matt Bowen
+2025-03-27 16:27:49,134 - INFO - Agent 20: Lora Dungy Cheney
+2025-03-27 16:27:49,535 - INFO - Agent 21: Dolores Jakeway
+2025-03-27 16:27:49,910 - INFO - Agent 22: Dinah Lewis
+2025-03-27 16:27:50,324 - INFO - Agent 23: Laurie Lundeen
+2025-03-27 16:27:50,720 - INFO - Agent 24: Deborah Wyrsch-Williams
+2025-03-27 16:27:50,897 - INFO - Agent 25: Dave Margolis
+2025-03-27 16:28:36,219 - INFO - Saved 25 agents to CSV
+2025-03-27 16:28:39,947 - INFO - Processing page 3 for Arivaca real estate agents
+2025-03-27 16:28:40,052 - INFO - Saved 25 agents to CSV
+2025-03-27 16:28:40,081 - INFO - Found 23 agents on page 3
+2025-03-27 16:28:40,246 - INFO - Agent 1: Francisco Ruiz
+2025-03-27 16:28:40,361 - INFO - Agent 2: Denise Jacobs
+2025-03-27 16:28:40,479 - INFO - Agent 3: Timothy Dalrymple
+2025-03-27 16:28:40,578 - INFO - Agent 4: Rita Collier
+2025-03-27 16:28:40,630 - INFO - Agent 5: Jr. Gerardo Ochoa Rico
+2025-03-27 16:28:40,687 - INFO - Agent 6: Beata Lopez
+2025-03-27 16:28:40,757 - INFO - Agent 7: Elizabeth Alegria
+2025-03-27 16:28:40,820 - INFO - Agent 8: Julie Hummer-Bellmyer
+2025-03-27 16:28:40,875 - INFO - Agent 9: Marybeth Woodworth
+2025-03-27 16:28:40,922 - INFO - Agent 10: Tamara Kempton
+2025-03-27 16:28:40,972 - INFO - Agent 11: April Cooper
+2025-03-27 16:28:41,021 - INFO - Agent 12: Rudy Lira
+2025-03-27 16:28:41,088 - INFO - Agent 13: Trenna Hiney
+2025-03-27 16:28:41,148 - INFO - Agent 14: Chrissie Hancock
+2025-03-27 16:28:41,203 - INFO - Agent 15: William Ims
+2025-03-27 16:28:41,258 - INFO - Agent 16: Richard Duarte
+2025-03-27 16:28:41,314 - INFO - Agent 17: Denise Matthys
+2025-03-27 16:28:41,374 - INFO - Agent 18: Randall Koster
+2025-03-27 16:28:41,427 - INFO - Agent 19: Leticia Diaz
+2025-03-27 16:28:41,478 - INFO - Agent 20: Becky Tucker
+2025-03-27 16:28:41,529 - INFO - Agent 21: Tomas Echeverri
+2025-03-27 16:28:41,580 - INFO - Agent 22: Dennese Cole
+2025-03-27 16:28:41,664 - INFO - Agent 23: Martin Kennedy
+2025-03-27 16:28:46,043 - INFO - Processing page 2 for Amado real estate agents
+2025-03-27 16:28:46,846 - INFO - Found 25 agents on page 2
+2025-03-27 16:28:47,423 - INFO - Agent 1: Linda Jehle
+2025-03-27 16:28:48,091 - INFO - Agent 2: Tom Williams
+2025-03-27 16:28:48,414 - INFO - Agent 3: Jim Callery
+2025-03-27 16:28:48,685 - INFO - Agent 4: Sue Taylor-Lane
+2025-03-27 16:28:49,041 - INFO - Agent 5: Brent Self
+2025-03-27 16:28:49,671 - INFO - Agent 6: Carolyn Fox
+2025-03-27 16:28:50,058 - INFO - Agent 7: Michon Brudenell
+2025-03-27 16:28:50,561 - INFO - Agent 8: Linda Niederkorn
+2025-03-27 16:28:50,829 - INFO - Agent 9: Candy Bell
+2025-03-27 16:28:51,158 - INFO - Agent 10: Julius Barraza
+2025-03-27 16:28:51,379 - INFO - Agent 11: Pam Pesqueira
+2025-03-27 16:28:51,614 - INFO - Agent 12: Terry Lang
+2025-03-27 16:28:51,724 - INFO - Agent 13: Perla Velasquez
+2025-03-27 16:28:51,784 - INFO - Agent 14: Phoebe Bigelow
+2025-03-27 16:28:51,837 - INFO - Agent 15: Laurel Caprio
+2025-03-27 16:28:51,890 - INFO - Agent 16: Lorraine Demeerleer
+2025-03-27 16:28:51,941 - INFO - Agent 17: Jeanne Zachman
+2025-03-27 16:28:51,993 - INFO - Agent 18: Trina Alberta Oesterle
+2025-03-27 16:28:52,047 - INFO - Agent 19: Jim McDougall
+2025-03-27 16:28:52,097 - INFO - Agent 20: Verna Elmer
+2025-03-27 16:28:52,144 - INFO - Agent 21: Julie Bishop
+2025-03-27 16:28:52,190 - INFO - Agent 22: Enrique Vance
+2025-03-27 16:28:52,240 - INFO - Agent 23: Tavee Brzuchalski
+2025-03-27 16:28:52,289 - INFO - Agent 24: Rudy Berthold
+2025-03-27 16:28:52,335 - INFO - Agent 25: Ramon Ross
+2025-03-27 16:29:33,776 - INFO - Saved 23 agents to CSV
+2025-03-27 16:29:34,032 - INFO - Processing inner city 5/80: Avondale real estate agents
+2025-03-27 16:29:40,000 - INFO - Processing page 1 for Avondale real estate agents
+2025-03-27 16:29:40,365 - INFO - Found 25 agents on page 1
+2025-03-27 16:29:40,474 - INFO - Agent 1: Brenda Zadori
+2025-03-27 16:29:40,527 - INFO - Agent 2: Richard Hasquet
+2025-03-27 16:29:40,577 - INFO - Agent 3: William Darby
+2025-03-27 16:29:40,625 - INFO - Agent 4: Richie Cantarella
+2025-03-27 16:29:40,674 - INFO - Agent 5: Paul Cantarella
+2025-03-27 16:29:40,725 - INFO - Agent 6: Laurie Balestrino
+2025-03-27 16:29:40,783 - INFO - Agent 7: Sarah Edwards
+2025-03-27 16:29:40,843 - INFO - Agent 8: Mizael Martinez
+2025-03-27 16:29:40,901 - INFO - Agent 9: Amanda Thomason
+2025-03-27 16:29:40,952 - INFO - Agent 10: Deborah Hart
+2025-03-27 16:29:41,002 - INFO - Agent 11: Roxana Loya
+2025-03-27 16:29:41,051 - INFO - Agent 12: Nidia Guzman
+2025-03-27 16:29:41,103 - INFO - Agent 13: Michelle Pacheco
+2025-03-27 16:29:41,152 - INFO - Agent 14: Gabriela Villarreal
+2025-03-27 16:29:41,202 - INFO - Agent 15: Allicia Roza-Carrozza
+2025-03-27 16:29:41,252 - INFO - Agent 16: Angela Botz
+2025-03-27 16:29:41,301 - INFO - Agent 17: Linda Stewart
+2025-03-27 16:29:41,345 - INFO - Agent 18: Kamie Ulery
+2025-03-27 16:29:41,391 - INFO - Agent 19: Silvia Wray
+2025-03-27 16:29:41,441 - INFO - Agent 20: Paula Serven
+2025-03-27 16:29:41,491 - INFO - Agent 21: Adrianne Caspers
+2025-03-27 16:29:41,542 - INFO - Agent 22: Denise Von Der Linn
+2025-03-27 16:29:41,592 - INFO - Agent 23: Kim Pilling
+2025-03-27 16:29:41,643 - INFO - Agent 24: Mark Helms
+2025-03-27 16:29:41,695 - INFO - Agent 25: Mark Jones
+2025-03-27 16:29:53,561 - INFO - Saved 25 agents to CSV
+2025-03-27 16:29:58,161 - INFO - Processing page 3 for Amado real estate agents
+2025-03-27 16:29:58,798 - INFO - Found 23 agents on page 3
+2025-03-27 16:29:59,347 - INFO - Agent 1: April Campbell
+2025-03-27 16:29:59,806 - INFO - Agent 2: Marsha Eades
+2025-03-27 16:30:00,356 - INFO - Agent 3: Sara Hunter
+2025-03-27 16:30:00,768 - INFO - Agent 4: Vanessa Alday
+2025-03-27 16:30:01,102 - INFO - Agent 5: Jim Hoppens
+2025-03-27 16:30:01,253 - INFO - Agent 6: Ed Baker
+2025-03-27 16:30:01,331 - INFO - Agent 7: Darrell Lilja
+2025-03-27 16:30:01,425 - INFO - Agent 8: Julie Leon
+2025-03-27 16:30:01,644 - INFO - Agent 9: Clare Fernandes
+2025-03-27 16:30:02,033 - INFO - Agent 10: Christopher Molander
+2025-03-27 16:30:02,281 - INFO - Agent 11: Elaine Grace
+2025-03-27 16:30:02,549 - INFO - Agent 12: Rodney Chiddix
+2025-03-27 16:30:03,349 - INFO - Agent 13: Christi Nicklas
+2025-03-27 16:30:04,002 - INFO - Agent 14: Becky Tucker
+2025-03-27 16:30:04,745 - INFO - Agent 15: Chrissie Hancock
+2025-03-27 16:30:05,131 - INFO - Agent 16: William Ims
+2025-03-27 16:30:05,487 - INFO - Agent 17: Richard Duarte
+2025-03-27 16:30:05,755 - INFO - Agent 18: Denise Matthys
+2025-03-27 16:30:06,077 - INFO - Agent 19: Randall Koster
+2025-03-27 16:30:06,400 - INFO - Agent 20: Leticia Diaz
+2025-03-27 16:30:06,707 - INFO - Agent 21: Tomas Echeverri
+2025-03-27 16:30:06,844 - INFO - Agent 22: Martin Kennedy
+2025-03-27 16:30:06,984 - INFO - Agent 23: Dennese Cole
+2025-03-27 16:30:43,839 - INFO - Saved 25 agents to CSV
+2025-03-27 16:30:49,497 - INFO - Processing page 2 for Avondale real estate agents
+2025-03-27 16:30:50,450 - INFO - Found 25 agents on page 2
+2025-03-27 16:30:50,768 - INFO - Agent 1: Matt Duncan
+2025-03-27 16:30:51,070 - INFO - Agent 2: Keely Sterba
+2025-03-27 16:30:51,283 - INFO - Agent 3: Leah Triller
+2025-03-27 16:30:51,467 - INFO - Agent 4: India Ryer
+2025-03-27 16:30:51,732 - INFO - Agent 5: Kateryna Hedz
+2025-03-27 16:30:52,007 - INFO - Agent 6: Kelvin Dear
+2025-03-27 16:30:52,268 - INFO - Agent 7: Beatriz Kraft
+2025-03-27 16:30:52,542 - INFO - Agent 8: Valle Wilkinson
+2025-03-27 16:30:52,628 - INFO - Agent 9: Kim Penn
+2025-03-27 16:30:52,699 - INFO - Agent 10: Carol Kwaad
+2025-03-27 16:30:52,775 - INFO - Agent 11: Mizael Martinez
+2025-03-27 16:30:52,839 - INFO - Agent 12: Denise Adame
+2025-03-27 16:30:52,918 - INFO - Agent 13: Steve Bauman
+2025-03-27 16:30:52,981 - INFO - Agent 14: Anu Jain
+2025-03-27 16:30:53,031 - INFO - Agent 15: Michael Rossi
+2025-03-27 16:30:53,077 - INFO - Agent 16: Jason Jones
+2025-03-27 16:30:53,119 - INFO - Agent 17: Mitchell Berman
+2025-03-27 16:30:53,164 - INFO - Agent 18: Lailie Bozner
+2025-03-27 16:30:53,209 - INFO - Agent 19: Susan Kovitz-Tasky
+2025-03-27 16:30:53,252 - INFO - Agent 20: Laura Tolmachoff
+2025-03-27 16:30:53,299 - INFO - Agent 21: Kim Pilling
+2025-03-27 16:30:53,341 - INFO - Agent 22: Marcus De La Garza
+2025-03-27 16:30:53,384 - INFO - Agent 23: Laurie Balestrino
+2025-03-27 16:30:53,452 - INFO - Agent 24: Sarah Edwards
+2025-03-27 16:30:53,636 - INFO - Agent 25: Rob Goddard
+2025-03-27 16:30:55,375 - INFO - Saved 23 agents to CSV
+2025-03-27 16:30:55,474 - INFO - Processing inner city 2/80: Anthem real estate agents
+2025-03-27 16:31:01,550 - INFO - Processing page 1 for Anthem real estate agents
+2025-03-27 16:31:03,262 - INFO - Found 25 agents on page 1
+2025-03-27 16:31:03,705 - INFO - Agent 1: Cherie Lang
+2025-03-27 16:31:03,954 - INFO - Agent 2: Timothy York
+2025-03-27 16:31:04,118 - INFO - Agent 3: Crisi Mintz
+2025-03-27 16:31:04,257 - INFO - Agent 4: Sandy Esmay
+2025-03-27 16:31:04,356 - INFO - Agent 5: Bruce Woods
+2025-03-27 16:31:04,418 - INFO - Agent 6: Katy Curtis
+2025-03-27 16:31:04,460 - INFO - Agent 7: Shawn Keane
+2025-03-27 16:31:04,506 - INFO - Agent 8: Jennifer Rogers
+2025-03-27 16:31:04,550 - INFO - Agent 9: Brian Elliott
+2025-03-27 16:31:04,592 - INFO - Agent 10: Kenny Knight
+2025-03-27 16:31:04,634 - INFO - Agent 11: Kristen Donovan
+2025-03-27 16:31:04,686 - INFO - Agent 12: Dean Hoppes
+2025-03-27 16:31:04,742 - INFO - Agent 13: Louise Haarala
+2025-03-27 16:31:04,817 - INFO - Agent 14: Kerri Schrand
+2025-03-27 16:31:04,893 - INFO - Agent 15: Oscar Rodriguez
+2025-03-27 16:31:04,966 - INFO - Agent 16: Eric Linden
+2025-03-27 16:31:05,043 - INFO - Agent 17: Denise Monaghan OConnell
+2025-03-27 16:31:05,120 - INFO - Agent 18: Josh Dean
+2025-03-27 16:31:05,199 - INFO - Agent 19: Lynn Green
+2025-03-27 16:31:05,298 - INFO - Agent 20: Mary Ann Birdoes
+2025-03-27 16:31:05,608 - INFO - Agent 21: Alfred Monsalvatge
+2025-03-27 16:31:05,828 - INFO - Agent 22: Tom Edler
+2025-03-27 16:31:06,178 - INFO - Agent 23: Michelle Perry
+2025-03-27 16:31:06,429 - INFO - Agent 24: Lisa Stine
+2025-03-27 16:31:06,799 - INFO - Agent 25: Terrie Lescarbeau
+2025-03-27 16:31:29,477 - INFO - Another instance (PID 506695) is running. Stopping it and starting new instance.
+2025-03-27 16:31:31,495 - INFO - Removed lock file
+2025-03-27 16:31:31,499 - INFO - Scraper started in background
+2025-03-27 16:31:31,526 - INFO - Cleared existing file: data/coldwell_agents.csv
+2025-03-27 16:31:31,537 - INFO - Created lock file with PID: 506695
+2025-03-27 16:32:25,224 - ERROR - Fatal error: Page.goto: Timeout 30000ms exceeded.
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/sitemap/agents/", waiting until "domcontentloaded"
+
+2025-03-27 16:32:38,360 - INFO - Saved 25 agents to CSV
+2025-03-27 16:32:42,158 - INFO - Processing page 3 for Avondale real estate agents
+2025-03-27 16:32:42,346 - INFO - Found 25 agents on page 3
+2025-03-27 16:32:42,460 - INFO - Agent 1: Marisol Castro
+2025-03-27 16:32:42,761 - INFO - Agent 2: Gustavo Borquez
+2025-03-27 16:32:42,980 - INFO - Agent 3: Jacqui Brown-Schmidt
+2025-03-27 16:32:43,097 - INFO - Agent 4: Samantha Lopez
+2025-03-27 16:32:43,496 - INFO - Agent 5: Geanna Gute
+2025-03-27 16:32:43,770 - INFO - Agent 6: Adrianne Caspers
+2025-03-27 16:32:43,810 - INFO - Saved 25 agents to CSV
+2025-03-27 16:32:43,892 - INFO - Agent 7: Victor Rocha
+2025-03-27 16:32:44,070 - INFO - Agent 8: Tony Gonzalez
+2025-03-27 16:32:44,129 - INFO - Agent 9: Martha Appel
+2025-03-27 16:32:44,195 - INFO - Agent 10: Deborah Hart
+2025-03-27 16:32:44,415 - INFO - Agent 11: Roxana Loya
+2025-03-27 16:32:44,467 - INFO - Agent 12: Nidia Guzman
+2025-03-27 16:32:44,512 - INFO - Agent 13: Michelle Pacheco
+2025-03-27 16:32:44,559 - INFO - Agent 14: Gabriela Villarreal
+2025-03-27 16:32:44,602 - INFO - Agent 15: Kerra Alvarez
+2025-03-27 16:32:44,664 - INFO - Agent 16: Heather Manos
+2025-03-27 16:32:44,735 - INFO - Agent 17: Debra Mason
+2025-03-27 16:32:44,825 - INFO - Agent 18: Leslie Phillips
+2025-03-27 16:32:44,923 - INFO - Agent 19: The "Town Cryers"
+2025-03-27 16:32:45,003 - INFO - Agent 20: Mitch Bolnick
+2025-03-27 16:32:45,092 - INFO - Agent 21: Igor Berwa
+2025-03-27 16:32:45,140 - INFO - Agent 22: James Lancaster
+2025-03-27 16:32:45,203 - INFO - Agent 23: Suzanne Artinghelli
+2025-03-27 16:32:45,269 - INFO - Agent 24: Greg Faulhaber
+2025-03-27 16:32:45,353 - INFO - Agent 25: McCaul Wallesen
+2025-03-27 16:32:47,806 - INFO - Processing page 2 for Anthem real estate agents
+2025-03-27 16:32:48,640 - INFO - Found 25 agents on page 2
+2025-03-27 16:32:49,125 - INFO - Agent 1: Melissa McCormick Wise
+2025-03-27 16:32:49,492 - INFO - Agent 2: Curtis McCormick
+2025-03-27 16:32:49,849 - INFO - Agent 3: Kathleen Erba
+2025-03-27 16:32:50,121 - INFO - Agent 4: Noemie Neipert
+2025-03-27 16:32:51,489 - INFO - Agent 5: Cheryl Linden
+2025-03-27 16:32:51,847 - INFO - Agent 6: Tammi Stifel
+2025-03-27 16:32:52,311 - INFO - Agent 7: D. Andre Nicu
+2025-03-27 16:32:52,723 - INFO - Agent 8: Dennis Erba
+2025-03-27 16:32:53,156 - INFO - Agent 9: Eric Hess
+2025-03-27 16:32:53,535 - INFO - Agent 10: Mark Friedman
+2025-03-27 16:32:53,763 - INFO - Agent 11: Shelby Purdy
+2025-03-27 16:32:54,051 - INFO - Agent 12: Dana Winter
+2025-03-27 16:32:54,449 - INFO - Agent 13: Arlene Warren-Hernandez
+2025-03-27 16:32:54,766 - INFO - Agent 14: Audrey Fischer
+2025-03-27 16:32:55,300 - INFO - Agent 15: Peggy Nelson
+2025-03-27 16:32:55,567 - INFO - Agent 16: Ben Curtin
+2025-03-27 16:32:55,850 - INFO - Agent 17: John Wallitschek
+2025-03-27 16:32:56,192 - INFO - Agent 18: Wendy Dobbs
+2025-03-27 16:32:56,323 - INFO - Agent 19: Nadia Alden
+2025-03-27 16:32:56,464 - INFO - Agent 20: Nikki Norton
+2025-03-27 16:32:56,517 - INFO - Agent 21: Rebecca Norton
+2025-03-27 16:32:56,793 - INFO - Agent 22: David Schrand
+2025-03-27 16:32:57,120 - INFO - Agent 23: Patricia Godleski
+2025-03-27 16:32:57,345 - INFO - Agent 24: Stacy Eaton
+2025-03-27 16:32:57,677 - INFO - Agent 25: Connie McGregor
+2025-03-27 16:33:46,742 - INFO - Saved 25 agents to CSV
+2025-03-27 16:33:51,343 - INFO - Processing page 4 for Avondale real estate agents
+2025-03-27 16:33:51,530 - INFO - Found 25 agents on page 4
+2025-03-27 16:33:51,624 - INFO - Agent 1: Maryann Goldrick
+2025-03-27 16:33:51,776 - INFO - Agent 2: Nancy Hendrickson
+2025-03-27 16:33:51,880 - INFO - Agent 3: Madelyn Dobson
+2025-03-27 16:33:51,974 - INFO - Agent 4: Richie Cantarella
+2025-03-27 16:33:52,084 - INFO - Agent 5: Paul Cantarella
+2025-03-27 16:33:52,203 - INFO - Agent 6: Cindy Ross
+2025-03-27 16:33:52,308 - INFO - Agent 7: Andy Berglund
+2025-03-27 16:33:52,399 - INFO - Agent 8: Rick Messerschmidt
+2025-03-27 16:33:52,503 - INFO - Agent 9: Karen Bosch
+2025-03-27 16:33:52,602 - INFO - Agent 10: Nicole Johnson
+2025-03-27 16:33:52,692 - INFO - Agent 11: Barbara Brno
+2025-03-27 16:33:52,861 - INFO - Agent 12: Patricia Whorton
+2025-03-27 16:33:53,031 - INFO - Agent 13: Leslie Coates
+2025-03-27 16:33:53,156 - INFO - Agent 14: Bonnie Ditty
+2025-03-27 16:33:53,212 - INFO - Agent 15: Joan Andersen
+2025-03-27 16:33:53,282 - INFO - Agent 16: Myriam Barrera-Montes
+2025-03-27 16:33:53,338 - INFO - Agent 17: Christine Prescott
+2025-03-27 16:33:53,399 - INFO - Agent 18: Rosemary Keely
+2025-03-27 16:33:53,486 - INFO - Agent 19: Kurt Mayer
+2025-03-27 16:33:53,567 - INFO - Agent 20: Mary Mayer
+2025-03-27 16:33:53,657 - INFO - Agent 21: Carmen McIntosh
+2025-03-27 16:33:53,735 - INFO - Agent 22: Natalia Keck
+2025-03-27 16:33:53,787 - INFO - Agent 23: Drew Burns
+2025-03-27 16:33:53,852 - INFO - Agent 24: Bernadette Barba
+2025-03-27 16:33:53,944 - INFO - Agent 25: Jo Stack
+2025-03-27 16:33:57,289 - INFO - Saved 25 agents to CSV
+2025-03-27 16:34:04,911 - INFO - Processing page 3 for Anthem real estate agents
+2025-03-27 16:34:05,098 - INFO - Found 25 agents on page 3
+2025-03-27 16:34:05,296 - INFO - Agent 1: Tom Scappaticci
+2025-03-27 16:34:05,592 - INFO - Agent 2: Rhonda Solomon
+2025-03-27 16:34:05,764 - INFO - Agent 3: Jill Stecker
+2025-03-27 16:34:05,931 - INFO - Agent 4: Charles Turner
+2025-03-27 16:34:06,031 - INFO - Agent 5: James Telich
+2025-03-27 16:34:06,131 - INFO - Agent 6: Candy Jenkins
+2025-03-27 16:34:06,185 - INFO - Agent 7: Donna Hunter
+2025-03-27 16:34:06,426 - INFO - Agent 8: Steve Fanto
+2025-03-27 16:34:06,712 - INFO - Agent 9: Megan Fernandez
+2025-03-27 16:34:07,067 - INFO - Agent 10: Sandi Hess
+2025-03-27 16:34:07,316 - INFO - Agent 11: Gary Frantz
+2025-03-27 16:34:07,496 - INFO - Agent 12: Jerry Tulman
+2025-03-27 16:34:07,772 - INFO - Agent 13: Dawn VanSickle
+2025-03-27 16:34:08,112 - INFO - Agent 14: Mary Ann Davis
+2025-03-27 16:34:08,387 - INFO - Agent 15: Heather Miller
+2025-03-27 16:34:08,669 - INFO - Agent 16: Marty Mogalian
+2025-03-27 16:34:09,037 - INFO - Agent 17: Zach Kriegshauser
+2025-03-27 16:34:09,373 - INFO - Agent 18: Lori Davies
+2025-03-27 16:34:09,652 - INFO - Agent 19: Mandy Bennett
+2025-03-27 16:34:10,001 - INFO - Agent 20: Bibianna Baez
+2025-03-27 16:34:10,189 - INFO - Agent 21: Kim Farnsworth
+2025-03-27 16:34:10,428 - INFO - Agent 22: Deana Aller
+2025-03-27 16:34:10,641 - INFO - Agent 23: Kevin Downey
+2025-03-27 16:34:10,873 - INFO - Agent 24: Bob Pfeiffer
+2025-03-27 16:34:11,095 - INFO - Agent 25: Bill Ciora
+2025-03-27 16:36:41,313 - INFO - Another instance (PID 506695) is running. Stopping it and starting new instance.
+2025-03-27 16:36:43,315 - INFO - Removed lock file
+2025-03-27 16:36:43,319 - INFO - Scraper started in background
+2025-03-27 16:36:43,325 - INFO - Cleared existing file: data/coldwell_agents.csv
+2025-03-27 16:36:43,343 - INFO - Created lock file with PID: 541181
+2025-03-27 16:36:54,547 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:37:01,652 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 16:37:05,378 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 16:37:05,552 - INFO - Found 25 agents on page 1
+2025-03-27 16:37:05,647 - INFO - Agent 1: Julie Bishop
+2025-03-27 16:37:05,732 - INFO - Agent 2: Terry Lang
+2025-03-27 16:37:05,820 - INFO - Agent 3: Enrique Vance
+2025-03-27 16:37:05,908 - INFO - Agent 4: Tavee Brzuchalski
+2025-03-27 16:37:05,994 - INFO - Agent 5: Vanessa Alday
+2025-03-27 16:37:06,075 - INFO - Agent 6: Jeanne Zachman
+2025-03-27 16:37:06,159 - INFO - Agent 7: Lillian Shine
+2025-03-27 16:37:06,354 - INFO - Agent 8: Clare Fernandes
+2025-03-27 16:37:06,463 - INFO - Agent 9: Trina Alberta Oesterle
+2025-03-27 16:37:06,513 - INFO - Agent 10: Candy Bell
+2025-03-27 16:37:06,554 - INFO - Agent 11: Pam Pesqueira
+2025-03-27 16:37:06,602 - INFO - Agent 12: Rudy Berthold
+2025-03-27 16:37:06,650 - INFO - Agent 13: Keith Kleimola
+2025-03-27 16:37:06,698 - INFO - Agent 14: Francisco Ruiz
+2025-03-27 16:37:06,745 - INFO - Agent 15: Beata Lopez
+2025-03-27 16:37:06,785 - INFO - Agent 16: Verna Elmer
+2025-03-27 16:37:06,826 - INFO - Agent 17: April Campbell
+2025-03-27 16:37:06,883 - INFO - Agent 18: Julie Leon
+2025-03-27 16:37:06,934 - INFO - Agent 19: Sara Hunter
+2025-03-27 16:37:07,002 - INFO - Agent 20: Linda Niederkorn
+2025-03-27 16:37:07,064 - INFO - Agent 21: Julie Hummer-Bellmyer
+2025-03-27 16:37:07,126 - INFO - Agent 22: Marsha Eades
+2025-03-27 16:37:07,187 - INFO - Agent 23: Rudy Lira
+2025-03-27 16:37:07,247 - INFO - Agent 24: Laurel Caprio
+2025-03-27 16:37:07,309 - INFO - Agent 25: Trenna Hiney
+2025-03-27 16:37:50,640 - ERROR - Fatal error: 'str' object has no attribute 'get'
+2025-03-27 16:37:50,643 - INFO - Saved 25 agents to CSV
+2025-03-27 16:38:22,434 - INFO - Another instance (PID 541181) is running. Stopping it and starting new instance.
+2025-03-27 16:38:24,436 - INFO - Removed lock file
+2025-03-27 16:38:24,439 - INFO - Scraper started in background
+2025-03-27 16:38:24,445 - INFO - Cleared existing file: data/coldwell_agents.csv
+2025-03-27 16:38:24,447 - INFO - Created lock file with PID: 541181
+2025-03-27 16:38:33,003 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:38:39,947 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 16:38:43,564 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 16:38:43,847 - INFO - Found 25 agents on page 1
+2025-03-27 16:38:43,962 - INFO - Agent 1: Jim McDougall
+2025-03-27 16:38:44,024 - INFO - Agent 2: Julie Bishop
+2025-03-27 16:38:44,069 - INFO - Agent 3: Terry Lang
+2025-03-27 16:38:44,110 - INFO - Agent 4: Enrique Vance
+2025-03-27 16:38:44,151 - INFO - Agent 5: Tavee Brzuchalski
+2025-03-27 16:38:44,222 - INFO - Agent 6: Vanessa Alday
+2025-03-27 16:38:44,305 - INFO - Agent 7: Jeanne Zachman
+2025-03-27 16:38:44,385 - INFO - Agent 8: Lillian Shine
+2025-03-27 16:38:44,470 - INFO - Agent 9: Clare Fernandes
+2025-03-27 16:38:44,558 - INFO - Agent 10: Trina Alberta Oesterle
+2025-03-27 16:38:44,643 - INFO - Agent 11: Candy Bell
+2025-03-27 16:38:44,728 - INFO - Agent 12: Pam Pesqueira
+2025-03-27 16:38:44,813 - INFO - Agent 13: Rudy Berthold
+2025-03-27 16:38:44,900 - INFO - Agent 14: Keith Kleimola
+2025-03-27 16:38:44,984 - INFO - Agent 15: Francisco Ruiz
+2025-03-27 16:38:45,061 - INFO - Agent 16: Beata Lopez
+2025-03-27 16:38:45,132 - INFO - Agent 17: Verna Elmer
+2025-03-27 16:38:45,210 - INFO - Agent 18: April Campbell
+2025-03-27 16:38:45,280 - INFO - Agent 19: Julie Leon
+2025-03-27 16:38:45,353 - INFO - Agent 20: Sara Hunter
+2025-03-27 16:38:45,426 - INFO - Agent 21: Linda Niederkorn
+2025-03-27 16:38:45,499 - INFO - Agent 22: Julie Hummer-Bellmyer
+2025-03-27 16:38:45,576 - INFO - Agent 23: Marsha Eades
+2025-03-27 16:38:45,649 - INFO - Agent 24: Rudy Lira
+2025-03-27 16:38:45,724 - INFO - Agent 25: Laurel Caprio
+2025-03-27 16:39:27,926 - ERROR - Fatal error: 'str' object has no attribute 'get'
+2025-03-27 16:39:27,928 - INFO - Saved 25 agents to CSV
+2025-03-27 16:40:53,156 - INFO - Another instance (PID 541181) is running. Stopping it and starting new instance.
+2025-03-27 16:40:55,157 - INFO - Removed lock file
+2025-03-27 16:40:55,159 - INFO - Scraper started in background
+2025-03-27 16:40:55,166 - INFO - Created lock file with PID: 541181
+2025-03-27 16:41:04,647 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:41:55,051 - INFO - Another instance (PID 541181) is running. Stopping it and starting new instance.
+2025-03-27 16:41:57,052 - INFO - Removed lock file
+2025-03-27 16:41:57,054 - INFO - Scraper started in background
+2025-03-27 16:41:57,068 - INFO - Created lock file with PID: 544765
+2025-03-27 16:42:08,499 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 16:42:15,636 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 16:42:19,211 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 16:42:19,392 - INFO - Found 25 agents on page 1
+2025-03-27 16:42:19,486 - INFO - Agent 1: Jim McDougall
+2025-03-27 16:42:19,581 - INFO - Agent 2: Julie Bishop
+2025-03-27 16:42:19,706 - INFO - Agent 3: Terry Lang
+2025-03-27 16:42:19,818 - INFO - Agent 4: Enrique Vance
+2025-03-27 16:42:19,911 - INFO - Agent 5: Tavee Brzuchalski
+2025-03-27 16:42:20,006 - INFO - Agent 6: Vanessa Alday
+2025-03-27 16:42:20,096 - INFO - Agent 7: Jeanne Zachman
+2025-03-27 16:42:20,192 - INFO - Agent 8: Lillian Shine
+2025-03-27 16:42:20,281 - INFO - Agent 9: Clare Fernandes
+2025-03-27 16:42:20,373 - INFO - Agent 10: Trina Alberta Oesterle
+2025-03-27 16:42:20,463 - INFO - Agent 11: Candy Bell
+2025-03-27 16:42:20,577 - INFO - Agent 12: Pam Pesqueira
+2025-03-27 16:42:20,672 - INFO - Agent 13: Rudy Berthold
+2025-03-27 16:42:20,771 - INFO - Agent 14: Keith Kleimola
+2025-03-27 16:42:20,869 - INFO - Agent 15: Francisco Ruiz
+2025-03-27 16:42:20,957 - INFO - Agent 16: Beata Lopez
+2025-03-27 16:42:21,049 - INFO - Agent 17: Verna Elmer
+2025-03-27 16:42:21,133 - INFO - Agent 18: April Campbell
+2025-03-27 16:42:21,210 - INFO - Agent 19: Julie Leon
+2025-03-27 16:42:21,293 - INFO - Agent 20: Sara Hunter
+2025-03-27 16:42:21,375 - INFO - Agent 21: Linda Niederkorn
+2025-03-27 16:42:21,456 - INFO - Agent 22: Julie Hummer-Bellmyer
+2025-03-27 16:42:21,536 - INFO - Agent 23: Marsha Eades
+2025-03-27 16:42:21,620 - INFO - Agent 24: Rudy Lira
+2025-03-27 16:42:21,703 - INFO - Agent 25: Laurel Caprio
+2025-03-27 16:43:02,323 - INFO - Saved 25 agents to CSV
+2025-03-27 16:43:07,699 - INFO - Processing page 2 for Amado real estate agents
+2025-03-27 16:43:07,954 - INFO - Found 25 agents on page 2
+2025-03-27 16:43:08,053 - INFO - Agent 1: Trenna Hiney
+2025-03-27 16:43:08,132 - INFO - Agent 2: Ed Baker
+2025-03-27 16:43:08,182 - INFO - Agent 3: Rodney Chiddix
+2025-03-27 16:43:08,229 - INFO - Agent 4: Elizabeth Alegria
+2025-03-27 16:43:08,279 - INFO - Agent 5: Denise Jacobs
+2025-03-27 16:43:08,329 - INFO - Agent 6: Marybeth Woodworth
+2025-03-27 16:43:08,377 - INFO - Agent 7: Tamara Kempton
+2025-03-27 16:43:08,429 - INFO - Agent 8: Rita Collier
+2025-03-27 16:43:08,479 - INFO - Agent 9: Jr. Gerardo Ochoa Rico
+2025-03-27 16:43:08,530 - INFO - Agent 10: Cheryl Maynard
+2025-03-27 16:43:08,582 - INFO - Agent 11: Ramon Ross
+2025-03-27 16:43:08,636 - INFO - Agent 12: Michon Brudenell
+2025-03-27 16:43:08,692 - INFO - Agent 13: Julius Barraza
+2025-03-27 16:43:08,750 - INFO - Agent 14: Donna Schenek
+2025-03-27 16:43:08,808 - INFO - Agent 15: Matt Bowen
+2025-03-27 16:43:08,855 - INFO - Agent 16: Lora Dungy Cheney
+2025-03-27 16:43:08,915 - INFO - Agent 17: Dolores Jakeway
+2025-03-27 16:43:08,960 - INFO - Agent 18: Dinah Lewis
+2025-03-27 16:43:09,011 - INFO - Agent 19: Laurie Lundeen
+2025-03-27 16:43:09,057 - INFO - Agent 20: Deborah Wyrsch-Williams
+2025-03-27 16:43:09,105 - INFO - Agent 21: Elaine Grace
+2025-03-27 16:43:09,165 - INFO - Agent 22: Sue Taylor-Lane
+2025-03-27 16:43:09,215 - INFO - Agent 23: Dave Margolis
+2025-03-27 16:43:09,268 - INFO - Agent 24: Jim Hoppens
+2025-03-27 16:43:09,320 - INFO - Agent 25: Darrell Lilja
+2025-03-27 16:43:53,163 - INFO - Saved 25 agents to CSV
+2025-03-27 16:43:57,033 - INFO - Processing page 3 for Amado real estate agents
+2025-03-27 16:43:57,200 - INFO - Found 23 agents on page 3
+2025-03-27 16:43:57,266 - INFO - Agent 1: April Cooper
+2025-03-27 16:43:57,335 - INFO - Agent 2: Timothy Dalrymple
+2025-03-27 16:43:57,399 - INFO - Agent 3: Jim Callery
+2025-03-27 16:43:57,474 - INFO - Agent 4: Alicia Hiller
+2025-03-27 16:43:57,527 - INFO - Agent 5: Christi Nicklas
+2025-03-27 16:43:57,683 - INFO - Agent 6: Carolyn Fox
+2025-03-27 16:43:57,789 - INFO - Agent 7: Phoebe Bigelow
+2025-03-27 16:43:57,900 - INFO - Agent 8: Tom Williams
+2025-03-27 16:43:57,998 - INFO - Agent 9: Lorraine Demeerleer
+2025-03-27 16:43:58,097 - INFO - Agent 10: Linda Jehle
+2025-03-27 16:43:58,183 - INFO - Agent 11: Brent Self
+2025-03-27 16:43:58,271 - INFO - Agent 12: Perla Velasquez
+2025-03-27 16:43:58,377 - INFO - Agent 13: Christopher Molander
+2025-03-27 16:43:58,528 - INFO - Agent 14: Becky Tucker
+2025-03-27 16:43:58,721 - INFO - Agent 15: William Ims
+2025-03-27 16:43:58,941 - INFO - Agent 16: Denise Matthys
+2025-03-27 16:43:59,105 - INFO - Agent 17: Leticia Diaz
+2025-03-27 16:43:59,217 - INFO - Agent 18: Richard Duarte
+2025-03-27 16:43:59,310 - INFO - Agent 19: Chrissie Hancock
+2025-03-27 16:43:59,395 - INFO - Agent 20: Randall Koster
+2025-03-27 16:43:59,468 - INFO - Agent 21: Tomas Echeverri
+2025-03-27 16:43:59,543 - INFO - Agent 22: Dennese Cole
+2025-03-27 16:43:59,644 - INFO - Agent 23: Martin Kennedy
+2025-03-27 16:44:37,449 - INFO - Saved 23 agents to CSV
+2025-03-27 16:44:37,466 - INFO - Processing inner city 2/80: Anthem real estate agents
+2025-03-27 16:44:41,460 - INFO - Processing page 1 for Anthem real estate agents
+2025-03-27 16:44:41,555 - INFO - Found 25 agents on page 1
+2025-03-27 16:44:41,605 - INFO - Agent 1: Misty DiBella
+2025-03-27 16:44:41,658 - INFO - Agent 2: Jeannine Raiffie
+2025-03-27 16:44:41,710 - INFO - Agent 3: Crystal Moore
+2025-03-27 16:44:41,760 - INFO - Agent 4: Mila Delaware
+2025-03-27 16:44:41,808 - INFO - Agent 5: Craig Kelly
+2025-03-27 16:44:41,864 - INFO - Agent 6: Pam Fain
+2025-03-27 16:44:41,918 - INFO - Agent 7: Monica Condomitti
+2025-03-27 16:44:41,970 - INFO - Agent 8: Paige Dutcher
+2025-03-27 16:44:42,019 - INFO - Agent 9: Gary Holloway
+2025-03-27 16:44:42,070 - INFO - Agent 10: Jessica Pile
+2025-03-27 16:44:42,111 - INFO - Agent 11: Cori Bender
+2025-03-27 16:44:42,162 - INFO - Agent 12: Dominic Scappaticci
+2025-03-27 16:44:42,208 - INFO - Agent 13: Cindy Buckhannon
+2025-03-27 16:44:42,256 - INFO - Agent 14: Elana Nager
+2025-03-27 16:44:42,310 - INFO - Agent 15: Amanda Geyer
+2025-03-27 16:44:42,357 - INFO - Agent 16: John Schuetze
+2025-03-27 16:44:42,401 - INFO - Agent 17: Lee Johnson
+2025-03-27 16:44:42,452 - INFO - Agent 18: Carol Campbell
+2025-03-27 16:44:42,505 - INFO - Agent 19: Cherie Lang
+2025-03-27 16:44:42,602 - INFO - Agent 20: Timothy York
+2025-03-27 16:44:42,668 - INFO - Agent 21: Crisi Mintz
+2025-03-27 16:44:42,752 - INFO - Agent 22: Sandy Esmay
+2025-03-27 16:44:42,811 - INFO - Agent 23: Bruce Woods
+2025-03-27 16:44:42,865 - INFO - Agent 24: Katy Curtis
+2025-03-27 16:44:42,926 - INFO - Agent 25: Shawn Keane
+2025-03-27 16:45:25,968 - INFO - Saved 25 agents to CSV
+2025-03-27 16:45:29,622 - INFO - Processing page 2 for Anthem real estate agents
+2025-03-27 16:45:29,809 - INFO - Found 25 agents on page 2
+2025-03-27 16:45:29,918 - INFO - Agent 1: Jennifer Rogers
+2025-03-27 16:45:30,010 - INFO - Agent 2: Brian Elliott
+2025-03-27 16:45:30,103 - INFO - Agent 3: Kenny Knight
+2025-03-27 16:45:30,195 - INFO - Agent 4: Kristen Donovan
+2025-03-27 16:45:30,287 - INFO - Agent 5: Dean Hoppes
+2025-03-27 16:45:30,381 - INFO - Agent 6: Louise Haarala
+2025-03-27 16:45:30,484 - INFO - Agent 7: Kerri Schrand
+2025-03-27 16:45:30,579 - INFO - Agent 8: Oscar Rodriguez
+2025-03-27 16:45:30,665 - INFO - Agent 9: Eric Linden
+2025-03-27 16:45:30,746 - INFO - Agent 10: Denise Monaghan OConnell
+2025-03-27 16:45:30,831 - INFO - Agent 11: Josh Dean
+2025-03-27 16:45:30,913 - INFO - Agent 12: Lynn Green
+2025-03-27 16:45:31,004 - INFO - Agent 13: Mary Ann Birdoes
+2025-03-27 16:45:31,086 - INFO - Agent 14: Alfred Monsalvatge
+2025-03-27 16:45:31,170 - INFO - Agent 15: Tom Edler
+2025-03-27 16:45:31,251 - INFO - Agent 16: Michelle Perry
+2025-03-27 16:45:31,332 - INFO - Agent 17: Lisa Stine
+2025-03-27 16:45:31,415 - INFO - Agent 18: Terrie Lescarbeau
+2025-03-27 16:45:31,499 - INFO - Agent 19: Melissa McCormick Wise
+2025-03-27 16:45:31,581 - INFO - Agent 20: Curtis McCormick
+2025-03-27 16:45:31,665 - INFO - Agent 21: Kathleen Erba
+2025-03-27 16:45:31,751 - INFO - Agent 22: Noemie Neipert
+2025-03-27 16:45:31,874 - INFO - Agent 23: Cheryl Linden
+2025-03-27 16:45:32,028 - INFO - Agent 24: Tammi Stifel
+2025-03-27 16:45:32,126 - INFO - Agent 25: D. Andre Nicu
+2025-03-27 16:46:13,687 - INFO - Saved 25 agents to CSV
+2025-03-27 16:46:17,508 - INFO - Processing page 3 for Anthem real estate agents
+2025-03-27 16:46:17,689 - INFO - Found 25 agents on page 3
+2025-03-27 16:46:17,787 - INFO - Agent 1: Dennis Erba
+2025-03-27 16:46:17,888 - INFO - Agent 2: Eric Hess
+2025-03-27 16:46:17,980 - INFO - Agent 3: Mark Friedman
+2025-03-27 16:46:18,071 - INFO - Agent 4: Shelby Purdy
+2025-03-27 16:46:18,161 - INFO - Agent 5: Dana Winter
+2025-03-27 16:46:18,255 - INFO - Agent 6: Arlene Warren-Hernandez
+2025-03-27 16:46:18,344 - INFO - Agent 7: Audrey Fischer
+2025-03-27 16:46:18,435 - INFO - Agent 8: Peggy Nelson
+2025-03-27 16:46:18,525 - INFO - Agent 9: Ben Curtin
+2025-03-27 16:46:18,623 - INFO - Agent 10: John Wallitschek
+2025-03-27 16:46:18,723 - INFO - Agent 11: Wendy Dobbs
+2025-03-27 16:46:18,814 - INFO - Agent 12: Nadia Alden
+2025-03-27 16:46:18,920 - INFO - Agent 13: Nikki Norton
+2025-03-27 16:46:19,026 - INFO - Agent 14: Rebecca Norton
+2025-03-27 16:46:19,092 - INFO - Agent 15: David Schrand
+2025-03-27 16:46:19,140 - INFO - Agent 16: Patricia Godleski
+2025-03-27 16:46:19,185 - INFO - Agent 17: Stacy Eaton
+2025-03-27 16:46:19,236 - INFO - Agent 18: Connie McGregor
+2025-03-27 16:46:19,282 - INFO - Agent 19: Tom Scappaticci
+2025-03-27 16:46:19,329 - INFO - Agent 20: Rhonda Solomon
+2025-03-27 16:46:19,374 - INFO - Agent 21: Jill Stecker
+2025-03-27 16:46:19,420 - INFO - Agent 22: Charles Turner
+2025-03-27 16:46:19,465 - INFO - Agent 23: James Telich
+2025-03-27 16:46:19,515 - INFO - Agent 24: Candy Jenkins
+2025-03-27 16:46:19,562 - INFO - Agent 25: Donna Hunter
+2025-03-27 16:46:58,392 - INFO - Saved 25 agents to CSV
+2025-03-27 16:47:02,965 - INFO - Processing page 4 for Anthem real estate agents
+2025-03-27 16:47:03,138 - INFO - Found 25 agents on page 4
+2025-03-27 16:47:03,230 - INFO - Agent 1: Steve Fanto
+2025-03-27 16:47:03,321 - INFO - Agent 2: Megan Fernandez
+2025-03-27 16:47:03,414 - INFO - Agent 3: Sandi Hess
+2025-03-27 16:47:03,503 - INFO - Agent 4: Gary Frantz
+2025-03-27 16:47:03,615 - INFO - Agent 5: Jerry Tulman
+2025-03-27 16:47:03,706 - INFO - Agent 6: Dawn VanSickle
+2025-03-27 16:47:03,803 - INFO - Agent 7: Mary Ann Davis
+2025-03-27 16:47:03,892 - INFO - Agent 8: Heather Miller
+2025-03-27 16:47:03,987 - INFO - Agent 9: Marty Mogalian
+2025-03-27 16:47:04,089 - INFO - Agent 10: Zach Kriegshauser
+2025-03-27 16:47:04,152 - INFO - Agent 11: Lori Davies
+2025-03-27 16:47:04,203 - INFO - Agent 12: Mandy Bennett
+2025-03-27 16:47:04,251 - INFO - Agent 13: Bibianna Baez
+2025-03-27 16:47:04,297 - INFO - Agent 14: Kim Farnsworth
+2025-03-27 16:47:04,348 - INFO - Agent 15: Deana Aller
+2025-03-27 16:47:04,395 - INFO - Agent 16: Kevin Downey
+2025-03-27 16:47:04,442 - INFO - Agent 17: Bob Pfeiffer
+2025-03-27 16:47:04,488 - INFO - Agent 18: Bill Ciora
+2025-03-27 16:47:04,534 - INFO - Agent 19: Sandra Moses
+2025-03-27 16:47:04,582 - INFO - Agent 20: Barbara Prizeman
+2025-03-27 16:47:04,626 - INFO - Agent 21: Mariah Cantrell
+2025-03-27 16:47:04,672 - INFO - Agent 22: Enza Duda
+2025-03-27 16:47:04,718 - INFO - Agent 23: Larisa Falcon
+2025-03-27 16:47:04,764 - INFO - Agent 24: Jo Ann Bauer
+2025-03-27 16:47:04,811 - INFO - Agent 25: The Hunter Jenkins Group
+2025-03-27 16:47:58,258 - INFO - Saved 25 agents to CSV
+2025-03-27 16:48:02,038 - INFO - Processing page 5 for Anthem real estate agents
+2025-03-27 16:48:02,180 - INFO - Found 11 agents on page 5
+2025-03-27 16:48:02,275 - INFO - Agent 1: Noralicia Flores de Valdez
+2025-03-27 16:48:02,368 - INFO - Agent 2: Brock Moses
+2025-03-27 16:48:02,459 - INFO - Agent 3: Hillari Hardt
+2025-03-27 16:48:02,553 - INFO - Agent 4: John Smith
+2025-03-27 16:48:02,649 - INFO - Agent 5: Theo Christakos
+2025-03-27 16:48:02,739 - INFO - Agent 6: Julie Charron
+2025-03-27 16:48:02,843 - INFO - Agent 7: Danielle McBride
+2025-03-27 16:48:02,948 - INFO - Agent 8: Kurt Fischer
+2025-03-27 16:48:03,069 - INFO - Agent 9: Sean Berdy
+2025-03-27 16:48:03,140 - INFO - Agent 10: Chloe Skorpikova
+2025-03-27 16:48:03,189 - INFO - Agent 11: Regina Levin
+2025-03-27 16:48:20,449 - INFO - Saved 11 agents to CSV
+2025-03-27 16:48:20,495 - INFO - Processing inner city 3/80: Apache Junction real estate agents
+2025-03-27 16:48:25,422 - INFO - Processing page 1 for Apache Junction real estate agents
+2025-03-27 16:48:25,610 - INFO - Found 25 agents on page 1
+2025-03-27 16:48:25,738 - INFO - Agent 1: Kathy Reardon
+2025-03-27 16:48:25,793 - INFO - Agent 2: Tasha Jones
+2025-03-27 16:48:25,854 - INFO - Agent 3: Tavit Kazanjian
+2025-03-27 16:48:25,920 - INFO - Agent 4: Kim Peterson
+2025-03-27 16:48:25,977 - INFO - Agent 5: Sheila Hanna
+2025-03-27 16:48:26,024 - INFO - Agent 6: Jason Button
+2025-03-27 16:48:26,070 - INFO - Agent 7: Jane Grimm
+2025-03-27 16:48:26,117 - INFO - Agent 8: Dennis Swaney
+2025-03-27 16:48:26,175 - INFO - Agent 9: Cynthia Morisch
+2025-03-27 16:48:26,230 - INFO - Agent 10: Toni Stewart
+2025-03-27 16:48:26,296 - INFO - Agent 11: Ulises Sandoval
+2025-03-27 16:48:26,352 - INFO - Agent 12: Ivelina Angelova
+2025-03-27 16:48:26,405 - INFO - Agent 13: Sariah Crandall
+2025-03-27 16:48:26,458 - INFO - Agent 14: Claudia Hedt
+2025-03-27 16:48:26,522 - INFO - Agent 15: Heather Hurwitz
+2025-03-27 16:48:26,579 - INFO - Agent 16: Mary Ellsworth
+2025-03-27 16:48:26,641 - INFO - Agent 17: Jarod Britman
+2025-03-27 16:48:26,735 - INFO - Agent 18: Michael Maddox
+2025-03-27 16:48:26,835 - INFO - Agent 19: Angela Jacques
+2025-03-27 16:48:26,906 - INFO - Agent 20: Allison Wood
+2025-03-27 16:48:26,962 - INFO - Agent 21: Kim Keller
+2025-03-27 16:48:27,040 - INFO - Agent 22: Happy Basla
+2025-03-27 16:48:27,111 - INFO - Agent 23: Michelle Boone
+2025-03-27 16:48:27,166 - INFO - Agent 24: Katy Farol
+2025-03-27 16:48:27,219 - INFO - Agent 25: Ellen Fleming
+2025-03-27 16:49:07,811 - INFO - Saved 25 agents to CSV
+2025-03-27 16:49:11,812 - INFO - Processing page 2 for Apache Junction real estate agents
+2025-03-27 16:49:11,896 - INFO - Found 25 agents on page 2
+2025-03-27 16:49:11,948 - INFO - Agent 1: Daeon Smith-Jones
+2025-03-27 16:49:11,995 - INFO - Agent 2: Azita Sajjadi
+2025-03-27 16:49:12,047 - INFO - Agent 3: Amanda Thomason
+2025-03-27 16:49:12,095 - INFO - Agent 4: Bobbi J Buchli
+2025-03-27 16:49:12,145 - INFO - Agent 5: Ty Green
+2025-03-27 16:49:12,193 - INFO - Agent 6: Rich Johnson
+2025-03-27 16:49:12,242 - INFO - Agent 7: Karen Sechrist
+2025-03-27 16:49:12,288 - INFO - Agent 8: Rhonda Franklin
+2025-03-27 16:49:12,335 - INFO - Agent 9: Kristina Read
+2025-03-27 16:49:12,418 - INFO - Agent 10: Keith George
+2025-03-27 16:49:12,470 - INFO - Agent 11: Anabel Guerrero
+2025-03-27 16:49:12,518 - INFO - Agent 12: Alan Glasband
+2025-03-27 16:49:12,571 - INFO - Agent 13: Heather Bennett
+2025-03-27 16:49:12,619 - INFO - Agent 14: Denise Hopkins
+2025-03-27 16:49:12,668 - INFO - Agent 15: Anne Hunt
+2025-03-27 16:49:12,714 - INFO - Agent 16: Sonja Shaw
+2025-03-27 16:49:12,765 - INFO - Agent 17: Melinda Bacon
+2025-03-27 16:49:12,816 - INFO - Agent 18: Jacqueline Casillas
+2025-03-27 16:49:12,865 - INFO - Agent 19: Fiona Bigbee
+2025-03-27 16:49:12,914 - INFO - Agent 20: Ellsworth Group
+2025-03-27 16:49:12,966 - INFO - Agent 21: Stephanie Watkins
+2025-03-27 16:49:13,022 - INFO - Agent 22: Shelli Bronstine
+2025-03-27 16:49:13,089 - INFO - Agent 23: George Haith
+2025-03-27 16:49:13,145 - INFO - Agent 24: Yvonne Corrigan-Carr
+2025-03-27 16:49:13,194 - INFO - Agent 25: Sara Waide Bowers
+2025-03-27 16:49:55,355 - INFO - Saved 25 agents to CSV
+2025-03-27 16:50:02,020 - INFO - Processing page 3 for Apache Junction real estate agents
+2025-03-27 16:50:02,218 - INFO - Found 25 agents on page 3
+2025-03-27 16:50:02,311 - INFO - Agent 1: Jayne Wolff
+2025-03-27 16:50:02,403 - INFO - Agent 2: Joel Knight
+2025-03-27 16:50:02,498 - INFO - Agent 3: Judy Ellison
+2025-03-27 16:50:02,589 - INFO - Agent 4: Ryann Haenel
+2025-03-27 16:50:02,683 - INFO - Agent 5: Cynthia Brown
+2025-03-27 16:50:02,776 - INFO - Agent 6: Lisa Sheble
+2025-03-27 16:50:02,878 - INFO - Agent 7: Natalie McCluskey
+2025-03-27 16:50:02,974 - INFO - Agent 8: Samantha Fields
+2025-03-27 16:50:03,068 - INFO - Agent 9: Johannes Rath
+2025-03-27 16:50:03,214 - INFO - Agent 10: Jason Slagter
+2025-03-27 16:50:03,273 - INFO - Agent 11: Steven Toth
+2025-03-27 16:50:03,323 - INFO - Agent 12: Jean Pomeroy
+2025-03-27 16:50:03,367 - INFO - Agent 13: Nick Drake
+2025-03-27 16:50:03,415 - INFO - Agent 14: Davontae Smith
+2025-03-27 16:50:03,459 - INFO - Agent 15: Frank Ellis
+2025-03-27 16:50:03,506 - INFO - Agent 16: Rick Ferguson
+2025-03-27 16:50:03,550 - INFO - Agent 17: Eric Bustamante
+2025-03-27 16:50:03,598 - INFO - Agent 18: Merrill O'Connor
+2025-03-27 16:50:03,646 - INFO - Agent 19: Tom Miller
+2025-03-27 16:50:03,696 - INFO - Agent 20: Billy Fallos
+2025-03-27 16:50:03,741 - INFO - Agent 21: Jackie Salmans
+2025-03-27 16:50:03,790 - INFO - Agent 22: Marjorie Allen
+2025-03-27 16:50:03,838 - INFO - Agent 23: Wendy Meredith
+2025-03-27 16:50:03,884 - INFO - Agent 24: Deborah Hickey
+2025-03-27 16:50:03,929 - INFO - Agent 25: Stephen Albee
+2025-03-27 16:50:44,897 - INFO - Saved 25 agents to CSV
+2025-03-27 16:50:48,827 - INFO - Processing page 4 for Apache Junction real estate agents
+2025-03-27 16:50:49,061 - INFO - Found 25 agents on page 4
+2025-03-27 16:50:49,128 - INFO - Agent 1: Stephanie Mitchell
+2025-03-27 16:50:49,193 - INFO - Agent 2: John Jacobs
+2025-03-27 16:50:49,262 - INFO - Agent 3: Kirk Dewberry
+2025-03-27 16:50:49,328 - INFO - Agent 4: Steven Meredith
+2025-03-27 16:50:49,423 - INFO - Agent 5: Dan Leboffe
+2025-03-27 16:50:49,496 - INFO - Agent 6: Julia Trujillo
+2025-03-27 16:50:49,563 - INFO - Agent 7: Christina Dugie
+2025-03-27 16:50:49,628 - INFO - Agent 8: Selena Worl
+2025-03-27 16:50:49,699 - INFO - Agent 9: Dave Penunuri
+2025-03-27 16:50:49,791 - INFO - Agent 10: Susan Lynde
+2025-03-27 16:50:49,879 - INFO - Agent 11: Laura Joyner
+2025-03-27 16:50:49,967 - INFO - Agent 12: Cedric Allen
+2025-03-27 16:50:50,041 - INFO - Agent 13: Jorge Valencia
+2025-03-27 16:50:50,129 - INFO - Agent 14: Debbie Mack
+2025-03-27 16:50:50,212 - INFO - Agent 15: Mike Johns
+2025-03-27 16:50:50,294 - INFO - Agent 16: Brian Genzlinger
+2025-03-27 16:50:50,365 - INFO - Agent 17: Rebecca Sherlin
+2025-03-27 16:50:50,537 - INFO - Agent 18: Debra Spagna
+2025-03-27 16:50:50,601 - INFO - Agent 19: Gillian Kirkpatrick
+2025-03-27 16:50:50,652 - INFO - Agent 20: Rebecca Blank
+2025-03-27 16:50:50,714 - INFO - Agent 21: George Low
+2025-03-27 16:50:50,762 - INFO - Agent 22: Leah Triller
+2025-03-27 16:50:50,810 - INFO - Agent 23: India Ryer
+2025-03-27 16:50:50,853 - INFO - Agent 24: Kateryna Hedz
+2025-03-27 16:50:50,897 - INFO - Agent 25: Patrick Fry
+2025-03-27 16:51:32,965 - INFO - Saved 25 agents to CSV
+2025-03-27 16:51:37,069 - INFO - Processing page 5 for Apache Junction real estate agents
+2025-03-27 16:51:37,324 - INFO - Found 25 agents on page 5
+2025-03-27 16:51:37,419 - INFO - Agent 1: Beatriz Kraft
+2025-03-27 16:51:37,522 - INFO - Agent 2: Lindsay Barton
+2025-03-27 16:51:37,608 - INFO - Agent 3: J. Kevin Weisbrod
+2025-03-27 16:51:37,706 - INFO - Agent 4: Oscar Villado-Cano
+2025-03-27 16:51:37,800 - INFO - Agent 5: Mercedes Arenado-Melian
+2025-03-27 16:51:37,894 - INFO - Agent 6: Angie Denicola-Rush
+2025-03-27 16:51:37,984 - INFO - Agent 7: Anne Martin
+2025-03-27 16:51:38,071 - INFO - Agent 8: Dee Grayer
+2025-03-27 16:51:38,168 - INFO - Agent 9: Denise Adame
+2025-03-27 16:51:38,347 - INFO - Agent 10: Jacie Czerwinski
+2025-03-27 16:51:38,397 - INFO - Agent 11: Steve Bauman
+2025-03-27 16:51:38,441 - INFO - Agent 12: Anu Jain
+2025-03-27 16:51:38,486 - INFO - Agent 13: Michael Rossi
+2025-03-27 16:51:38,530 - INFO - Agent 14: Kyna Morris
+2025-03-27 16:51:38,611 - INFO - Agent 15: Stephanie Clark-Lamb
+2025-03-27 16:51:38,703 - INFO - Agent 16: Andrew Watts
+2025-03-27 16:51:38,792 - INFO - Agent 17: Robert Andler
+2025-03-27 16:51:38,880 - INFO - Agent 18: Gregory Boone
+2025-03-27 16:51:38,968 - INFO - Agent 19: Johnny Johnson
+2025-03-27 16:51:39,060 - INFO - Agent 20: Laurie Balestrino
+2025-03-27 16:51:39,157 - INFO - Agent 21: Sarah Edwards
+2025-03-27 16:51:39,277 - INFO - Agent 22: Gustavo Borquez
+2025-03-27 16:51:39,379 - INFO - Agent 23: Joseph Hicks
+2025-03-27 16:51:39,474 - INFO - Agent 24: Kathy Campbell
+2025-03-27 16:51:39,563 - INFO - Agent 25: Brenda Brandhorst
+2025-03-27 16:52:49,561 - INFO - Saved 25 agents to CSV
+2025-03-27 16:52:55,855 - INFO - Processing page 6 for Apache Junction real estate agents
+2025-03-27 16:52:56,261 - INFO - Found 25 agents on page 6
+2025-03-27 16:52:56,618 - INFO - Agent 1: Roi Clinton
+2025-03-27 16:52:56,786 - INFO - Agent 2: Deanne Martin
+2025-03-27 16:52:56,907 - INFO - Agent 3: Adrianne Caspers
+2025-03-27 16:52:57,059 - INFO - Agent 4: Tammy Danielson
+2025-03-27 16:52:57,198 - INFO - Agent 5: Tony Gonzalez
+2025-03-27 16:52:57,303 - INFO - Agent 6: JoAnn Ford
+2025-03-27 16:52:57,376 - INFO - Agent 7: Douglas Corbin
+2025-03-27 16:52:57,450 - INFO - Agent 8: Chad Corbin
+2025-03-27 16:52:57,521 - INFO - Agent 9: Traci Daniels
+2025-03-27 16:52:57,598 - INFO - Agent 10: Dane McFall
+2025-03-27 16:52:57,672 - INFO - Agent 11: Melissa Lopez
+2025-03-27 16:52:57,761 - INFO - Agent 12: Jen Green
+2025-03-27 16:52:57,855 - INFO - Agent 13: Dalila Sanchez Nava
+2025-03-27 16:52:57,941 - INFO - Agent 14: Martha Appel
+2025-03-27 16:52:58,033 - INFO - Agent 15: Tommy Hudson
+2025-03-27 16:52:58,120 - INFO - Agent 16: Bill Adams
+2025-03-27 16:52:58,202 - INFO - Agent 17: Brigette Metcalf
+2025-03-27 16:52:58,291 - INFO - Agent 18: Stacie Bell
+2025-03-27 16:52:58,375 - INFO - Agent 19: Heather Manos
+2025-03-27 16:52:58,474 - INFO - Agent 20: Debra Mason
+2025-03-27 16:52:58,569 - INFO - Agent 21: Leslie Phillips
+2025-03-27 16:52:58,654 - INFO - Agent 22: Christina Choe
+2025-03-27 16:52:58,738 - INFO - Agent 23: The Boone Team
+2025-03-27 16:52:58,822 - INFO - Agent 24: Dominic Hernandez
+2025-03-27 16:52:58,902 - INFO - Agent 25: Allie Sanders
+2025-03-27 16:54:27,288 - INFO - Saved 25 agents to CSV
+2025-03-27 16:54:34,027 - INFO - Processing page 7 for Apache Junction real estate agents
+2025-03-27 16:54:34,278 - INFO - Found 25 agents on page 7
+2025-03-27 16:54:34,397 - INFO - Agent 1: McCaul Wallesen
+2025-03-27 16:54:34,541 - INFO - Agent 2: Douglas Ava
+2025-03-27 16:54:34,665 - INFO - Agent 3: Johnny Ruano
+2025-03-27 16:54:34,788 - INFO - Agent 4: Aj Alsadi
+2025-03-27 16:54:34,889 - INFO - Agent 5: Madelyn Dobson
+2025-03-27 16:54:34,986 - INFO - Agent 6: Kate Anderson
+2025-03-27 16:54:35,100 - INFO - Agent 7: Carolyn Irby
+2025-03-27 16:54:35,191 - INFO - Agent 8: Marc Perea
+2025-03-27 16:54:35,276 - INFO - Agent 9: Tom Evangelista
+2025-03-27 16:54:35,376 - INFO - Agent 10: Andy Berglund
+2025-03-27 16:54:35,463 - INFO - Agent 11: Benjamin Ferguson
+2025-03-27 16:54:35,543 - INFO - Agent 12: Karen Bosch
+2025-03-27 16:54:35,631 - INFO - Agent 13: Nicole Johnson
+2025-03-27 16:54:35,726 - INFO - Agent 14: Barbara Brno
+2025-03-27 16:54:35,844 - INFO - Agent 15: Patricia Whorton
+2025-03-27 16:54:35,955 - INFO - Agent 16: Leslie Coates
+2025-03-27 16:54:36,060 - INFO - Agent 17: Bonnie Ditty
+2025-03-27 16:54:36,158 - INFO - Agent 18: Christine Prescott
+2025-03-27 16:54:36,259 - INFO - Agent 19: Becky Engstrom
+2025-03-27 16:54:36,370 - INFO - Agent 20: Judy Governo
+2025-03-27 16:54:36,497 - INFO - Agent 21: Kari Salvato
+2025-03-27 16:54:36,598 - INFO - Agent 22: Lori Bond
+2025-03-27 16:54:36,688 - INFO - Agent 23: Lisa Grayer
+2025-03-27 16:54:36,765 - INFO - Agent 24: Chris Atherton
+2025-03-27 16:54:36,971 - INFO - Agent 25: Darryl Bassette
+2025-03-27 16:54:42,677 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/marc-perea/aid_18066/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/marc-perea/aid_18066/", waiting until "domcontentloaded"
+
+2025-03-27 16:54:42,689 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/carolyn-irby/aid_18065/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/carolyn-irby/aid_18065/", waiting until "domcontentloaded"
+
+2025-03-27 16:54:42,701 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/kate-anderson/aid_18060/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/kate-anderson/aid_18060/", waiting until "domcontentloaded"
+
+2025-03-27 16:54:42,722 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/scottsdale/agent/madelyn-dobson/aid_286393/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/scottsdale/agent/madelyn-dobson/aid_286393/", waiting until "domcontentloaded"
+
+2025-03-27 16:54:42,731 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/ahmad-aj-alsadi/aid_265725/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/ahmad-aj-alsadi/aid_265725/", waiting until "domcontentloaded"
+
+2025-03-27 16:54:42,749 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/johnny-ruano/aid_261596/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/johnny-ruano/aid_261596/", waiting until "domcontentloaded"
+
+2025-03-27 16:54:42,769 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/douglas-ava/aid_290472/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/douglas-ava/aid_290472/", waiting until "domcontentloaded"
+
+2025-03-27 16:54:42,792 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/scottsdale/agent/mccaul-wallesen/aid_269820/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/scottsdale/agent/mccaul-wallesen/aid_269820/", waiting until "domcontentloaded"
+
+2025-03-27 17:01:02,285 - INFO - Another instance (PID 544765) is running. Stopping it and starting new instance.
+2025-03-27 17:01:04,290 - INFO - Removed lock file
+2025-03-27 17:01:04,292 - INFO - Scraper started in background
+2025-03-27 17:01:04,294 - INFO - Cleared existing file: data/coldwell_agents.csv
+2025-03-27 17:01:04,304 - INFO - Created lock file with PID: 559180
+2025-03-27 17:01:20,093 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 17:01:29,142 - INFO - Processing inner city 3/80: Apache Junction real estate agents
+2025-03-27 17:01:32,980 - INFO - Processing page 6 for Apache Junction real estate agents
+2025-03-27 17:01:33,142 - INFO - Found 25 agents on page 6
+2025-03-27 17:01:33,238 - INFO - Agent 1: Kateryna Hedz
+2025-03-27 17:01:33,329 - INFO - Agent 2: Roi Clinton
+2025-03-27 17:01:33,445 - INFO - Agent 3: Beatriz Kraft
+2025-03-27 17:01:33,551 - INFO - Agent 4: Jean Pomeroy
+2025-03-27 17:01:33,646 - INFO - Agent 5: Antoinette Perez
+2025-03-27 17:01:33,800 - INFO - Agent 6: Adrianne Caspers
+2025-03-27 17:01:34,106 - INFO - Agent 7: Allison Wood
+2025-03-27 17:01:34,337 - INFO - Agent 8: Jacie Czerwinski
+2025-03-27 17:01:34,525 - INFO - Agent 9: Steve Bauman
+2025-03-27 17:01:34,735 - INFO - Agent 10: Kelly Kanehen
+2025-03-27 17:01:34,889 - INFO - Agent 11: Joye Holverson
+2025-03-27 17:01:34,976 - INFO - Agent 12: Cynthia Brown
+2025-03-27 17:01:35,063 - INFO - Agent 13: Andrew Watts
+2025-03-27 17:01:35,147 - INFO - Agent 14: Lori Bond
+2025-03-27 17:01:35,233 - INFO - Agent 15: Davontae Smith
+2025-03-27 17:01:35,315 - INFO - Agent 16: Jarod Britman
+2025-03-27 17:01:35,399 - INFO - Agent 17: Christina Choe
+2025-03-27 17:01:35,485 - INFO - Agent 18: Michael Maddox
+2025-03-27 17:01:35,573 - INFO - Agent 19: Traci Daniels
+2025-03-27 17:01:35,662 - INFO - Agent 20: Debbie Mack
+2025-03-27 17:01:35,843 - INFO - Agent 21: Karen Moore
+2025-03-27 17:01:35,989 - INFO - Agent 22: Katy Farol
+2025-03-27 17:01:36,077 - INFO - Agent 23: The Engstrom Team
+2025-03-27 17:01:36,169 - INFO - Agent 24: Debra Spagna
+2025-03-27 17:01:36,267 - INFO - Agent 25: Amanda Thomason
+2025-03-27 17:02:33,708 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/scottsdale/agent/debra-spagna/aid_29262/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/scottsdale/agent/debra-spagna/aid_29262/", waiting until "domcontentloaded"
+
+2025-03-27 17:02:33,753 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/team/engstrom-team/tid_2427/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/team/engstrom-team/tid_2427/", waiting until "domcontentloaded"
+
+2025-03-27 17:02:33,780 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/katy-farol/aid_259244/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/katy-farol/aid_259244/", waiting until "domcontentloaded"
+
+2025-03-27 17:02:33,806 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/scottsdale/agent/karen-moore/aid_220884/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/scottsdale/agent/karen-moore/aid_220884/", waiting until "domcontentloaded"
+
+2025-03-27 17:02:33,828 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/deborah-debbie-mack/aid_29211/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/deborah-debbie-mack/aid_29211/", waiting until "domcontentloaded"
+
+2025-03-27 17:02:33,850 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/traci-daniels/aid_232374/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/traci-daniels/aid_232374/", waiting until "domcontentloaded"
+
+2025-03-27 17:02:33,885 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/michael-maddox/aid_44471/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/michael-maddox/aid_44471/", waiting until "domcontentloaded"
+
+2025-03-27 17:02:33,903 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/christina-choe/aid_282144/: Page.goto: Target page, context or browser has been closed
+Call log:
+  - navigating to "https://www.coldwellbankerhomes.com/az/mesa/agent/christina-choe/aid_282144/", waiting until "domcontentloaded"
+
+2025-03-27 17:02:44,173 - INFO - Saved 25 agents to CSV
+2025-03-27 17:02:44,200 - ERROR - Error checking next page: Page.query_selector: Target page, context or browser has been closed
+2025-03-27 17:02:44,200 - INFO - Processing inner city 4/80: Arivaca real estate agents
+2025-03-27 17:02:44,646 - ERROR - Fatal error: Page.goto: Target page, context or browser has been closed
+2025-03-27 17:05:26,259 - INFO - Another instance (PID 559180) is running. Stopping it and starting new instance.
+2025-03-27 17:05:28,261 - INFO - Removed lock file
+2025-03-27 17:05:28,263 - INFO - Scraper started in background
+2025-03-27 17:05:28,268 - INFO - Cleared existing file: data/coldwell_agents.csv
+2025-03-27 17:05:28,274 - INFO - Created lock file with PID: 559180
+2025-03-27 17:05:43,122 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 17:05:51,473 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 17:05:55,526 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 17:05:55,702 - INFO - Found 25 agents on page 1
+2025-03-27 17:05:55,794 - INFO - Agent 1: Candy Bell
+2025-03-27 17:05:55,890 - INFO - Agent 2: Pam Pesqueira
+2025-03-27 17:05:55,991 - INFO - Agent 3: April Campbell
+2025-03-27 17:05:56,097 - INFO - Agent 4: Sara Hunter
+2025-03-27 17:05:56,194 - INFO - Agent 5: Elizabeth Alegria
+2025-03-27 17:05:56,284 - INFO - Agent 6: Marybeth Woodworth
+2025-03-27 17:05:56,375 - INFO - Agent 7: Tamara Kempton
+2025-03-27 17:05:56,470 - INFO - Agent 8: Lillian Shine
+2025-03-27 17:05:56,567 - INFO - Agent 9: Christopher Molander
+2025-03-27 17:05:56,660 - INFO - Agent 10: Rodney Chiddix
+2025-03-27 17:05:56,750 - INFO - Agent 11: Cheryl Maynard
+2025-03-27 17:05:56,842 - INFO - Agent 12: Denise Jacobs
+2025-03-27 17:05:56,934 - INFO - Agent 13: Ed Baker
+2025-03-27 17:05:57,036 - INFO - Agent 14: Rita Collier
+2025-03-27 17:05:57,141 - INFO - Agent 15: Jr. Gerardo Ochoa Rico
+2025-03-27 17:05:57,241 - INFO - Agent 16: Marsha Eades
+2025-03-27 17:05:57,327 - INFO - Agent 17: Sue Taylor-Lane
+2025-03-27 17:05:57,407 - INFO - Agent 18: Donna Schenek
+2025-03-27 17:05:57,492 - INFO - Agent 19: Matt Bowen
+2025-03-27 17:05:57,575 - INFO - Agent 20: Lora Dungy Cheney
+2025-03-27 17:05:57,656 - INFO - Agent 21: Dolores Jakeway
+2025-03-27 17:05:57,745 - INFO - Agent 22: Dinah Lewis
+2025-03-27 17:05:57,842 - INFO - Agent 23: Laurie Lundeen
+2025-03-27 17:05:57,954 - INFO - Agent 24: Deborah Wyrsch-Williams
+2025-03-27 17:05:58,052 - INFO - Agent 25: Phoebe Bigelow
+2025-03-27 17:07:14,336 - ERROR - Fatal error: cannot access local variable 'progress' where it is not associated with a value
+2025-03-27 17:07:14,340 - INFO - Saved 25 agents to CSV
+2025-03-27 17:09:34,902 - INFO - Another instance (PID 559180) is running. Stopping it and starting new instance.
+2025-03-27 17:09:36,905 - INFO - Removed lock file
+2025-03-27 17:09:36,907 - INFO - Scraper started in background
+2025-03-27 17:09:36,910 - INFO - Cleared existing file: data/coldwell_agents.csv
+2025-03-27 17:09:36,911 - INFO - Cleared progress file: data/progress.json
+2025-03-27 17:09:36,915 - INFO - Created lock file with PID: 559180
+2025-03-27 17:09:52,782 - INFO - Processing city 1/34: Arizona real estate agents
+2025-03-27 17:10:00,899 - INFO - Processing inner city 1/80: Amado real estate agents
+2025-03-27 17:10:04,816 - INFO - Processing page 1 for Amado real estate agents
+2025-03-27 17:10:04,995 - INFO - Found 25 agents on page 1
+2025-03-27 17:10:05,083 - INFO - Agent 1: Michon Brudenell
+2025-03-27 17:10:05,168 - INFO - Agent 2: Verna Elmer
+2025-03-27 17:10:05,254 - INFO - Agent 3: Candy Bell
+2025-03-27 17:10:05,342 - INFO - Agent 4: Pam Pesqueira
+2025-03-27 17:10:05,423 - INFO - Agent 5: April Campbell
+2025-03-27 17:10:05,504 - INFO - Agent 6: Sara Hunter
+2025-03-27 17:10:05,590 - INFO - Agent 7: Elizabeth Alegria
+2025-03-27 17:10:05,671 - INFO - Agent 8: Marybeth Woodworth
+2025-03-27 17:10:05,752 - INFO - Agent 9: Tamara Kempton
+2025-03-27 17:10:05,831 - INFO - Agent 10: Lillian Shine
+2025-03-27 17:10:05,932 - INFO - Agent 11: Christopher Molander
+2025-03-27 17:10:06,101 - INFO - Agent 12: Rodney Chiddix
+2025-03-27 17:10:06,265 - INFO - Agent 13: Cheryl Maynard
+2025-03-27 17:10:06,365 - INFO - Agent 14: Denise Jacobs
+2025-03-27 17:10:06,437 - INFO - Agent 15: Ed Baker
+2025-03-27 17:10:06,509 - INFO - Agent 16: Rita Collier
+2025-03-27 17:10:06,582 - INFO - Agent 17: Jr. Gerardo Ochoa Rico
+2025-03-27 17:10:06,655 - INFO - Agent 18: Marsha Eades
+2025-03-27 17:10:06,725 - INFO - Agent 19: Sue Taylor-Lane
+2025-03-27 17:10:06,798 - INFO - Agent 20: Donna Schenek
+2025-03-27 17:10:06,869 - INFO - Agent 21: Matt Bowen
+2025-03-27 17:10:06,945 - INFO - Agent 22: Lora Dungy Cheney
+2025-03-27 17:10:07,015 - INFO - Agent 23: Dolores Jakeway
+2025-03-27 17:10:07,088 - INFO - Agent 24: Dinah Lewis
+2025-03-27 17:10:07,156 - INFO - Agent 25: Laurie Lundeen
+2025-03-27 17:11:19,812 - INFO - Saved 25 agents to CSV
+2025-03-27 17:11:24,530 - INFO - Processing page 2 for Amado real estate agents
+2025-03-27 17:11:24,714 - INFO - Found 25 agents on page 2
+2025-03-27 17:11:24,919 - INFO - Agent 1: Deborah Wyrsch-Williams
+2025-03-27 17:11:25,298 - INFO - Agent 2: Phoebe Bigelow
+2025-03-27 17:11:25,599 - INFO - Agent 3: Lorraine Demeerleer
+2025-03-27 17:11:25,688 - INFO - Agent 4: Dave Margolis
+2025-03-27 17:11:25,782 - INFO - Agent 5: Jim Callery
+2025-03-27 17:11:25,889 - INFO - Agent 6: Clare Fernandes
+2025-03-27 17:11:25,967 - INFO - Agent 7: Carolyn Fox
+2025-03-27 17:11:26,040 - INFO - Agent 8: Perla Velasquez
+2025-03-27 17:11:26,111 - INFO - Agent 9: Jim McDougall
+2025-03-27 17:11:26,187 - INFO - Agent 10: Vanessa Alday
+2025-03-27 17:11:26,258 - INFO - Agent 11: Julie Bishop
+2025-03-27 17:11:26,334 - INFO - Agent 12: Laurel Caprio
+2025-03-27 17:11:26,411 - INFO - Agent 13: Keith Kleimola
+2025-03-27 17:11:26,500 - INFO - Agent 14: Enrique Vance
+2025-03-27 17:11:26,599 - INFO - Agent 15: Linda Niederkorn
+2025-03-27 17:11:26,710 - INFO - Agent 16: Tavee Brzuchalski
+2025-03-27 17:11:26,815 - INFO - Agent 17: Tom Williams
+2025-03-27 17:11:26,888 - INFO - Agent 18: Ramon Ross
+2025-03-27 17:11:26,963 - INFO - Agent 19: Alicia Hiller
+2025-03-27 17:11:27,034 - INFO - Agent 20: Beata Lopez
+2025-03-27 17:11:27,108 - INFO - Agent 21: Brent Self
+2025-03-27 17:11:27,181 - INFO - Agent 22: April Cooper
+2025-03-27 17:11:27,253 - INFO - Agent 23: Elaine Grace
+2025-03-27 17:11:27,327 - INFO - Agent 24: Francisco Ruiz
+2025-03-27 17:11:27,418 - INFO - Agent 25: Linda Jehle
+2025-03-27 17:12:35,923 - INFO - Saved 25 agents to CSV
+2025-03-27 17:12:40,734 - INFO - Processing page 3 for Amado real estate agents
+2025-03-27 17:12:40,954 - INFO - Found 23 agents on page 3
+2025-03-27 17:12:41,071 - INFO - Agent 1: Timothy Dalrymple
+2025-03-27 17:12:41,196 - INFO - Agent 2: Jeanne Zachman
+2025-03-27 17:12:41,298 - INFO - Agent 3: Darrell Lilja
+2025-03-27 17:12:41,406 - INFO - Agent 4: Terry Lang
+2025-03-27 17:12:41,499 - INFO - Agent 5: Trina Alberta Oesterle
+2025-03-27 17:12:41,603 - INFO - Agent 6: Jim Hoppens
+2025-03-27 17:12:41,723 - INFO - Agent 7: Christi Nicklas
+2025-03-27 17:12:41,842 - INFO - Agent 8: Rudy Berthold
+2025-03-27 17:12:41,945 - INFO - Agent 9: Julius Barraza
+2025-03-27 17:12:42,054 - INFO - Agent 10: Julie Hummer-Bellmyer
+2025-03-27 17:12:42,153 - INFO - Agent 11: Julie Leon
+2025-03-27 17:12:42,238 - INFO - Agent 12: Rudy Lira
+2025-03-27 17:12:42,318 - INFO - Agent 13: Trenna Hiney
+2025-03-27 17:12:42,396 - INFO - Agent 14: William Ims
+2025-03-27 17:12:42,515 - INFO - Agent 15: Becky Tucker
+2025-03-27 17:12:42,597 - INFO - Agent 16: Richard Duarte
+2025-03-27 17:12:42,672 - INFO - Agent 17: Leticia Diaz
+2025-03-27 17:12:42,745 - INFO - Agent 18: Chrissie Hancock
+2025-03-27 17:12:42,820 - INFO - Agent 19: Denise Matthys
+2025-03-27 17:12:42,891 - INFO - Agent 20: Randall Koster
+2025-03-27 17:12:42,964 - INFO - Agent 21: Tomas Echeverri
+2025-03-27 17:12:43,037 - INFO - Agent 22: Dennese Cole
+2025-03-27 17:12:43,110 - INFO - Agent 23: Martin Kennedy
+2025-03-27 17:13:45,941 - INFO - Saved 23 agents to CSV
+2025-03-27 17:13:45,966 - INFO - Processing inner city 2/80: Anthem real estate agents
+2025-03-27 17:13:52,663 - INFO - Processing page 1 for Anthem real estate agents
+2025-03-27 17:13:52,873 - INFO - Found 25 agents on page 1
+2025-03-27 17:13:52,966 - INFO - Agent 1: Cori Bender
+2025-03-27 17:13:53,052 - INFO - Agent 2: Tom Scappaticci
+2025-03-27 17:13:53,146 - INFO - Agent 3: Zach Kriegshauser
+2025-03-27 17:13:53,241 - INFO - Agent 4: Kevin Downey
+2025-03-27 17:13:53,327 - INFO - Agent 5: Melissa McCormick Wise
+2025-03-27 17:13:53,413 - INFO - Agent 6: Curtis McCormick
+2025-03-27 17:13:53,505 - INFO - Agent 7: Candy Jenkins
+2025-03-27 17:13:53,596 - INFO - Agent 8: Donna Hunter
+2025-03-27 17:13:53,712 - INFO - Agent 9: Nikki Norton
+2025-03-27 17:13:53,830 - INFO - Agent 10: Carol Campbell
+2025-03-27 17:13:53,940 - INFO - Agent 11: Enza Duda
+2025-03-27 17:13:54,051 - INFO - Agent 12: Steve Fanto
+2025-03-27 17:13:54,138 - INFO - Agent 13: Tammi Stifel
+2025-03-27 17:13:54,215 - INFO - Agent 14: Eric Linden
+2025-03-27 17:13:54,288 - INFO - Agent 15: Bruce Woods
+2025-03-27 17:13:54,362 - INFO - Agent 16: Craig Kelly
+2025-03-27 17:13:54,431 - INFO - Agent 17: Gary Holloway
+2025-03-27 17:13:54,513 - INFO - Agent 18: Arlene Warren-Hernandez
+2025-03-27 17:13:54,590 - INFO - Agent 19: Connie McGregor
+2025-03-27 17:13:54,666 - INFO - Agent 20: Noemie Neipert
+2025-03-27 17:13:54,741 - INFO - Agent 21: Brian Elliott
+2025-03-27 17:13:54,811 - INFO - Agent 22: Audrey Fischer
+2025-03-27 17:13:54,883 - INFO - Agent 23: Eric Hess
+2025-03-27 17:13:54,957 - INFO - Agent 24: John Wallitschek
+2025-03-27 17:13:55,031 - INFO - Agent 25: Cindy Buckhannon
+2025-03-27 17:15:12,238 - INFO - Saved 25 agents to CSV
+2025-03-27 17:15:16,769 - INFO - Processing page 2 for Anthem real estate agents
+2025-03-27 17:15:17,041 - INFO - Found 25 agents on page 2
+2025-03-27 17:15:17,205 - INFO - Agent 1: Wendy Dobbs
+2025-03-27 17:15:17,367 - INFO - Agent 2: Elana Nager
+2025-03-27 17:15:17,463 - INFO - Agent 3: Patricia Godleski
+2025-03-27 17:15:17,550 - INFO - Agent 4: Nadia Alden
+2025-03-27 17:15:17,654 - INFO - Agent 5: Shawn Keane
+2025-03-27 17:15:17,785 - INFO - Agent 6: Lee Johnson
+2025-03-27 17:15:17,949 - INFO - Agent 7: The Hunter Jenkins Group
+2025-03-27 17:15:18,031 - INFO - Agent 8: Charles Turner
+2025-03-27 17:15:18,114 - INFO - Agent 9: James Telich
+2025-03-27 17:15:18,269 - INFO - Agent 10: Lori Davies
+2025-03-27 17:15:18,411 - INFO - Agent 11: Kerri Schrand
+2025-03-27 17:15:18,517 - INFO - Agent 12: Kristen Donovan
+2025-03-27 17:15:18,600 - INFO - Agent 13: Lisa Stine
+2025-03-27 17:15:18,685 - INFO - Agent 14: Megan Fernandez
+2025-03-27 17:15:18,771 - INFO - Agent 15: Sandi Hess
+2025-03-27 17:15:18,866 - INFO - Agent 16: Gary Frantz
+2025-03-27 17:15:18,946 - INFO - Agent 17: Rhonda Solomon
+2025-03-27 17:15:19,046 - INFO - Agent 18: Jeannine Raiffie
+2025-03-27 17:15:19,281 - INFO - Agent 19: Crystal Moore
+2025-03-27 17:15:19,420 - INFO - Agent 20: Jerry Tulman
+2025-03-27 17:15:19,588 - INFO - Agent 21: Shelby Purdy
+2025-03-27 17:15:19,726 - INFO - Agent 22: Alfred Monsalvatge
+2025-03-27 17:15:20,004 - INFO - Agent 23: Mary Ann Davis
+2025-03-27 17:15:20,077 - INFO - Agent 24: Bibianna Baez
+2025-03-27 17:15:20,153 - INFO - Agent 25: Pam Fain
+2025-03-27 17:16:51,046 - INFO - Saved 25 agents to CSV
+2025-03-27 17:16:55,008 - INFO - Processing page 3 for Anthem real estate agents
+2025-03-27 17:16:55,279 - INFO - Found 25 agents on page 3
+2025-03-27 17:16:55,367 - INFO - Agent 1: Heather Miller
+2025-03-27 17:16:55,467 - INFO - Agent 2: Marty Mogalian
+2025-03-27 17:16:55,567 - INFO - Agent 3: Oscar Rodriguez
+2025-03-27 17:16:55,680 - INFO - Agent 4: Paige Dutcher
+2025-03-27 17:16:55,783 - INFO - Agent 5: D. Andre Nicu
+2025-03-27 17:16:55,867 - INFO - Agent 6: Bill Ciora
+2025-03-27 17:16:55,984 - INFO - Agent 7: Lynn Green
+2025-03-27 17:16:56,304 - INFO - Agent 8: Louise Haarala
+2025-03-27 17:16:56,568 - INFO - Agent 9: Larisa Falcon
+2025-03-27 17:16:56,750 - INFO - Agent 10: Peggy Nelson
+2025-03-27 17:16:56,933 - INFO - Agent 11: Crisi Mintz
+2025-03-27 17:16:57,024 - INFO - Agent 12: Bob Pfeiffer
+2025-03-27 17:16:57,177 - INFO - Agent 13: Terrie Lescarbeau
+2025-03-27 17:16:57,284 - INFO - Agent 14: Barbara Prizeman
+2025-03-27 17:16:57,371 - INFO - Agent 15: Dawn VanSickle
+2025-03-27 17:16:57,455 - INFO - Agent 16: Amanda Geyer
+2025-03-27 17:16:57,537 - INFO - Agent 17: Kim Farnsworth
+2025-03-27 17:16:57,657 - INFO - Agent 18: Dominic Scappaticci
+2025-03-27 17:16:57,755 - INFO - Agent 19: David Schrand
+2025-03-27 17:16:57,858 - INFO - Agent 20: Mariah Cantrell
+2025-03-27 17:16:57,979 - INFO - Agent 21: Michelle Perry
+2025-03-27 17:16:58,245 - INFO - Agent 22: Jennifer Rogers
+2025-03-27 17:16:58,421 - INFO - Agent 23: Cherie Lang
+2025-03-27 17:16:58,594 - INFO - Agent 24: Dean Hoppes
+2025-03-27 17:16:58,699 - INFO - Agent 25: Mark Friedman
+2025-03-27 17:18:23,899 - INFO - Saved 25 agents to CSV
+2025-03-27 17:18:28,548 - INFO - Processing page 4 for Anthem real estate agents
+2025-03-27 17:18:28,759 - INFO - Found 25 agents on page 4
+2025-03-27 17:18:28,850 - INFO - Agent 1: Stacy Eaton
+2025-03-27 17:18:29,074 - INFO - Agent 2: Sandra Moses
+2025-03-27 17:18:29,348 - INFO - Agent 3: Mandy Bennett
+2025-03-27 17:18:29,438 - INFO - Agent 4: Kathleen Erba
+2025-03-27 17:18:29,534 - INFO - Agent 5: Rebecca Norton
+2025-03-27 17:18:29,618 - INFO - Agent 6: Dennis Erba
+2025-03-27 17:18:29,708 - INFO - Agent 7: Mila Delaware
+2025-03-27 17:18:29,803 - INFO - Agent 8: Tom Edler
+2025-03-27 17:18:29,899 - INFO - Agent 9: John Schuetze
+2025-03-27 17:18:29,993 - INFO - Agent 10: Monica Condomitti
+2025-03-27 17:18:30,102 - INFO - Agent 11: Timothy York
+2025-03-27 17:18:30,206 - INFO - Agent 12: Josh Dean
+2025-03-27 17:18:30,296 - INFO - Agent 13: Mary Ann Birdoes
+2025-03-27 17:18:30,392 - INFO - Agent 14: Katy Curtis
+2025-03-27 17:18:30,519 - INFO - Agent 15: Cheryl Linden
+2025-03-27 17:18:30,612 - INFO - Agent 16: Kenny Knight
+2025-03-27 17:18:30,704 - INFO - Agent 17: Jo Ann Bauer
+2025-03-27 17:18:30,786 - INFO - Agent 18: Ben Curtin
+2025-03-27 17:18:30,874 - INFO - Agent 19: Misty DiBella
+2025-03-27 17:18:30,959 - INFO - Agent 20: Jill Stecker
+2025-03-27 17:18:31,051 - INFO - Agent 21: Denise Monaghan OConnell
+2025-03-27 17:18:31,141 - INFO - Agent 22: Sandy Esmay
+2025-03-27 17:18:31,224 - INFO - Agent 23: Dana Winter
+2025-03-27 17:18:31,305 - INFO - Agent 24: Deana Aller
+2025-03-27 17:18:31,390 - INFO - Agent 25: Jessica Pile
+2025-03-27 17:19:53,018 - INFO - Saved 25 agents to CSV
+2025-03-27 17:19:57,562 - INFO - Processing page 5 for Anthem real estate agents
+2025-03-27 17:19:57,695 - INFO - Found 11 agents on page 5
+2025-03-27 17:19:57,786 - INFO - Agent 1: Julie Charron
+2025-03-27 17:19:57,873 - INFO - Agent 2: Brock Moses
+2025-03-27 17:19:57,972 - INFO - Agent 3: Hillari Hardt
+2025-03-27 17:19:58,065 - INFO - Agent 4: Theo Christakos
+2025-03-27 17:19:58,163 - INFO - Agent 5: John Smith
+2025-03-27 17:19:58,263 - INFO - Agent 6: Noralicia Flores de Valdez
+2025-03-27 17:19:58,374 - INFO - Agent 7: Danielle McBride
+2025-03-27 17:19:58,461 - INFO - Agent 8: Kurt Fischer
+2025-03-27 17:19:58,624 - INFO - Agent 9: Sean Berdy
+2025-03-27 17:19:58,710 - INFO - Agent 10: Regina Levin
+2025-03-27 17:19:58,814 - INFO - Agent 11: Chloe Skorpikova
+2025-03-27 17:20:33,135 - INFO - Saved 11 agents to CSV
+2025-03-27 17:20:33,251 - INFO - Processing inner city 3/80: Apache Junction real estate agents
+2025-03-27 17:20:38,810 - INFO - Processing page 1 for Apache Junction real estate agents
+2025-03-27 17:20:39,091 - INFO - Found 25 agents on page 1
+2025-03-27 17:20:39,232 - INFO - Agent 1: Ivelina Angelova
+2025-03-27 17:20:39,367 - INFO - Agent 2: Stephanie Watkins
+2025-03-27 17:20:39,483 - INFO - Agent 3: Chris Atherton
+2025-03-27 17:20:39,678 - INFO - Agent 4: Heather Manos
+2025-03-27 17:20:39,832 - INFO - Agent 5: Lindsay Barton
+2025-03-27 17:20:40,052 - INFO - Agent 6: Oscar Villado-Cano
+2025-03-27 17:20:40,228 - INFO - Agent 7: Al Andersen
+2025-03-27 17:20:40,368 - INFO - Agent 8: Jane Andersen
+2025-03-27 17:20:40,543 - INFO - Agent 9: Mercedes Arenado-Melian
+2025-03-27 17:20:40,657 - INFO - Agent 10: Angela Jacques
+2025-03-27 17:20:40,781 - INFO - Agent 11: Angie Denicola-Rush
+2025-03-27 17:20:40,903 - INFO - Agent 12: Denise Hopkins
+2025-03-27 17:20:41,081 - INFO - Agent 13: Laurie Balestrino
+2025-03-27 17:20:41,201 - INFO - Agent 14: Sarah Edwards
+2025-03-27 17:20:41,400 - INFO - Agent 15: Sonja Shaw
+2025-03-27 17:20:41,510 - INFO - Agent 16: Jen Green
+2025-03-27 17:20:41,712 - INFO - Agent 17: Gillian Kirkpatrick
+2025-03-27 17:20:41,910 - INFO - Agent 18: Kateryna Hedz
+2025-03-27 17:20:42,012 - INFO - Agent 19: Roi Clinton
+2025-03-27 17:20:42,141 - INFO - Agent 20: Beatriz Kraft
+2025-03-27 17:20:42,273 - INFO - Agent 21: Jean Pomeroy
+2025-03-27 17:20:42,515 - INFO - Agent 22: Antoinette Perez
+2025-03-27 17:20:42,821 - INFO - Agent 23: Adrianne Caspers
+2025-03-27 17:20:43,041 - INFO - Agent 24: Allison Wood
+2025-03-27 17:20:43,272 - INFO - Agent 25: Jacie Czerwinski
+2025-03-27 17:22:08,059 - INFO - Saved 25 agents to CSV
+2025-03-27 17:22:14,515 - INFO - Processing page 2 for Apache Junction real estate agents
+2025-03-27 17:22:14,806 - INFO - Found 25 agents on page 2
+2025-03-27 17:22:14,903 - INFO - Agent 1: Steve Bauman
+2025-03-27 17:22:14,997 - INFO - Agent 2: Kelly Kanehen
+2025-03-27 17:22:15,085 - INFO - Agent 3: Joye Holverson
+2025-03-27 17:22:15,170 - INFO - Agent 4: Cynthia Brown
+2025-03-27 17:22:15,262 - INFO - Agent 5: Andrew Watts
+2025-03-27 17:22:15,358 - INFO - Agent 6: Lori Bond
+2025-03-27 17:22:15,446 - INFO - Agent 7: Davontae Smith
+2025-03-27 17:22:15,540 - INFO - Agent 8: Jarod Britman
+2025-03-27 17:22:15,632 - INFO - Agent 9: Christina Choe
+2025-03-27 17:22:15,810 - INFO - Agent 10: Michael Maddox
+2025-03-27 17:22:15,912 - INFO - Agent 11: Traci Daniels
+2025-03-27 17:22:15,996 - INFO - Agent 12: Debbie Mack
+2025-03-27 17:22:16,072 - INFO - Agent 13: Karen Moore
+2025-03-27 17:22:16,163 - INFO - Agent 14: Katy Farol
+2025-03-27 17:22:16,323 - INFO - Agent 15: The Engstrom Team
+2025-03-27 17:22:16,459 - INFO - Agent 16: Debra Spagna
+2025-03-27 17:22:16,544 - INFO - Agent 17: Amanda Thomason
+2025-03-27 17:22:16,631 - INFO - Agent 18: Nicole Johnson
+2025-03-27 17:22:16,742 - INFO - Agent 19: Ty Green
+2025-03-27 17:22:16,944 - INFO - Agent 20: Stephanie Clark-Lamb
+2025-03-27 17:22:17,113 - INFO - Agent 21: Nancy Wittenberg
+2025-03-27 17:22:17,324 - INFO - Agent 22: Brigette Metcalf
+2025-03-27 17:22:17,579 - INFO - Agent 23: Claudia Hedt
+2025-03-27 17:22:17,696 - INFO - Agent 24: Shelli Bronstine
+2025-03-27 17:22:17,790 - INFO - Agent 25: Heather Hurwitz
+2025-03-27 17:23:37,605 - INFO - Saved 25 agents to CSV
+2025-03-27 17:23:42,377 - INFO - Processing page 3 for Apache Junction real estate agents
+2025-03-27 17:23:42,580 - INFO - Found 25 agents on page 3
+2025-03-27 17:23:42,684 - INFO - Agent 1: Philip Shumway
+2025-03-27 17:23:42,798 - INFO - Agent 2: Kylie Mack-Garding
+2025-03-27 17:23:42,906 - INFO - Agent 3: Dominic Hernandez
+2025-03-27 17:23:43,015 - INFO - Agent 4: Merrill O'Connor
+2025-03-27 17:23:43,110 - INFO - Agent 5: Tony Gonzalez
+2025-03-27 17:23:43,208 - INFO - Agent 6: Gerrianne O'Neil
+2025-03-27 17:23:43,287 - INFO - Agent 7: Wendy Meredith
+2025-03-27 17:23:43,362 - INFO - Agent 8: Brian Genzlinger
+2025-03-27 17:23:43,460 - INFO - Agent 9: Madelyn Dobson
+2025-03-27 17:23:43,555 - INFO - Agent 10: Kate Anderson
+2025-03-27 17:23:43,681 - INFO - Agent 11: Daryl McIlhargie
+2025-03-27 17:23:43,810 - INFO - Agent 12: Kyna Morris
+2025-03-27 17:23:44,003 - INFO - Agent 13: Carolyn Irby
+2025-03-27 17:23:44,116 - INFO - Agent 14: Marc Perea
+2025-03-27 17:23:44,221 - INFO - Agent 15: Steven Meredith
+2025-03-27 17:23:44,360 - INFO - Agent 16: Chris Johnson
+2025-03-27 17:23:44,635 - INFO - Agent 17: Andy Berglund
+2025-03-27 17:23:44,828 - INFO - Agent 18: Martha Appel
+2025-03-27 17:23:44,914 - INFO - Agent 19: Benjamin Ferguson
+2025-03-27 17:23:44,987 - INFO - Agent 20: Karen Bosch
+2025-03-27 17:23:45,078 - INFO - Agent 21: Barbara Brno
+2025-03-27 17:23:45,148 - INFO - Agent 22: Julia Trujillo
+2025-03-27 17:23:45,237 - INFO - Agent 23: Leslie Coates
+2025-03-27 17:23:45,332 - INFO - Agent 24: Bonnie Ditty
+2025-03-27 17:23:45,414 - INFO - Agent 25: Christine Prescott
+2025-03-27 17:24:57,999 - INFO - Saved 25 agents to CSV
+2025-03-27 17:25:02,701 - INFO - Processing page 4 for Apache Junction real estate agents
+2025-03-27 17:25:02,851 - INFO - Found 25 agents on page 4
+2025-03-27 17:25:02,929 - INFO - Agent 1: Becky Engstrom
+2025-03-27 17:25:03,006 - INFO - Agent 2: Judy Governo
+2025-03-27 17:25:03,082 - INFO - Agent 3: Bill Adams
+2025-03-27 17:25:03,161 - INFO - Agent 4: Kari Salvato
+2025-03-27 17:25:03,247 - INFO - Agent 5: Sam Garcia
+2025-03-27 17:25:03,329 - INFO - Agent 6: Steven Toth
+2025-03-27 17:25:03,414 - INFO - Agent 7: Joshua Simpson
+2025-03-27 17:25:03,493 - INFO - Agent 8: Laura Joyner
+2025-03-27 17:25:03,579 - INFO - Agent 9: Tom Miller
+2025-03-27 17:25:03,659 - INFO - Agent 10: GII Varrato
+2025-03-27 17:25:03,732 - INFO - Agent 11: Katie Hernandez
+2025-03-27 17:25:03,838 - INFO - Agent 12: Carolyn Haith
+2025-03-27 17:25:04,059 - INFO - Agent 13: Allie Sanders
+2025-03-27 17:25:04,178 - INFO - Agent 14: Charles Myler
+2025-03-27 17:25:04,361 - INFO - Agent 15: Douglas Ava
+2025-03-27 17:25:04,540 - INFO - Agent 16: Dane McFall
+2025-03-27 17:25:04,647 - INFO - Agent 17: Melissa Lopez
+2025-03-27 17:25:04,719 - INFO - Agent 18: Barbara Schultz
+2025-03-27 17:25:04,796 - INFO - Agent 19: Michael Rossi
+2025-03-27 17:25:04,866 - INFO - Agent 20: Rebecca Blank
+2025-03-27 17:25:04,938 - INFO - Agent 21: Troy Goodwin
+2025-03-27 17:25:05,014 - INFO - Agent 22: Cynthia Morisch
+2025-03-27 17:25:05,086 - INFO - Agent 23: Kimberly Deaton
+2025-03-27 17:25:05,160 - INFO - Agent 24: Morgan Ellsworth
+2025-03-27 17:25:05,230 - INFO - Agent 25: Shannon Behrend
+2025-03-27 17:26:22,548 - INFO - Saved 25 agents to CSV
+2025-03-27 17:26:27,065 - INFO - Processing page 5 for Apache Junction real estate agents
+2025-03-27 17:26:27,255 - INFO - Found 25 agents on page 5
+2025-03-27 17:26:27,357 - INFO - Agent 1: Kathy Wong
+2025-03-27 17:26:27,465 - INFO - Agent 2: Kimberly Borges
+2025-03-27 17:26:27,587 - INFO - Agent 3: John Stauffer
+2025-03-27 17:26:27,750 - INFO - Agent 4: Johnny Johnson
+2025-03-27 17:26:27,859 - INFO - Agent 5: David Courtright
+2025-03-27 17:26:27,961 - INFO - Agent 6: Octavio Ordonez
+2025-03-27 17:26:28,110 - INFO - Agent 7: Dorothy Harrison
+2025-03-27 17:26:28,229 - INFO - Agent 8: Denise Adame
+2025-03-27 17:26:28,323 - INFO - Agent 9: Tavit Kazanjian
+2025-03-27 17:26:28,422 - INFO - Agent 10: Gigi Roberts-Roach
+2025-03-27 17:26:28,519 - INFO - Agent 11: Pat Palmer
+2025-03-27 17:26:28,614 - INFO - Agent 12: Yvonne Strickland David
+2025-03-27 17:26:28,708 - INFO - Agent 13: Stephen Albee
+2025-03-27 17:26:28,810 - INFO - Agent 14: Ashley Sicka
+2025-03-27 17:26:28,927 - INFO - Agent 15: Tim Sevcik
+2025-03-27 17:26:29,014 - INFO - Agent 16: Nancy Herman
+2025-03-27 17:26:29,113 - INFO - Agent 17: Jayne Houghton
+2025-03-27 17:26:29,728 - INFO - Agent 18: Nora Soleimanpour
+2025-03-27 17:26:29,843 - INFO - Agent 19: Violete Lachini
+2025-03-27 17:26:29,933 - INFO - Agent 20: John Jacobs
+2025-03-27 17:26:30,031 - INFO - Agent 21: Dale Pavlicek
+2025-03-27 17:26:30,165 - INFO - Agent 22: Dan Leboffe
+2025-03-27 17:26:30,266 - INFO - Agent 23: Katina Samaras
+2025-03-27 17:26:30,377 - INFO - Agent 24: Karen Weston
+2025-03-27 17:26:30,512 - INFO - Agent 25: Kay Stolworthy
+2025-03-27 17:27:59,195 - INFO - Saved 25 agents to CSV
+2025-03-27 17:28:03,697 - INFO - Processing page 6 for Apache Junction real estate agents
+2025-03-27 17:28:03,869 - INFO - Found 25 agents on page 6
+2025-03-27 17:28:03,964 - INFO - Agent 1: Cheryl Watson
+2025-03-27 17:28:04,055 - INFO - Agent 2: Sheri Hicks
+2025-03-27 17:28:04,258 - INFO - Agent 3: Nancy Wendt
+2025-03-27 17:28:04,336 - INFO - Agent 4: Ulises Sandoval
+2025-03-27 17:28:04,418 - INFO - Agent 5: Deanna Funderburk
+2025-03-27 17:28:04,510 - INFO - Agent 6: Lori Klindera
+2025-03-27 17:28:04,625 - INFO - Agent 7: Moutaz Helwani
+2025-03-27 17:28:04,723 - INFO - Agent 8: Linda Berg
+2025-03-27 17:28:04,803 - INFO - Agent 9: Kathy Campbell
+2025-03-27 17:28:04,941 - INFO - Agent 10: Sariah Crandall
+2025-03-27 17:28:05,232 - INFO - Agent 11: Brenda Brandhorst
+2025-03-27 17:28:05,520 - INFO - Agent 12: Max Gau
+2025-03-27 17:28:05,839 - INFO - Agent 13: Rhonda Franklin
+2025-03-27 17:28:06,014 - INFO - Agent 14: Deanne Martin
+2025-03-27 17:28:06,141 - INFO - Agent 15: Tasha Jones
+2025-03-27 17:28:06,282 - INFO - Agent 16: Robyn Fonk
+2025-03-27 17:28:06,392 - INFO - Agent 17: JoAnn Ford
+2025-03-27 17:28:06,492 - INFO - Agent 18: Kim Peterson
+2025-03-27 17:28:06,715 - INFO - Agent 19: John Gordon
+2025-03-27 17:28:06,924 - INFO - Agent 20: Leah Lichter-Roedig
+2025-03-27 17:28:07,047 - INFO - Agent 21: Michelle Leone
+2025-03-27 17:28:07,120 - INFO - Agent 22: Lisa Sheble
+2025-03-27 17:28:07,194 - INFO - Agent 23: William Darby
+2025-03-27 17:28:07,272 - INFO - Agent 24: Robert Andler
+2025-03-27 17:28:07,380 - INFO - Agent 25: Aesha Williams
+2025-03-27 17:29:22,743 - INFO - Saved 25 agents to CSV
+2025-03-27 17:29:29,078 - INFO - Processing page 7 for Apache Junction real estate agents
+2025-03-27 17:29:29,241 - INFO - Found 25 agents on page 7
+2025-03-27 17:29:29,318 - INFO - Agent 1: Ellsworth Group
+2025-03-27 17:29:29,402 - INFO - Agent 2: India Ryer
+2025-03-27 17:29:29,479 - INFO - Agent 3: Ignacio Melgarejo
+2025-03-27 17:29:29,557 - INFO - Agent 4: Dave Penunuri
+2025-03-27 17:29:29,632 - INFO - Agent 5: Drew Burns
+2025-03-27 17:29:29,705 - INFO - Agent 6: Anabel Guerrero
+2025-03-27 17:29:29,779 - INFO - Agent 7: Leslie Phillips
+2025-03-27 17:29:29,852 - INFO - Agent 8: Alan Glasband
+2025-03-27 17:29:29,922 - INFO - Agent 9: Rick Ferguson
+2025-03-27 17:29:29,998 - INFO - Agent 10: Jorge Valencia
+2025-03-27 17:29:30,067 - INFO - Agent 11: Nicole Ryan
+2025-03-27 17:29:30,162 - INFO - Agent 12: Anne Hunt
+2025-03-27 17:29:30,262 - INFO - Agent 13: Julie Sims
+2025-03-27 17:29:30,364 - INFO - Agent 14: Kristine Daligdig
+2025-03-27 17:29:30,436 - INFO - Agent 15: David Furnia
+2025-03-27 17:29:30,513 - INFO - Agent 16: Paula Serven
+2025-03-27 17:29:30,589 - INFO - Agent 17: Jacqueline Casillas
+2025-03-27 17:29:30,663 - INFO - Agent 18: Shana Trotter
+2025-03-27 17:29:30,743 - INFO - Agent 19: Denise Von Der Linn
+2025-03-27 17:29:30,831 - INFO - Agent 20: Leah Triller
+2025-03-27 17:29:30,907 - INFO - Agent 21: Tammie Wagner
+2025-03-27 17:29:30,979 - INFO - Agent 22: Christina Dugie
+2025-03-27 17:29:31,053 - INFO - Agent 23: Andre Taylor
+2025-03-27 17:29:31,141 - INFO - Agent 24: Sophia Chandy
+2025-03-27 17:29:31,243 - INFO - Agent 25: Johannes Rath
+2025-03-27 17:30:51,779 - INFO - Saved 25 agents to CSV
+2025-03-27 17:30:56,866 - INFO - Processing page 8 for Apache Junction real estate agents
+2025-03-27 17:30:57,193 - INFO - Found 25 agents on page 8
+2025-03-27 17:30:57,315 - INFO - Agent 1: Troy Goodwin
+2025-03-27 17:30:57,420 - INFO - Agent 2: Frank Ellis
+2025-03-27 17:30:57,512 - INFO - Agent 3: Kimberly Deaton
+2025-03-27 17:30:57,596 - INFO - Agent 4: Bill Adams
+2025-03-27 17:30:57,699 - INFO - Agent 5: Eric Bustamante
+2025-03-27 17:30:57,794 - INFO - Agent 6: Shannon Behrend
+2025-03-27 17:30:57,878 - INFO - Agent 7: Kathy Wong
+2025-03-27 17:30:57,965 - INFO - Agent 8: Anne Hunt
+2025-03-27 17:30:58,064 - INFO - Agent 9: Kimberly Borges
+2025-03-27 17:30:58,158 - INFO - Agent 10: Anne Martin
+2025-03-27 17:30:58,283 - INFO - Agent 11: Debbie Mack
+2025-03-27 17:30:58,402 - INFO - Agent 12: Jacqueline Casillas
+2025-03-27 17:30:58,543 - INFO - Agent 13: Cynthia Brown
+2025-03-27 17:30:58,652 - INFO - Agent 14: Douglas Corbin
+2025-03-27 17:30:58,756 - INFO - Agent 15: Chad Corbin
+2025-03-27 17:30:58,911 - INFO - Agent 16: Debra Spagna
+2025-03-27 17:30:59,016 - INFO - Agent 17: Kirk Dewberry
+2025-03-27 17:30:59,115 - INFO - Agent 18: Allie Sanders
+2025-03-27 17:30:59,206 - INFO - Agent 19: Douglas Ava
+2025-03-27 17:30:59,325 - INFO - Agent 20: John Stauffer
+2025-03-27 17:30:59,478 - INFO - Agent 21: Octavio Ordonez
+2025-03-27 17:30:59,589 - INFO - Agent 22: Dorothy Harrison
+2025-03-27 17:30:59,947 - INFO - Agent 23: Gigi Roberts-Roach
+2025-03-27 17:31:00,215 - INFO - Agent 24: Pat Palmer
+2025-03-27 17:31:00,396 - INFO - Agent 25: Yvonne Strickland David
+2025-03-27 17:31:21,117 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/katherine-kathy-wong/aid_18414/: ElementHandle.inner_text: Target page, context or browser has been closed
+Call log:
+  - waiting for locator(":scope")
+
+2025-03-27 17:31:21,331 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/mesa/agent/william-bill-adams/aid_236654/: ElementHandle.inner_text: Target page, context or browser has been closed
+Call log:
+  - waiting for locator(":scope")
+
+2025-03-27 17:31:21,402 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/scottsdale/agent/kimberly-deaton/aid_286732/: Page.query_selector: Target page, context or browser has been closed
+2025-03-27 17:31:21,550 - ERROR - Failed to fetch https://www.coldwellbankerhomes.com/az/scottsdale/agent/troy-goodwin/aid_18379/: Page.query_selector: Target page, context or browser has been closed
+2025-03-27 17:32:18,726 - INFO - Saved 25 agents to CSV
+2025-03-27 17:32:18,743 - ERROR - Error checking next page: Page.query_selector: Target page, context or browser has been closed
+2025-03-27 17:32:18,745 - INFO - Processing inner city 4/80: Arivaca real estate agents
+2025-03-27 17:32:19,290 - ERROR - Fatal error: Page.goto: Target page, context or browser has been closed
+2025-03-27 17:32:19,313 - ERROR - Error closing context: BrowserContext.close: Target page, context or browser has been closed
+2025-03-27 17:32:23,956 - INFO - Completion email sent
+2025-03-27 17:32:23,957 - INFO - Removed lock file

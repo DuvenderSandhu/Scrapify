@@ -1725,52 +1725,8 @@ if selected_tab != "tab2":
                                         key=f"download_csv_{selected_website}_{timestamp}_{gibberish}"
                                     )
 
-                                # JSON Download
-                                with col2:
-                                    json_str = download_df.to_json(orient="records", indent=2)
-                                    st.download_button(
-                                        label="📥 Download JSON",
-                                        data=json_str,
-                                        file_name=f"{selected_website.lower()}_agents_{timestamp}.json",
-                                        mime="application/json",
-                                        key=f"download_json_{selected_website}_{timestamp}_{gibberish}"
-                                    )
-                                # TXT Download
-                                if len(fields_to_extract) == 1 and 'email' in fields_to_extract and 'email' in download_df.columns:
-                                    print(fields_to_extract)
-                                    # TXT
-                                    with col3:
-                                        # Filter out NaN, None, and empty strings from the 'email' column
-                                        filtered_df = download_df[download_df['email'].notna() & (download_df['email'] != '') & (download_df['email'] != 'None')]
-                                        # Convert filtered DataFrame to CSV without index
-                                        txt_data = filtered_df.to_csv(index=False, encoding="utf-8-sig")
-                                        st.download_button(
-                                            label="📥 Download TXT (Next Line)",
-                                            data=txt_data,
-                                            file_name=f"{selected_website.lower()}agents{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                            mime="text/plain",
-                                        )
-                                else:
-                                    st.write("No 'email' column found in the data or invalid fields_to_extract.")
-                                # TXT Download (Consolidated logic)
-                                with col4:
-                                    if len(fields_to_extract) == 1 and 'email' in fields_to_extract and 'email' in download_df.columns:
-                                        print(fields_to_extract)
-                                        # Filter out NaN, None, empty strings, and join valid emails with commas
-                                        filtered_emails = [email for email in download_df['email'].astype(str) if email not in ('nan', '', 'None')]
-                                        txt_data = ','.join(filtered_emails) if filtered_emails else "No valid emails found"
-                                        st.download_button(
-                                            label="📥 Download TXT (Comma Separated)",
-                                            data=txt_data,
-                                            file_name=f"{selected_website.lower()}agents{timestamp}.txt",
-                                            mime="text/plain",
-                                            key=f"download_txt_{selected_website}_{timestamp}_{gibberish}"
-                                        )
-                                    else:
-                                        st.write("No 'email' column found or invalid fields_to_extract.")
 
-                                # Excel Download
-                                with col5:
+                                with col2:
                                     buffer = io.BytesIO()
                                     with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
                                         download_df.to_excel(writer, index=False, sheet_name='Agents')
@@ -1782,6 +1738,54 @@ if selected_tab != "tab2":
                                         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                                         key=f"download_excel_{selected_website}_{timestamp}_{gibberish}"
                                     )
+                                # JSON Download
+                                with col3:
+                                    json_str = download_df.to_json(orient="records", indent=2)
+                                    st.download_button(
+                                        label="📥 Download JSON",
+                                        data=json_str,
+                                        file_name=f"{selected_website.lower()}_agents_{timestamp}.json",
+                                        mime="application/json",
+                                        key=f"download_json_{selected_website}_{timestamp}_{gibberish}"
+                                    )
+                                
+                                # TXT Download
+                                if len(fields_to_extract) == 1 and 'email' in fields_to_extract and 'email' in download_df.columns:
+                                    print(fields_to_extract)
+                                    # TXT
+                                    with col4:
+                                        # Filter out NaN, None, and empty strings from the 'email' column
+                                        filtered_df = download_df[download_df['email'].notna() & (download_df['email'] != '') & (download_df['email'] != 'None')]
+                                        # Convert filtered DataFrame to CSV without index
+                                        txt_data = filtered_df.to_csv(index=False, encoding="utf-8-sig")
+                                        st.download_button(
+                                            label="📥 Download Text",
+                                            data=txt_data,
+                                            file_name=f"{selected_website.lower()}agents{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                            mime="text/plain",
+                                        )
+                                else:
+                                    # st.write("No 'email' column found in the data or invalid fields_to_extract.")
+                                    pass
+
+                                # TXT Download (Consolidated logic)
+                                with col5:
+                                    if len(fields_to_extract) == 1 and 'email' in fields_to_extract and 'email' in download_df.columns:
+                                        print(fields_to_extract)
+                                        # Filter out NaN, None, empty strings, and join valid emails with commas
+                                        filtered_emails = [email for email in download_df['email'].astype(str) if email not in ('nan', '', 'None','N/A')]
+                                        txt_data = ','.join(filtered_emails) if filtered_emails else "No valid emails found"
+                                        st.download_button(
+                                            label="📥 Download Text Comma ",
+                                            data=txt_data,
+                                            file_name=f"{selected_website.lower()}agents{timestamp}.txt",
+                                            mime="text/plain",
+                                            key=f"download_txt_{selected_website}_{timestamp}_{gibberish}"
+                                        )
+                                    
+
+                                # Excel Download
+                               
 
                             else:
                                 st.warning("⚠️ Please select at least one column to download.")
@@ -1917,48 +1921,7 @@ if selected_tab != "tab2":
                                     file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                                     mime="text/csv",
                                 )
-
                             with col2:
-                                json_str = download_df.to_json(orient="records", indent=2)
-                                st.download_button(
-                                    label="📥 Download JSON",
-                                    data=json_str,
-                                    file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-                                    mime="application/json",
-                                )
-
-                            if len(fields_to_extract) == 1 and 'email' in fields_to_extract and 'email' in download_df.columns:
-                                print(fields_to_extract)
-                                # TXT
-                                with col3:
-                                    # Filter out NaN, None, and empty strings from the 'email' column
-                                    filtered_df = download_df[download_df['email'].notna() & (download_df['email'] != '') & (download_df['email'] != 'None')]
-                                    # Convert filtered DataFrame to CSV without index
-                                    txt_data = filtered_df.to_csv(index=False, encoding="utf-8-sig")
-                                    st.download_button(
-                                        label="📥 Download TXT (Comma Separated)",
-                                        data=txt_data,
-                                        key="download_button-2",
-                                        file_name=f"{selected_website.lower()}agents{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                        mime="text/plain",
-                                    )
-                            else:
-                                st.write("No 'email' column found in the data or invalid fields_to_extract.")
-                            if len(fields_to_extract) == 1 and 'email' in fields_to_extract and 'email' in download_df.columns:
-                                print(fields_to_extract)
-                                # TXT
-                                with col4:
-                                    # Filter out NaN values and join valid emails with commas
-                                    txt_data = ','.join(email for email in download_df['email'].astype(str) if email != 'nan')
-                                    st.download_button(
-                                        label="📥 Download TXT (Comma Separated)",
-                                        data=txt_data,
-                                        key="download_button-1",
-                                        file_name=f"{selected_website.lower()}agents{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                        mime="text/plain",
-                                    )
-
-                            with col5:
                                 buffer = io.BytesIO()
                                 with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
                                     download_df.to_excel(writer, index=False, sheet_name='Results')
@@ -1970,6 +1933,47 @@ if selected_tab != "tab2":
                                     file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
                                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                                 )
+                            with col3:
+                                json_str = download_df.to_json(orient="records", indent=2)
+                                st.download_button(
+                                    label="📥 Download JSON",
+                                    data=json_str,
+                                    file_name=f"scraping_results_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                                    mime="application/json",
+                                )
+                            
+                            if len(fields_to_extract) == 1 and 'email' in fields_to_extract and 'email' in download_df.columns:
+                                print(fields_to_extract)
+                                # TXT
+                                with col4:
+                                    # Filter out NaN, None, and empty strings from the 'email' column
+                                    filtered_df = download_df[download_df['email'].notna() & (download_df['email'] != '') & (download_df['email'] != 'None')]
+                                    # Convert filtered DataFrame to CSV without index
+                                    txt_data = filtered_df.to_csv(index=False, encoding="utf-8-sig")
+                                    st.download_button(
+                                        label="📥 Download TXT",
+                                        data=txt_data,
+                                        key="download_button-2",
+                                        file_name=f"{selected_website.lower()}agents{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                        mime="text/plain",
+                                    )
+                            
+
+                            if len(fields_to_extract) == 1 and 'email' in fields_to_extract and 'email' in download_df.columns:
+                                print(fields_to_extract)
+                                # TXT
+                                with col5:
+                                    # Filter out NaN values and join valid emails with commas
+                                    txt_data = ','.join(email for email in download_df['email'].astype(str) if email != 'nan')
+                                    st.download_button(
+                                        label="📥 Download Text Comma",
+                                        data=txt_data,
+                                        key="download_button-1",
+                                        file_name=f"{selected_website.lower()}agents{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
+                                        mime="text/plain",
+                                    )
+
+                            
                         else:
                             st.warning("⚠️ Please select at least one column to download.")
 
@@ -2113,148 +2117,6 @@ import streamlit as st
 import re
 from datetime import datetime
 
-if selected_tab == "tab2":
-    print(selected_tab)
-    with tab2:
-        if True:
-            showResults = st.toggle("View Task Results", help="Toggle to view scraping results.", value=True)
-        
-        if showResults:
-            with tab2:
-                # Define available website options
-                website_options = [
-                    "C21",
-                    "Coldwell",
-                    "Remax",
-                    "Compass"
-                ]
-                
-                # Let user choose a website
-                selected_website = st.selectbox("Choose a website to view", website_options, index=0)
-                
-                # Construct the expected CSV filename based on the selected website
-                data_dir = "data/"
-                expected_file = f"{selected_website.lower()}_agents.csv"
-                file_path = os.path.join(data_dir, expected_file)
-                
-                st.subheader(f"📊 Scraping Results ({selected_website})")
-                
-                def format_mobile_number(mobile, country_code=False, hyphen_separator=False):
-                    if pd.isna(mobile) or not str(mobile).strip():  # Handle NaN or empty values
-                        return ""
-                    # Remove all non-numeric characters
-                    mobile = re.sub(r"\D", "", str(mobile))
-                    if len(mobile) < 10:  # Ensure a valid 10-digit number
-                        return mobile  # Return as-is if not a full number
-                    # Apply hyphen separator if enabled
-                    if hyphen_separator:
-                        mobile = f"{mobile[:3]}-{mobile[3:6]}-{mobile[6:]}"  # Format as XXX-XXX-XXXX
-                    # Apply country code if enabled
-                    if country_code:
-                        if hyphen_separator:
-                            mobile = f"+1-{mobile}"  # Add +1- before the number
-                        else:
-                            mobile = f"+1{mobile}"  # Add +1 with space if no hyphens
-                    return mobile
-
-                try:
-                    # Check if the file exists
-                    if not os.path.exists(file_path):
-                        st.error(f"No Data Found for {selected_website}.")
-                    else:
-                        # Load data from the selected website's CSV file
-                        agents_df = pd.read_csv(file_path)
-                        
-                        # Identify potential mobile number columns dynamically
-                        mobile_columns = [col for col in agents_df.columns if 'mobile' in col.lower() or 'phone' in col.lower()]
-                        if mobile_columns:
-                            for col in mobile_columns:
-                                agents_df[col] = agents_df[col].fillna("").apply(
-                                    lambda x: format_mobile_number(x, country_code=False, hyphen_separator=True)
-                                )
-
-                        # Define fixed metadata columns (if any exist in the CSV)
-                        metadata_cols = [col for col in agents_df.columns if col.lower() in ["source_index", "url", "timestamp", "date", "datetime", "time", "title"]]
-                        data_cols = [col for col in agents_df.columns if col not in metadata_cols]
-                        
-                        # Deduplicate based on all columns (since we don’t know which are unique)
-                        agents_df = agents_df.drop_duplicates()
-
-                        st.info(f"This table displays only the first 50 entries from {selected_website}. The downloadable file will include all entries.")
-                        st.dataframe(agents_df.head(50), use_container_width=True)
-
-                        # Allow user to select columns for download (dynamically based on CSV columns)
-                        selected_columns = st.multiselect(
-                            "Select columns to download",
-                            options=agents_df.columns,
-                            default=agents_df.columns.tolist()  # Default to all columns
-                        )
-                        
-                        # 📥 Download Buttons (CSV, JSON, TXT)
-                        if st.button("📥 Download Data", use_container_width=True):
-                            if selected_columns:
-                                # Filter DataFrame based on selected columns
-                                download_df = agents_df[selected_columns]
-                                
-                                col1, col2, col3 = st.columns(3)
-                                
-                                # CSV Download
-                                with col1:
-                                    csv_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                                    st.download_button(
-                                        label="📥 Download CSV",
-                                        data=csv_data,
-                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
-                                        mime="text/csv",
-                                    )
-                                
-                                # JSON Download
-                                with col2:
-                                    json_str = download_df.to_json(orient="records", indent=2)
-                                    st.download_button(
-                                        label="📥 Download JSON",
-                                        data=json_str,
-                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
-                                        mime="application/json",
-                                    )
-                                if len(fields_to_extract) == 1 and 'email' in fields_to_extract:
-                                    # TXT
-                                    with col3:
-                                        txt_data = download_df.to_csv(index=False, encoding="utf-8-sig")
-                                        st.download_button(
-                                            label="📥 Download TXT (Comma Separated)",
-                                            data=txt_data,
-                                            file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt",
-                                            mime="text/plain",
-                                        )
-                                # Excel Download
-                                with col4:
-                                    buffer = io.BytesIO()
-                                    with pd.ExcelWriter(buffer, engine='xlsxwriter') as writer:
-                                        download_df.to_excel(writer, index=False, sheet_name='Agents')
-                                    buffer.seek(0)
-                                    st.download_button(
-                                        label="📥 Download Excel",
-                                        data=buffer,
-                                        file_name=f"{selected_website.lower()}_agents_{datetime.now().strftime('%Y%m%d_%H%M%S')}.xlsx",
-                                        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-                                    )
-                            else:
-                                st.warning("⚠️ Please select at least one column to download.")
-                    
-                except Exception as e:
-                    st.error(f"An error occurred while loading {expected_file}: {str(e)}")
-        
-        else:
-            with tab2:
-                st.subheader("📊 Scraping Results")
-                if st.session_state.get("results"):
-                    st.info("Displaying other scraping results...")
-                else:
-                    if st.session_state.get("is_scraping", False):
-                        st.info("⏳ Scraping in progress... Results will appear here when available.")
-                    else:
-                        st.info("🔍 No results yet. Start a scraping job to see results here.")
 
 # Main scraping process (runs when is_scraping is True)
 if st.session_state.is_scraping:

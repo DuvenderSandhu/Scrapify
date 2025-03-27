@@ -19,7 +19,7 @@ PROGRESS_FILE = f"{OUTPUT_FOLDER}/progress.csv"
 TIMEOUT = 60000  # 60 seconds timeout
 REQUEST_DELAY = 2  # Increased delay for stability
 MEMORY_THRESHOLD_MB = 2000  # 2 GB threshold
-CONCURRENT_REQUESTS = 2  # Controlled concurrency
+CONCURRENT_REQUESTS = 8  # Controlled concurrency
 
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
